@@ -14,6 +14,7 @@ export default {
         'dark-purple' : '#48248B',
         'light-purple' : '#9A77EC',
         'custom-grey' : '#A9A9A9',
+        'hover-static' : '#39F0BA',
         'success-green': '#4CAF50',
         'warning-yellow': '#FFC107',
         'error-red': '#F44336',
@@ -23,6 +24,9 @@ export default {
         'horizontal-purple-gradient': 'linear-gradient(270deg, #570CD5, #C67EFF)',
       },
     },
+      fontFamily: {
+        outfit: ['Outfit', 'sans-serif'],
+      },
   },
   plugins: [],
 }

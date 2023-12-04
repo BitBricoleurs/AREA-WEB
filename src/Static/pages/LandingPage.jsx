@@ -1,15 +1,17 @@
-import {LandingNavBar} from "../../components/";
+import {LandingNavBar, LandingVideo} from "../../components/";
+import '../Static.css';
 
 export default function LandingPage() {
     return (
         <>
-            <LandingNavBar/>
-            <main>
-                <section>
-                </section>
-                <section>
-                </section>
-            </main>
+            <div className="gradient-background">
+                <LandingVideo/>
+                <LandingNavBar/>
+                <main>
+                    <section>
+                    </section>
+                </main>
+            </div>
         </>
     );
 }
