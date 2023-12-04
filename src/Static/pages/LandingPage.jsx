@@ -1,4 +1,4 @@
-import {LandingNavBar} from "../components/";
+import {LandingNavBar} from "../../components/";
 
 export default function LandingPage() {
     return (
