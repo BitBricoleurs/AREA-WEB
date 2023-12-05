@@ -4,3 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.text-gradient {
+    background: linear-gradient(270deg, #570CD5, #C67EFF);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.text-gradient:hover {
+    color: #FFFFFF;
+    background-clip: text;
+    -webkit-background-clip: text;
+    background: linear-gradient(270deg, #570CD5, #C67EFF);
+}

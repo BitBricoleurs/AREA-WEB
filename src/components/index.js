@@ -1,9 +1,9 @@
 import LandingNavBar from "./LandingNavBar.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
-import LandingVideo from "./LandingVideoBackground.jsx";
+import LandingVideoBackground from "./LandingVideoBackground.jsx";
 
 export {
     PrivateRoute,
     LandingNavBar,
-    LandingVideo,
+    LandingVideoBackground,
 };

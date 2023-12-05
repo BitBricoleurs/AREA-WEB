@@ -1,13 +1,13 @@
 import LandingVideo from "../assets/landingVideo.mp4";
 
-const LandingNavBar = () => {
+const LandingVideoBackground = () => {
     return (
-        <div className="relative min-h-screen">
-            <video autoPlay loop muted className="absolute top-0 left-0 w-full h-full object-cover z-0">
+        <div className="relative  z-0 overflow-hidden">
+            <video autoPlay loop muted className="object-cover">
                 <source src={LandingVideo} type="video/mp4"/>
             </video>
         </div>
     )
 }
 
-export default LandingNavBar;
+export default LandingVideoBackground;
