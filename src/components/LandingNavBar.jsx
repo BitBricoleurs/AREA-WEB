@@ -1,12 +1,18 @@
 import React, { useState, useEffect} from 'react';
 import PurpleLogo from "../assets/purpleLogo.svg";
+import {Routes, Route, useNavigate} from 'react-router-dom';
 
 const LandingNavBar = () => {
+    const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [hasScrolled, setHasScrolled] = useState(false);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    const navigateToLogin = () => {
+        navigate('/login');
     };
 
     useEffect(() => {
@@ -22,7 +28,7 @@ const LandingNavBar = () => {
 
     return (
         <div>
-            <nav className={`fixed top-0 w-full z-10 p-4 ${hasScrolled ? 'bg-opacity-90 backdrop-blur-md drop-shadow -translate-y-2 pb-2 transition duration-300 ' : ''}`}>
+            <nav className={`fixed top-0 w-full z-50 p-4 ${hasScrolled ? 'bg-opacity-90 backdrop-blur-md drop-shadow -translate-y-2 pb-2 transition duration-300 ' : ''}`}>
                 <div className="flex justify-between items-center">
                     <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
                         <img src={PurpleLogo} className="h-10" alt={"PurpleVideo"}/>
@@ -37,7 +43,7 @@ const LandingNavBar = () => {
                         <a href="#" className="text-white hover:text-hover-static px-3 py-2 rounded-md text-sm font-medium">Contact</a>
                     </div>
                     <div className="flex items-center">
-                        <button className="text-gradient bg-transparent hover:text-white hover:bg-horizontal-purple-gradient bg-white border border-violet-800 font-medium rounded-md text-sm px-6 py-1.5 mr-4">
+                        <button className="text-gradient bg-transparent hover:text-white hover:bg-horizontal-purple-gradient bg-white border border-violet-800 font-medium rounded-md text-sm px-6 py-1.5 mr-4 transition duration-700" onClick={navigateToLogin}>
                             Login
                         </button>
                         <button type="button" className="text-white bg-horizontal-purple-gradient hover:bg-light-purple-gradient font-medium rounded-md text-sm px-6 py-1.5">
