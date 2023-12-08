@@ -3,27 +3,9 @@ import { useLocation } from 'react-router-dom';
 import PurpleLogo from "../../assets/icons/purpleLogo.svg";
 import WhiteLogo from "../../assets/icons/whiteLogo.svg";
 
-const AuthenticationPage = () => {
-    return (
-        <div className="flex flex-col h-screen bg-background text-white">
-            <div className="p-4">
-                <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse select-none">
-                    <img src={WhiteLogo} className="h-6" alt={"PurpleVideo"}/>
-                    <span className="text-md font-semibold whitespace-nowrap">
-                    <span className="font-thin">Bot</span><span className="font-medium">Butler</span>
-                    </span>
-                </a>
-            </div>
-            <div className="flex-grow flex flex-col justify-center items-center">
-                <div className="flex items-center flex-col bg-box-color px-56 pt-8 rounded-lg border border-contrast-box-color font-outfit">
-
-                </div>
-            </div>
-            <div className="mt-auto p-4 text-gray-400 text-xs text-center">
-                © 2023 BitBuilder. All Rights Reserved.
-            </div>
-        </div>
-    );
+const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
 };
 
 const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
@@ -126,15 +108,18 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
     )
 }
 
-const LoginForm = ({ switchToSelectMethod, switchToRegister }) => {
+const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPasswordInput, setShowPasswordInput] = useState(false);
 
     useEffect(() => {
         const handleEscapeKey = (e) => {
-            if (e.key === 'Escape') {
+            if (e.key === 'Escape' && document.activeElement.tagName === 'BODY') {
                 switchToSelectMethod();
+            }
+            if (e.key === 'Escape' && document.activeElement.tagName !== 'BODY') {
+                document.activeElement.blur();
             }
         };
 
@@ -144,7 +129,6 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister }) => {
             window.removeEventListener('keydown', handleEscapeKey);
         };
     }, [switchToSelectMethod]);
-
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -156,12 +140,22 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!validateEmail(email)) {
+            setNotification({
+                notificationState: 'Warning',
+                message: 'Please enter a valid email address'
+            });
+            return;
+        }
         if (!showPasswordInput) {
             setShowPasswordInput(true);
-        } else if (email && password) {
-            console.log("Form submitted with:", { email, password });
-            // Add your code here to handle the form submission
+            return;
         }
+        console.log("Form submitted with:", { email, password })
+        setNotification({
+            notificationState: 'Success',
+            message: 'Successfully registered!'
+        });
     };
 
     return (
@@ -223,12 +217,21 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister }) => {
 };
 
 
-const RegisterForm = ({ switchToSelectMethod, switchToLogin }) => {
+const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) => {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPasswordInput, setShowPasswordInput] = useState(false);
 
     useEffect(() => {
         const handleEscapeKey = (e) => {
-            if (e.key === 'Escape') {
+            console.log(e.key, document.activeElement.tagName)
+            if (e.key === 'Escape' && document.activeElement.tagName === 'BODY') {
                 switchToSelectMethod();
+            }
+            if (e.key === 'Escape' && document.activeElement.tagName !== 'BODY') {
+                document.activeElement.blur();
             }
         };
 
@@ -239,6 +242,55 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin }) => {
         };
     }, [switchToSelectMethod]);
 
+
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    };
+
+
+    const handleConfirmPasswordChange = (e) => {
+        setConfirmPassword(e.target.value);
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!validateEmail(email)) {
+            setNotification({
+                notificationState: 'Warning',
+                message: 'Please enter a valid email address'
+            });
+            return;
+        }
+        if (!showPasswordInput) {
+            setShowPasswordInput(true);
+            return;
+        }
+        if (password.length < 8) {
+            setNotification({
+                notificationState: 'Warning',
+                message: 'Password must be at least 8 characters long'
+            });
+            return;
+        }
+        if (password !== confirmPassword) {
+            setNotification({
+                notificationState: 'Warning',
+                message: 'Passwords do not match'
+            });
+            return;
+        }
+        console.log("Form submitted with:", { email, password })
+        setNotification({
+            notificationState: 'Success',
+            message: 'Successfully registered!'
+        });
+    };
+
+
     return (
         <div className="flex flex-col items-center justify-center h-full w-full">
             <div className="max-w-sm w-full flex flex-col items-center justify-center">
@@ -248,6 +300,56 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin }) => {
                         Bot
                     </span>Butler
                 </span>
+                <form className="max-w-sm mx-auto font-outfit flex flex-col items-center" onSubmit={handleSubmit}>
+                    <div className="relative mb-6 flex">
+                        <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-light-purple">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                            </svg>
+
+                        </div>
+                        <input type="text"
+                               value={email}
+                               onChange={handleEmailChange}
+                               id="input-group-1"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md" placeholder="name@botbutler.com"
+                        />
+                    </div>
+                    <div className={`relative mb-6 transition-opacity duration-500 ${showPasswordInput ? 'opacity-100' : 'opacity-0'}`}>
+                        <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-light-purple">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                            </svg>
+
+                        </div>
+                        <input type="password"
+                               value={password}
+                               onChange={handlePasswordChange}
+                               id="password"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md" placeholder="password"
+                        />
+                    </div>
+
+                    <div className={`relative mb-6 transition-opacity duration-500 ${showPasswordInput ? 'opacity-100' : 'opacity-0'}`}>
+                        <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-light-purple">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                            </svg>
+
+                        </div>
+                        <input type="password"
+                               value={confirmPassword}
+                               onChange={handleConfirmPasswordChange}
+                               id="confirmPassword"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md" placeholder="confirm password"
+                        />
+                    </div>
+                    <div className="flex items-center pt-4">
+                        <input id="link-checkbox" type="checkbox" value="" className="w-3 h-3 bg-custom-grey border-contrast-box-color rounded dark:focus:ring-blue-600 dark:ring-offset-light-purple focus:ring-2 dark:bg-light-purple dark:border-light-purple"/>
+                        <label htmlFor="link-checkbox" className="ms-2 text-xs font-medium text-gray-900 dark:text-gray-300">Keep me sign in</label>
+                    </div>
+                    <input type="submit" hidden />
+                </form>
                 <div className="flex flex-col items-center justify-center w-full pt-10 font-thin">
                     <button className="text-xs  text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group" onClick={switchToLogin}>
                         Already have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign in</span>
@@ -258,13 +360,92 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin }) => {
     )
 }
 
+const NotificationManager = ({ notification, setNotification }) => {
+
+    useEffect(() => {
+        if (notification.notificationState !== 'Hide') {
+            const timer = setTimeout(() => {
+                setNotification({
+                    notificationState: 'Hide',
+                    message: notification.message
+                });
+            }, 1500);
+            return () => clearTimeout(timer);
+        }
+    }, [notification, setNotification]);
+
+    const closeNotification = () => {
+        setNotification({
+            notificationState: 'Hide',
+            message: notification.message
+        });
+    };
+
+    return (
+        <div className="flex justify-center">
+            <div
+                className={`fixed top-0 self-center opacity-100 z-50 transition-transform duration-500 ease-in-out ${notification.notificationState === 'Success' ? 'translate-y-0' : '-translate-y-full'}`}>
+                <div id="toast-success"
+                     className="flex self-center items-center w-full max-w-xs p-2 mb-4 bg-white rounded-lg shadow text-custom-grey dark:bg-box-color space-x-3"
+                     role="alert">
+                    <div
+                        className="inline-flex items-center justify-center flex-shrink-0 w-6 h-6 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+                        <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                        </svg>
+                        <span className="sr-only">Check icon</span>
+                    </div>
+                    <div className="ms-3 text-sm font-normal font-outfit">{notification.message}</div>
+                    <button type="button"
+                            className="ms-auto -my-1.5 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-600 inline-flex items-center justify-center h-6 w-6 text-custom-grey hover:text-light-purple bg-box-color "
+                            data-dismiss-target="#toast-success" aria-label="Close" onClick={closeNotification}>
+                        <span className="sr-only">Close</span>
+                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                             viewBox="0 0 14 14">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div
+                className={`fixed top-0 self-center opacity-100 z-51 transition-transform duration-500 ease-in-out ${notification.notificationState === 'Warning' ? 'translate-y-0' : '-translate-y-full'}`}>
+                <div id="toast-warning"
+                     className="flex self-center items-center w-full max-w-xs p-2 mb-4 bg-white rounded-lg shadow text-custom-grey dark:bg-box-color space-x-3"
+                     role={"alert"}>
+                    <div className="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-orange-500 bg-orange-100 rounded-lg dark:bg-orange-700 dark:text-orange-200">
+                        <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z"/>
+                        </svg>
+                        <span className="sr-only">Warning icon</span>
+                    </div>
+                    <div className="ms-3 text-sm font-normal font-outfit">{notification.message}</div>
+                    <button type="button"
+                            className="ms-auto -my-1.5 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-600 inline-flex items-center justify-center h-6 w-6 text-custom-grey hover:text-light-purple bg-box-color "
+                            data-dismiss-target="#toast-warning" aria-label="Close">
+                        <span className="sr-only">Close</span>
+                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 const AuthenticationBox = () => {
     const location = useLocation();
     const { from } = location.state || { from: 'login' };
     const [currentView, setCurrentView] = useState('selectMethod');
     const [currentAuthType, setCurrentAuthType] = useState(from);
     const [transitionState, setTransitionState] = useState('enter');
-
+    const [notification, setNotification] = useState({
+        notificationState: 'Hide',
+        message: ''
+    });
 
     const linkEmailAction = () => {
         if (currentAuthType === 'login') {
@@ -290,7 +471,6 @@ const AuthenticationBox = () => {
 
     const switchToRegisterForm = () => {
         setTransitionState('exit');
-        console.log('switching to register')
         setTimeout(() => {
             setCurrentView('register');
             setTransitionState('enter');
@@ -306,6 +486,7 @@ const AuthenticationBox = () => {
 
     return (
         <div className="flex flex-col h-screen bg-box-color sm:bg-background transition-all text-white ease-in-out duration-700">
+            <NotificationManager notification={notification} setNotification={setNotification} />
             <div className="p-4">
                 <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse select-none">
                     <img src={WhiteLogo} className="h-6" alt={"PurpleVideo"}/>
@@ -320,10 +501,10 @@ const AuthenticationBox = () => {
                         {currentView === 'selectMethod' && <SelectMethod onSwitch={linkEmailAction} currentAuthType={currentAuthType} setCurrentAuthType={setCurrentAuthType} />}
                     </div>
                     <div className={`transform transition-all duration-300 ${getTransitionClasses('login')}`}>
-                        {currentView === 'login' && <LoginForm switchToRegister={switchToRegisterForm} switchToSelectMethod={switchToSelectMethod}/>}
+                        {currentView === 'login' && <LoginForm switchToRegister={switchToRegisterForm} switchToSelectMethod={switchToSelectMethod} setNotification={setNotification}/>}
                     </div>
                     <div className={`transform transition-all duration-300 ${getTransitionClasses('register')}`}>
-                        {currentView === 'register' && <RegisterForm switchToLogin={switchToLoginForm}  switchToSelectMethod={switchToSelectMethod}/>}
+                        {currentView === 'register' && <RegisterForm switchToLogin={switchToLoginForm}  switchToSelectMethod={switchToSelectMethod} setNotification={setNotification}/>}
                     </div>
                 </div>
             </div>
