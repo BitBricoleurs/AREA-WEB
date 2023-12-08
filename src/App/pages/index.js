@@ -1,7 +1,7 @@
 import DashboardPage from "./DashboardPage.jsx";
-import LoginPage from "./LoginPage.jsx";
+import AuthPage from "./AuthPage.jsx";
 
 export {
     DashboardPage,
-    LoginPage,
+    AuthPage,
 };
