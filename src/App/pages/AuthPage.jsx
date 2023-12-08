@@ -26,23 +26,42 @@ const AuthenticationPage = () => {
     );
 };
 
-const SelectMethod = ({ onSwitch, currentAuthType }) => {
+const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
 
-    const linkText = currentAuthType === 'login' ? 'Create a new account' : 'Login to your account';
+    const switchToRegisterSelect = () => {
+        setCurrentAuthType('register');
+    };
+
+    const switchToLoginSelect = () => {
+        setCurrentAuthType('login');
+    };
+
+
+    const linkText = currentAuthType === 'login' ? (
+        <button className="text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group" onClick={switchToRegisterSelect}>
+            Don't have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign up</span>
+        </button>
+    ) : (
+        <button className="text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group" onClick={switchToLoginSelect}>
+            Already have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign in</span>
+        </button>
+    );
+
 
     return (
         <div className="flex flex-col items-center justify-center h-full w-full">
             <div className="max-w-sm w-full flex flex-col items-center justify-center">
-                <img src={PurpleLogo} className="h-14 m-4 " alt={"PurpleVideo"}/>
-                <span className="text-4xl font-semibold whitespace-nowrap dark:text-white font-outfit pb-20">
+                <img src={PurpleLogo} className="h-14 m-[4%] select-none" alt={"PurpleVideo"}/>
+                <span className="text-4xl font-semibold whitespace-nowrap dark:text-white font-outfit select-none">
                     Continue to
-                    <span className="pl-2 font-thin">
+                    <span className="pl-[2%] font-thin hover:text-light-purple transition duration-700">
                         Bot
                     </span>
                     Butler
                 </span>
             <div className="max-w-sm w-full">
-                <button className="flex items-center justify-center w-full px-3 py-2 mb-4 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
+                <div className="space-y-4 pt-[15%] pb-[10%]">
+                <button className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
                     <div className="flex items-center w-8 h-8 ml-4">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clipPath="url(#clip0_291_1581)">
@@ -61,7 +80,7 @@ const SelectMethod = ({ onSwitch, currentAuthType }) => {
                     </div>
                     Continue with Google
                 </button>
-                <button className="flex items-center justify-center w-full px-3 py-2 mb-4 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
+                <button className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
                     <div className="flex items-center w-8 h-8 ml-4">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clipPath="url(#clip0_291_1590)">
@@ -78,7 +97,7 @@ const SelectMethod = ({ onSwitch, currentAuthType }) => {
                     </div>
                     Continue with Apple
                 </button>
-                <button className="flex items-center justify-center w-full px-3 py-2 mb-4 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
+                <button className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
                     <div className="flex items-center w-8 h-8 ml-4">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M20.25 12.75H12.75V20.25H20.25V12.75Z" fill="#FEBA08"/>
@@ -89,7 +108,7 @@ const SelectMethod = ({ onSwitch, currentAuthType }) => {
                     </div>
                     Continue with Microsoft
                 </button>
-                <button onClick={onSwitch} className="flex items-center justify-center w-full px-3 py-2 mb-4 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
+                <button onClick={onSwitch} className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
                     <div className="flex items-center w-8 h-8 ml-4">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M23.9412 5.17315C23.8415 4.66905 23.6166 4.19262 23.2884 3.79207C23.2218 3.70798 23.1521 3.63316 23.0759 3.55727C22.4921 2.9704 21.68 2.63379 20.8478 2.63379H3.15206C2.31061 2.63379 1.51922 2.96191 0.923672 3.5576C0.848297 3.63279 0.778406 3.70835 0.709219 3.79512C0.3825 4.19398 0.158578 4.66976 0.0612187 5.17455C0.0205313 5.37279 0 5.5782 0 5.78599V18.2143C0 18.6467 0.0878438 19.0677 0.261984 19.468C0.412688 19.8234 0.641344 20.1604 0.923484 20.4424C0.994547 20.5131 1.06514 20.5784 1.14052 20.642C1.70461 21.1091 2.41889 21.3662 3.15206 21.3662H20.8478C21.5858 21.3662 22.2993 21.1082 22.8619 20.6368C22.9371 20.576 23.0068 20.5121 23.0765 20.4424C23.3492 20.17 23.566 19.8569 23.7218 19.5117L23.7423 19.4625C23.9132 19.0699 24 18.6502 24 18.2143V5.78599C24 5.58091 23.9802 5.37415 23.9412 5.17315ZM1.63233 4.64548C1.67691 4.58023 1.73381 4.51324 1.80642 4.44007C2.16684 4.07984 2.64483 3.8816 3.15202 3.8816H20.8478C21.3594 3.8816 21.8376 4.08016 22.194 4.44077C22.2555 4.50298 22.3143 4.57202 22.3656 4.64102L22.5009 4.8229L13.0556 13.0549C12.7644 13.3102 12.3895 13.4507 11.9999 13.4507C11.614 13.4507 11.2395 13.3105 10.9448 13.0552L1.50891 4.82524L1.63233 4.64548ZM1.25414 18.324C1.24903 18.2902 1.24786 18.2526 1.24786 18.2143V6.04334L8.5777 12.4376L1.32183 18.7639L1.25414 18.324ZM21.7921 19.8675C21.5085 20.0312 21.1817 20.118 20.8478 20.118H3.15206C2.81798 20.118 2.49141 20.0312 2.20791 19.8675L1.91128 19.6955L9.40828 13.1621L10.2299 13.8768C10.7228 14.3047 11.3512 14.5406 12 14.5406C12.651 14.5406 13.2806 14.3047 13.7731 13.8768L14.5944 13.1618L22.0888 19.6959L21.7921 19.8675ZM22.7518 18.2143C22.7518 18.2519 22.7511 18.2891 22.7464 18.3223L22.6814 18.7663L15.4224 12.441L22.7518 6.04643V18.2143Z" fill="white"/>
@@ -97,10 +116,9 @@ const SelectMethod = ({ onSwitch, currentAuthType }) => {
                     </div>
                     Continue with Email
                 </button>
-                <div className="text-center text-gray-400 pt-24 pb-4">
-                    <a href="/login" className="text-gray-400 hover:text-gray-300">
+                </div>
+                <div className="text-center text-gray-400">
                         {linkText}
-                        </a>
                 </div>
             </div>
         </div>
@@ -108,10 +126,25 @@ const SelectMethod = ({ onSwitch, currentAuthType }) => {
     )
 }
 
-const LoginForm = ({ switchToSelectMethod }) => {
+const LoginForm = ({ switchToSelectMethod, switchToRegister }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPasswordInput, setShowPasswordInput] = useState(false);
+
+    useEffect(() => {
+        const handleEscapeKey = (e) => {
+            if (e.key === 'Escape') {
+                switchToSelectMethod();
+            }
+        };
+
+        window.addEventListener('keydown', handleEscapeKey);
+
+        return () => {
+            window.removeEventListener('keydown', handleEscapeKey);
+        };
+    }, [switchToSelectMethod]);
+
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -177,11 +210,11 @@ const LoginForm = ({ switchToSelectMethod }) => {
                     <input type="submit" hidden />
                 </form>
                 <div className="flex flex-col items-center justify-center w-full pt-10 font-thin">
-                    <button className="text-xs  text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700" onClick={switchToSelectMethod}>
+                    <button className="text-xs  text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700">
                         Forgot your password?
                     </button>
-                    <button className="text-xs  text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700">
-                        Don't have an account? <span className="text-light-purple">Sign up</span>
+                    <button className="text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group" onClick={switchToRegister}>
+                        Don't have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign up</span>
                     </button>
                 </div>
             </div>
@@ -190,13 +223,37 @@ const LoginForm = ({ switchToSelectMethod }) => {
 };
 
 
-const RegisterForm = ({ switchToSelectMethod }) => {
+const RegisterForm = ({ switchToSelectMethod, switchToLogin }) => {
+
+    useEffect(() => {
+        const handleEscapeKey = (e) => {
+            if (e.key === 'Escape') {
+                switchToSelectMethod();
+            }
+        };
+
+        window.addEventListener('keydown', handleEscapeKey);
+
+        return () => {
+            window.removeEventListener('keydown', handleEscapeKey);
+        };
+    }, [switchToSelectMethod]);
+
     return (
-        <div className="max-w-sm w-full">
-            <img src={PurpleLogo} className="h-14 m-4 " alt={"PurpleVideo"}/>
-            <span className="text-4xl font-semibold whitespace-nowrap dark:text-white font-outfit pb-20">
-            Register to BotButler
-        </span>
+        <div className="flex flex-col items-center justify-center h-full w-full">
+            <div className="max-w-sm w-full flex flex-col items-center justify-center">
+                <img src={PurpleLogo} className="h-14 m-4" alt="PurpleVideo"/>
+                <span className="text-4xl font-semibold whitespace-nowrap dark:text-white font-outfit pb-20 select-none">
+                    Register to <span className="pl-0.5 font-thin hover:text-light-purple transition duration-700">
+                        Bot
+                    </span>Butler
+                </span>
+                <div className="flex flex-col items-center justify-center w-full pt-10 font-thin">
+                    <button className="text-xs  text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group" onClick={switchToLogin}>
+                        Already have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign in</span>
+                    </button>
+                </div>
+            </div>
         </div>
     )
 }
@@ -209,6 +266,14 @@ const AuthenticationBox = () => {
     const [transitionState, setTransitionState] = useState('enter');
 
 
+    const linkEmailAction = () => {
+        if (currentAuthType === 'login') {
+            switchToLoginForm();
+        } else {
+            switchToRegisterForm();
+        }
+    };
+
     const switchToLoginForm = () => {
         setTransitionState('exit');
         setTimeout(() => {
@@ -219,15 +284,28 @@ const AuthenticationBox = () => {
 
     const getTransitionClasses = (view) => {
         return currentView === view && transitionState === 'enter'
-            ? 'scale-100 opacity-100'
-            : 'scale-95 opacity-0';
+            ? 'transition duration-1000 scale-100 opacity-100'
+            : 'transition duration-1000 scale-95 opacity-0';
     };
 
-    const switchToRegisterForm = () => setCurrentView('register');
-    const switchToSelectMethod = () => setCurrentView('selectMethod');
+    const switchToRegisterForm = () => {
+        setTransitionState('exit');
+        console.log('switching to register')
+        setTimeout(() => {
+            setCurrentView('register');
+            setTransitionState('enter');
+        }, 150);
+    }
+    const switchToSelectMethod = () => {
+        setTransitionState('exit');
+        setTimeout(() => {
+            setCurrentView('selectMethod');
+            setTransitionState('enter');
+        }, 150);
+    }
 
     return (
-        <div className="flex flex-col h-screen bg-background text-white transition-all">
+        <div className="flex flex-col h-screen bg-box-color sm:bg-background transition-all text-white ease-in-out duration-700">
             <div className="p-4">
                 <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse select-none">
                     <img src={WhiteLogo} className="h-6" alt={"PurpleVideo"}/>
@@ -237,19 +315,19 @@ const AuthenticationBox = () => {
                 </a>
             </div>
             <div className="flex-grow flex items-center justify-center">
-                <div className="flex justify-center items-center bg-box-color p-8 rounded-lg border border-contrast-box-color font-outfit w-2/3">
+                <div className="flex justify-center items-center bg-box-color p-4 rounded-lg border sm:border-contrast-box-color transition duration-700 border-box-color  font-outfit w-2/3">
                     <div className={`transform transition-all duration-700 ${getTransitionClasses('selectMethod')}`}>
-                        {currentView === 'selectMethod' && <SelectMethod onSwitch={switchToLoginForm} currentAuthType={currentAuthType}/>}
+                        {currentView === 'selectMethod' && <SelectMethod onSwitch={linkEmailAction} currentAuthType={currentAuthType} setCurrentAuthType={setCurrentAuthType} />}
                     </div>
                     <div className={`transform transition-all duration-300 ${getTransitionClasses('login')}`}>
-                        {currentView === 'login' && <LoginForm switchToSelectMethod={switchToSelectMethod} />}
+                        {currentView === 'login' && <LoginForm switchToRegister={switchToRegisterForm} switchToSelectMethod={switchToSelectMethod}/>}
                     </div>
                     <div className={`transform transition-all duration-300 ${getTransitionClasses('register')}`}>
-                        {currentView === 'register' && <RegisterForm switchToSelectMethod={switchToSelectMethod} />}
+                        {currentView === 'register' && <RegisterForm switchToLogin={switchToLoginForm}  switchToSelectMethod={switchToSelectMethod}/>}
                     </div>
                 </div>
             </div>
-            <div className="mt-auto p-4 text-gray-400 text-xs text-center">
+            <div className="mt-auto p-4 text-gray-400 text-xs text-center font-outfit font-medium">
                 © 2023 BitBuilder. All Rights Reserved.
             </div>
         </div>
