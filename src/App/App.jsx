@@ -1,12 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import {DashboardPage, AuthPage} from './pages';
+import {DashboardPage, SearchPage,AuthPage} from './pages';
 import { PrivateRoute } from '../components';
 import "../index.css";
 
 const App = () => {
     return (
-            <Routes>
+            <>
+                <Routes>
                 <Route path="/auth" element={<AuthPage />} />
                 {/* Route Protected */}
                 <Route
@@ -17,8 +18,17 @@ const App = () => {
                         </PrivateRoute>
                     }
                 />
+                    <Route
+                        path="/search"
+                        element={
+                            <PrivateRoute>
+                                <SearchPage/>
+                            </PrivateRoute>
+                        }
+                    />
                 <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
+                </Routes>
+            </>
     );
 };
 
