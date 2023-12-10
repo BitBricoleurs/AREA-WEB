@@ -20,11 +20,11 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
 
 
     const linkText = currentAuthType === 'login' ? (
-        <button className="text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group" onClick={switchToRegisterSelect}>
+        <button className="text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group pb-[4%]" onClick={switchToRegisterSelect}>
             Don't have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign up</span>
         </button>
     ) : (
-        <button className="text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group" onClick={switchToLoginSelect}>
+        <button className="text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group pb-[4%]" onClick={switchToLoginSelect}>
             Already have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign in</span>
         </button>
     );
@@ -34,7 +34,7 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
         <div className="flex flex-col items-center justify-center h-full w-full">
             <div className="max-w-sm w-full flex flex-col items-center justify-center">
                 <img src={PurpleLogo} className="h-14 m-[4%] select-none" alt={"PurpleVideo"}/>
-                <span className="text-4xl font-semibold whitespace-nowrap dark:text-white font-outfit select-none">
+                <span className=" text-xl sm:text-4xl  font-semibold whitespace-nowrap dark:text-white font-outfit select-none">
                     Continue to
                     <span className="pl-[2%] font-thin hover:text-light-purple transition duration-700">
                         Bot
@@ -42,7 +42,7 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
                     Butler
                 </span>
             <div className="max-w-sm w-full">
-                <div className="space-y-4 pt-[15%] pb-[10%]">
+                <div className="space-y-4 pt-[6%] pb-[5%]">
                 <button className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
                     <div className="flex items-center w-8 h-8 ml-4">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -161,13 +161,14 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
     return (
         <div className="flex flex-col items-center justify-center h-full w-full">
             <div className="max-w-sm w-full flex flex-col items-center justify-center">
-                <img src={PurpleLogo} className="h-14 m-4" alt="PurpleVideo"/>
-                <span className="text-4xl font-semibold whitespace-nowrap dark:text-white font-outfit pb-20 select-none">
+                <img src={PurpleLogo} className="h-14 m-[4%]" alt="PurpleVideo"/>
+                <span className="text-4xl font-semibold whitespace-nowrap dark:text-white font-outfit select-none">
                     Login to <span className="pl-0.5 font-thin hover:text-light-purple transition duration-700">
                         Bot
                     </span>Butler
                 </span>
-                <form className="max-w-sm mx-auto font-outfit flex flex-col items-center" onSubmit={handleSubmit}>
+
+                <form className="max-w-sm mx-auto font-outfit flex flex-col items-center pt-[10%]" onSubmit={handleSubmit}>
                     <div className="relative mb-6 flex">
                         <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-light-purple">
@@ -197,13 +198,13 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
                                 />
                         </div>
 
-                    <div className="flex items-center pt-4">
+                    <div className="flex items-center">
                         <input id="link-checkbox" type="checkbox" value="" className="w-3 h-3 bg-custom-grey border-contrast-box-color rounded dark:focus:ring-blue-600 dark:ring-offset-light-purple focus:ring-2 dark:bg-light-purple dark:border-light-purple"/>
                             <label htmlFor="link-checkbox" className="ms-2 text-xs font-medium text-gray-900 dark:text-gray-300">Keep me sign in</label>
                     </div>
                     <input type="submit" hidden />
                 </form>
-                <div className="flex flex-col items-center justify-center w-full pt-10 font-thin">
+                <div className="flex flex-col items-center justify-center w-full pt-[4%] pb-[4%] font-thin">
                     <button className="text-xs  text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700">
                         Forgot your password?
                     </button>
@@ -292,15 +293,15 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
 
 
     return (
-        <div className="flex flex-col items-center justify-center h-full w-full">
+        <div className="flex flex-col items-center justify-center h-full w-full min-h-full">
             <div className="max-w-sm w-full flex flex-col items-center justify-center">
-                <img src={PurpleLogo} className="h-14 m-4" alt="PurpleVideo"/>
-                <span className="text-4xl font-semibold whitespace-nowrap dark:text-white font-outfit pb-20 select-none">
+                <img src={PurpleLogo} className="h-14 m-[4%]" alt="PurpleVideo"/>
+                <span className="text-4xl font-semibold whitespace-nowrap dark:text-white font-outfit select-none">
                     Register to <span className="pl-0.5 font-thin hover:text-light-purple transition duration-700">
                         Bot
                     </span>Butler
                 </span>
-                <form className="max-w-sm mx-auto font-outfit flex flex-col items-center" onSubmit={handleSubmit}>
+                <form className="max-w-sm mx-auto font-outfit flex flex-col items-center pt-[6%]" onSubmit={handleSubmit}>
                     <div className="relative mb-6 flex">
                         <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-light-purple">
@@ -350,7 +351,7 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                     </div>
                     <input type="submit" hidden />
                 </form>
-                <div className="flex flex-col items-center justify-center w-full pt-10 font-thin">
+                <div className="flex flex-col items-center justify-center w-full pt-[4%] pb-[4%] font-thin">
                     <button className="text-xs  text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group" onClick={switchToLogin}>
                         Already have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign in</span>
                     </button>
@@ -496,7 +497,7 @@ const AuthenticationBox = () => {
                 </a>
             </div>
             <div className="flex-grow flex items-center justify-center">
-                <div className="flex justify-center items-center bg-box-color p-4 rounded-lg border sm:border-contrast-box-color transition duration-700 border-box-color  font-outfit w-2/3">
+                <div className="flex justify-center items-center bg-box-color p-[2%} rounded-lg border sm:border-contrast-box-color transition duration-700 border-box-color  font-outfit w-2/3">
                     <div className={`transform transition-all duration-700 ${getTransitionClasses('selectMethod')}`}>
                         {currentView === 'selectMethod' && <SelectMethod onSwitch={linkEmailAction} currentAuthType={currentAuthType} setCurrentAuthType={setCurrentAuthType} />}
                     </div>
@@ -508,7 +509,7 @@ const AuthenticationBox = () => {
                     </div>
                 </div>
             </div>
-            <div className="mt-auto p-4 text-gray-400 text-xs text-center font-outfit font-medium">
+            <div className="mt-auto p-[2%] text-gray-400 text-xs text-center font-outfit font-medium">
                 © 2023 BitBuilder. All Rights Reserved.
             </div>
         </div>
