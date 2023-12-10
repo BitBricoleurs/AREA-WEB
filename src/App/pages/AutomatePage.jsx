@@ -1,7 +1,7 @@
 import { AppNavBar}  from '../../components';
 import React ,{useState} from "react";
 
-export default function SearchPage() {
+export default function AutomatePage() {
 
     const isWindowLarge = () => {
         return window.innerWidth > 640;
@@ -11,9 +11,9 @@ export default function SearchPage() {
     return (
         <>
             <div className="bg-background h-full w-full">
-                <AppNavBar isSidebarExpanded={sidebarExpanded} onToggleSidebar={setSidebarExpanded} currentPage={"search"}/>
+                <AppNavBar isSidebarExpanded={sidebarExpanded} onToggleSidebar={setSidebarExpanded} currentPage={"automate"}/>
                 <div className={"p-40"}>
-                Search Page
+                    Automate Page
                 </div>
             </div>
         </>

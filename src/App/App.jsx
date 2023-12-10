@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import {DashboardPage, SearchPage,AuthPage} from './pages';
+import {DashboardPage, SearchPage, AutomatePage, AnalyticsPage, SettingsPage, AuthPage} from './pages';
 import { PrivateRoute } from '../components';
 import "../index.css";
 
@@ -23,6 +23,30 @@ const App = () => {
                         element={
                             <PrivateRoute>
                                 <SearchPage/>
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/automate"
+                        element={
+                            <PrivateRoute>
+                                <AutomatePage/>
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/analytics"
+                        element={
+                            <PrivateRoute>
+                                <AnalyticsPage/>
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/settings"
+                        element={
+                            <PrivateRoute>
+                                <SettingsPage/>
                             </PrivateRoute>
                         }
                     />

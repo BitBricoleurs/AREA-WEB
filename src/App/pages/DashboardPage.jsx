@@ -3,7 +3,10 @@ import React ,{useState} from "react";
 
 export default function DashboardPage() {
 
-    const [sidebarExpanded, setSidebarExpanded] = useState(true);
+    const isWindowLarge = () => {
+        return window.innerWidth > 640;
+    }
+    const [sidebarExpanded, setSidebarExpanded] = useState(isWindowLarge());
 
     return (
         <>
