@@ -51,7 +51,6 @@ const AppNavBar = ({isSidebarExpanded, onToggleSidebar, currentPage}) => {
     }, []);
 
     const isCurrentPage = (page) => currentPage === page;
-    console.log(isCurrentPage('dashboard'));
 
     return (
         <div>
