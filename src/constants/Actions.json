@@ -11,7 +11,7 @@
             "sectionTitle": "",
             "block": [
               {
-                "name": "basicTextEntry",
+                "name": "textEntry",
                 "sectionTitle": "",
                 "type": "text",
                 "placeholder": "Title",
@@ -19,7 +19,7 @@
                 "required": "true"
               },
               {
-                "name": "basicTextEntry",
+                "name": "textEntry",
                 "sectionTitle": "",
                 "type": "text",
                 "placeholder": "Content",
@@ -96,14 +96,14 @@
                 "sectionTitle": "",
                 "block": [
                   {
-                    "name": "basicTextEntry",
+                    "name": "textEntry",
                     "type": "text",
                     "placeholder": "Title",
                     "variableName": "title",
                     "required": "true"
                   },
                   {
-                    "name": "basicTextEntry",
+                    "name": "textEntry",
                     "type": "text",
                     "placeholder": "Content",
                     "variableName": "content",
@@ -134,7 +134,7 @@
                 "sectionTitle": "",
                 "block": [
                   {
-                    "name": "basicTextEntry",
+                    "name": "textEntry",
                     "type": "text",
                     "placeholder": "Location",
                     "variableName": "location",
@@ -165,7 +165,7 @@
                 "sectionTitle": "",
                 "block": [
                   {
-                    "name": "basicTextEntry",
+                    "name": "textEntry",
                     "type": "text",
                     "placeholder": "Event id",
                     "variableName": "id",
@@ -182,7 +182,7 @@
                 "sectionTitle": "",
                 "block": [
                   {
-                    "name": "basicTextEntry",
+                    "name": "textEntry",
                     "type": "text",
                     "placeholder": "Event id",
                     "variableName": "id",
@@ -194,7 +194,7 @@
                 "sectionTitle": "",
                 "block": [
                   {
-                    "name": "basicTextEntry",
+                    "name": "textEntry",
                     "type": "text",
                     "placeholder": "Comment",
                     "variableName": "comment",
@@ -239,7 +239,7 @@
             "sectionTitle": "",
             "block": [
               {
-                "name": "basicTextEntry",
+                "name": "textEntry",
                 "type": "text",
                 "placeholder": "Prompt",
                 "variableName": "prompt",

@@ -58,6 +58,7 @@ function TriggerNode({ data }) {
                         </div>
                     )}
                 </div>
+                <span className="text-outfit text-sm text-white ml-2">{"When"}</span>
                 <div className="flex flex-col w-full h-full">
                     {(currentSections && renderSections(currentSections))}
                 </div>

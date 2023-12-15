@@ -118,3 +118,22 @@ export const triggers = [
         description: "Health",
     },
 ];
+
+export const actions = [
+    {
+        serviceName: "System",
+        description: "Notification",
+    },
+    {
+        serviceName: "Outlook",
+        description: "Email",
+    },
+    {
+        serviceName: "Outlook",
+        description: "Calendar",
+    },
+    {
+        serviceName: "Openai",
+        description: "Generate",
+    },
+];

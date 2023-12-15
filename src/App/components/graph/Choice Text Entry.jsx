@@ -106,8 +106,7 @@ const ChoiceTextEntry = ({data, object, setObject}) => {
                        strokeLinejoin="round"></g>
                     <g id="SVGRepo_iconCarrier">
                         <path  className={"stroke-light-purple"} d="M4 12.6111L8.92308 17.5L20 6.5"  strokeWidth="2"
-                               strokeLinecap="round"  strokeLinejoin="round">
-                        </path>
+                               strokeLinecap="round"  strokeLinejoin="round"/>
                     </g>
                 </svg>
             </button>
