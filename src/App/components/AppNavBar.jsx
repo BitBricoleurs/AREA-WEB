@@ -7,7 +7,6 @@ const AppNavBar = ({isSidebarExpanded, onToggleSidebar, currentPage}) => {
         const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
         const toggleDropdown = () => {
-            console.log("toggleDropdown");
             setIsDropdownOpen(!isDropdownOpen);
         };
 

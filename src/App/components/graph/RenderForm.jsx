@@ -67,12 +67,9 @@ function Section({ section }) {
                 return null;
         }
     };
-
-    console.log(section)
     return (
         <div className="flex flex-col bg-background rounded-md m-2 pl-2">
             {section?.block?.map((blockItems, index2) => (
-
                 <div key={index2} className={`${index2 < section.block.length - 1 ? 'border-b border-gray-600' : ''}`}>
                     {sectionDispatch(blockItems, index2)}
                 </div>

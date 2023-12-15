@@ -7,9 +7,19 @@ export const WorkflowContextProvider = ({children }) => {
     const [workflow, setWorkflow] = useState([]);
     const [variables, setVariables] = useState([]);
     const [workflowId, setWorkflowId] = useState('');
+    const [isAddModalOpen, setAddModalOpen] = useState(false);
+    const [isSidebarSettingsOpen, setSidebarSettingsOpen] = useState(false);
+
+    const toggleAddModal = () => {
+        setAddModalOpen(!isAddModalOpen);
+    };
+
+    const toggleSidebarSettings = () => {
+        setSidebarSettingsOpen(!isSidebarSettingsOpen);
+    };
 
 
-   const fetchTrigger = async () => {
+    const fetchTrigger = async () => {
         const response = await fetch(
             `${process.env.REACT_APP_BACKEND_URL}/triggers`
         );
@@ -30,7 +40,11 @@ export const WorkflowContextProvider = ({children }) => {
                 setVariables,
                 workflowId,
                 fetchTrigger,
-                setWorkflowId
+                setWorkflowId,
+                isAddModalOpen,
+                toggleAddModal,
+                isSidebarSettingsOpen,
+                toggleSidebarSettings,
             }}
         >
             {children}
