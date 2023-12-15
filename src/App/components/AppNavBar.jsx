@@ -1,4 +1,4 @@
-import whiteLogo from "../assets/icons/whiteLogo.svg";
+import whiteLogo from "../../assets/icons/whiteLogo.svg";
 import React, {useState, useEffect} from "react";
 import { Link } from 'react-router-dom';
 
@@ -7,7 +7,6 @@ const AppNavBar = ({isSidebarExpanded, onToggleSidebar, currentPage}) => {
         const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
         const toggleDropdown = () => {
-            console.log("toggleDropdown");
             setIsDropdownOpen(!isDropdownOpen);
         };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import PurpleLogo from "../assets/icons/purpleLogo.svg";
+import PurpleLogo from "../../assets/icons/purpleLogo.svg";
 import {Routes, Route, useNavigate} from 'react-router-dom';
 
 const LandingNavBar = () => {

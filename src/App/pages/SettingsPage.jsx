@@ -1,4 +1,4 @@
-import {AppNavBar, PageNavigator, SearchBar} from '../../components';
+import {AppNavBar, PageNavigator, SearchBar} from '../../Static/components';
 import React ,{useState} from "react";
 
 const AdminTab = () => {
@@ -44,8 +44,8 @@ export default function SettingsPage() {
     const [activeTab, setActiveTab] = useState('admin');
 
     const tabs = [
-        { name: 'admin', label: 'Admin', component: <AdminTab />, barWidth: 75, barOffset: 122},
-        { name: 'global', label: 'Global', component: <GlobalTab /> , barWidth: 80 , barOffset: 235},
+        { name: 'admin', label: 'Admin', component: <AdminTab />, barWidth: 75, barOffset: 144},
+        { name: 'global', label: 'Global', component: <GlobalTab /> , barWidth: 80 , barOffset: 255},
     ];
 
     return (
@@ -54,7 +54,7 @@ export default function SettingsPage() {
                 <AppNavBar isSidebarExpanded={sidebarExpanded} onToggleSidebar={setSidebarExpanded} currentPage={"settings"}/>
                 <div className={`flex flex-col transition-all transition-700 h-full ease-in-out ${sidebarExpanded ? 'ml-40' : 'ml-14'}`}>
                     <div className="flex p-4 mt-14 w-full h-full">
-                        <PageNavigator TitlePageNavigator={"GLOBAL"} tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+                        <PageNavigator TitlePageNavigator={"SETTINGS"} tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
                     </div>
                 </div>
             </div>

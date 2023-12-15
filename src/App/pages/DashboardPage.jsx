@@ -1,4 +1,4 @@
-import { AppNavBar}  from '../../components';
+import { AppNavBar}  from '../../Static/components';
 import React ,{useState} from "react";
 
 export default function DashboardPage() {

@@ -1,4 +1,4 @@
-import { AppNavBar, PageNavigator, SearchBar}  from '../../components';
+import { AppNavBar, PageNavigator, SearchBar}  from '../../Static/components';
 import React ,{useState} from "react";
 
 

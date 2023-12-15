@@ -1,4 +1,4 @@
-import {LandingNavBar, LandingVideoBackground} from "../../components/";
+import {LandingNavBar, LandingVideoBackground} from "../components/";
 import '../Static.css';
 import React, {useState} from "react";
 import ButtonArrow from '../../assets/ButtonArrow.svg';
