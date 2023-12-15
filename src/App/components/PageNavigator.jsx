@@ -11,7 +11,7 @@ const PageNavigator = ({ TitlePageNavigator, tabs, activeTab, setActiveTab }) =>
                             <button
                                 key={tab.name}
                                 onClick={() => setActiveTab(tab.name)}
-                                className={`py-2 px-4 text-2xl font-light ${activeTab === tab.name ? 'text-dark-purple' : 'text-custom-grey'}`}
+                                className={`py-2 px-4 text-2xl font-light ${activeTab === tab.name ? 'text-light-purple' : 'text-custom-grey'}`}
                             >
                                 {tab.label}
                             </button>
@@ -19,7 +19,7 @@ const PageNavigator = ({ TitlePageNavigator, tabs, activeTab, setActiveTab }) =>
                     </div>
                 </div>
                 <div className="relative">
-                    <div className="absolute bg-dark-purple h-1 transition-all duration-500 ease-in-out"
+                    <div className="absolute bg-light-purple h-1 transition-all duration-500 ease-in-out"
                             style={{
                                 width: `${tabs.find((tab) => tab.name === activeTab).barWidth}px`,
                                 left: `${tabs.find((tab) => tab.name === activeTab).barOffset}px`,

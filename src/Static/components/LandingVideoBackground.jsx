@@ -1,4 +1,4 @@
-import LandingVideo from "../assets/video/landingVideo.mp4";
+import LandingVideo from "../../assets/video/landingVideo.mp4";
 
 const LandingVideoBackground = () => {
     return (

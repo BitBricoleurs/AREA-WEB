@@ -1,4 +1,4 @@
-import whiteLogo from "../assets/icons/whiteLogo.svg";
+import whiteLogo from "../../assets/icons/whiteLogo.svg";
 import React, {useState, useEffect} from "react";
 import { Link } from 'react-router-dom';
 

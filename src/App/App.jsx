@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import {DashboardPage, SearchPage, AutomatePage, AnalyticsPage, SettingsPage, AuthPage} from './pages';
-import { PrivateRoute } from '../components';
+import { PrivateRoute} from '../Static/components';
+import {WorkflowContextProvider} from "/src/App/context/workflowContext";
 import "../index.css";
 
 const App = () => {
@@ -29,9 +30,11 @@ const App = () => {
                     <Route
                         path="/automate"
                         element={
-                            <PrivateRoute>
-                                <AutomatePage/>
-                            </PrivateRoute>
+                            <WorkflowContextProvider>
+                                <PrivateRoute>
+                                    <AutomatePage/>
+                                </PrivateRoute>
+                            </WorkflowContextProvider>
                         }
                     />
                     <Route

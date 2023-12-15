@@ -1,4 +1,4 @@
-import SearchBar from "./SearchBar.jsx";
+import SearchBar from "../../App/components/SearchBar.jsx";
 
 const ScrollDown = () => {
     return (
