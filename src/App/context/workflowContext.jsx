@@ -28,7 +28,6 @@ export const WorkflowContextProvider = ({children }) => {
         setWorkflowId(data.workflow);
     };
 
-
     return (
         <WorkflowContext.Provider
             value={{
