@@ -62,15 +62,53 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
     const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
     const { isAddModalOpen, toggleAddModal, isSidebarSettingsOpen, toggleSidebarSettings } = useWorkflowContext();
     const [selectedNode, setSelectedNode] = useState(null);
+    const [selectedNodeId, setSelectedNodeId] = useState(null);
+    const [startClosing, setStartClosing] = useState(false);
+    const { setVariables } = useWorkflowContext(); // Assuming 'setVariables' updates the workflow context
+
+    useEffect(() => {
+        const triggerNodeData = getNodeTriggerFromData(startingTrigger.serviceName, startingTrigger.description);
+
+        const triggerNodeDataForWorkflow = {
+            id: triggerNodeData.id,
+            type: triggerNodeData.type,
+            type_action: startingTrigger.description,
+            service: startingTrigger.serviceName,
+        };
+
+        setVariables(prev => ({
+            ...prev,
+            [triggerNodeData.id]: triggerNodeDataForWorkflow
+        }));
+    }, []);
 
     const onNodeDoubleClick = (event, node) => {
         setSelectedNode(node);
+        setSelectedNodeId(node.id);
         toggleSidebarSettings();
     };
 
+    const updateNodePosition = (nodeId, newPosition) => {
+        setNodes((nds) =>
+            nds.map((node) => {
+                if (node.id === nodeId) {
+                    return { ...node, position: { ...newPosition } };
+                }
+                return node;
+            })
+        );
+    };
+
+    useEffect(() => {
+        if (selectedNodeId) {
+            const updatedNode = nodes.find((n) => n.id === selectedNodeId);
+            setSelectedNode(updatedNode);
+        }
+    }, [nodes, selectedNodeId]);
+
     const onCanvasClick = () => {
         if (isSidebarSettingsOpen) {
-            toggleSidebarSettings();
+            setStartClosing(true);
         }
     };
 
@@ -93,6 +131,16 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
             },
             position: newPosition
         };
+
+        const newNodeDataForWorkflow = {
+            id: newNodeId,
+            type: 'action',
+            type_action: service.description,
+            service: service.serviceName,
+            conditions: [],
+            params: {},
+            next_id: null,
+        }
 
         const updatedEdges = edges.map(edge => {
             if (edge.target === '-1') {
@@ -172,7 +220,15 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
                 <AddModal onSelect={handleNewAction} onClose={toggleAddModal} />
             )}
             {isSidebarSettingsOpen && selectedNode && (
-                <SideBarSettings node={selectedNode} onClose={() => {toggleSidebarSettings()}} />
+                <SideBarSettings
+                    node={selectedNode}
+                    onClose={() => {
+                        setStartClosing(false);
+                        toggleSidebarSettings();
+                    }}
+                    updateNodePosition={updateNodePosition} //
+                    startClosing={startClosing}
+                />
             )}
         </div>
     );
