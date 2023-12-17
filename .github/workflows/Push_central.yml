@@ -34,7 +34,6 @@ jobs:
           git remote add central "${CENTRAL_REPO}"
           git fetch central
           
-          # Create a new local branch that tracks central/main
           git checkout -b local-main central/main
           
           if [ -d "AREA-WEB/" ]; then
