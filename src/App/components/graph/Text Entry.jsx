@@ -1,14 +1,24 @@
-import {useState} from "react";
-import {useWorkflowContext} from "/src/App/context/workflowContext.jsx"
+import { useState, useEffect } from "react";
 
-const TextEntry = ({data, object, setObject}) => {
-    const {variables} = useWorkflowContext();
+const TextEntry = ({ data, object, setObject }) => {
+    const isParameter = data.type === "parameter";
+    const [inputValue, setInputValue] = useState("");
+
+    useEffect(() => {
+        if (isParameter) {
+            // Set input value from parameters
+            setInputValue(object.params?.[data.variableName] || "");
+        } else {
+            // Find the condition and set its value
+            const condition = object.conditions?.find(cond => cond.key === data.variableName);
+            setInputValue(condition ? condition.value : "");
+        }
+    }, [object, data.variableName, isParameter]);
 
     const handleChange = (text) => {
-        const element = data.type === "parameter" ? "params" : "conditions";
+        setInputValue(text); // Update local state
 
-        if (data.type === "parameter") {
-            // Directly update the params object.
+        if (isParameter) {
             setObject({
                 ...object,
                 params: {
@@ -17,45 +27,16 @@ const TextEntry = ({data, object, setObject}) => {
                 }
             });
         } else {
-            // Update the conditions array.
-            const variableId = variables.find(
-                (variable) => variable.name === data.variableName
-            )?.id;
-
-            if (variableId === undefined) {
-                console.warn("No corresponding variableId");
-                return;
-            }
-
-            const index = object.conditions.findIndex(
-                (condition) => condition.key === variableId
+            const updatedConditions = object.conditions.map(cond =>
+                cond.key === data.variableName ? { ...cond, value: text } : cond
             );
 
-            if (text === "") {
-                // Remove the condition if text is empty
-                if (index !== -1) {
-                    setObject({
-                        ...object,
-                        conditions: object.conditions.filter((_, idx) => idx !== index)
-                    });
-                }
-            } else {
-                // Update or add the condition
-                const newCondition = { key: variableId, value: text };
-                let newConditions = [...object.conditions];
-                if (index !== -1) {
-                    newConditions[index] = newCondition;
-                } else {
-                    newConditions.push(newCondition);
-                }
-                setObject({
-                    ...object,
-                    conditions: newConditions
-                });
-            }
+            setObject({
+                ...object,
+                conditions: updatedConditions
+            });
         }
     };
-
 
     return (
         <div className="bg-background rounded-lg h-8">
@@ -63,7 +44,7 @@ const TextEntry = ({data, object, setObject}) => {
                 type="text"
                 className="font-outfit text-[12px] font-medium text-white bg-transparent h-full w-full outline-none"
                 onChange={(e) => handleChange(e.target.value)}
-                value={object?.params?.[data.variableName]}
+                value={inputValue}
                 placeholder={data.placeholder}
             />
         </div>

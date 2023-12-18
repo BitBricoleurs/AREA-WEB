@@ -2,94 +2,64 @@ import React, {useState, useRef, useEffect} from "react";
 
 import {useWorkflowContext} from "/src/App/context/workflowContext.jsx"
 
-const ChoiceTextEntry = ({data, object, setObject}) => {
+const ChoiceTextEntry = ({ data, object, setObject }) => {
     const [selected, setSelected] = useState(false);
     const inputHeight = useRef(0);
 
-    const {variables} = useWorkflowContext();
+    const params = object.params || {};
+    const conditions = object.conditions || [];
 
     const handleSelectPress = () => {
         setSelected(!selected);
-        const element = data.type === "parameter" ? "params" : "conditions";
-        let elementData = data.type === "parameter" ? {} : [];
-        if (!selected === false) {
-            if (element === "params") {
-                elementData = {...object.params};
-                delete elementData[data.variableName];
+
+        if (data.type === "parameter") {
+            if (!selected) {
+                delete params[data.variableName];
             } else {
-                const variableId = variables.find(
-                    (variable) => variable.name === data.variableName
-                ).id;
-                elementData = [...object.conditions];
-                const index = elementData.findIndex(
-                    (condition) => condition.key === variableId
-                );
-                elementData.splice(index, 1);
+                params[data.variableName] = "";
             }
-            setObject({
-                ...object,
-                [element]: elementData,
-            });
+        } else {
+            if (!selected) {
+                const index = conditions.findIndex(condition => condition.key === data.variableName);
+                if (index !== -1) {
+                    conditions.splice(index, 1);
+                }
+            } else {
+                conditions.push({ key: data.variableName, value: "", type: data.conditionType });
+            }
         }
+
+        setObject({ ...object, params, conditions });
     };
 
     const handleChange = (text) => {
-        let element = data.type === "parameter" ? "params" : "conditions";
-        let elementData = data.type === "parameter" ? {} : [];
-        if (text === "") {
-            if (element === "params") {
-                elementData = {...object.params};
-                elementData[data.variableName];
-            } else {
-                const variableId = variables.find(
-                    (variable) => variable.name === data.variableName
-                ).id;
-                elementData = [...object.conditions];
-                const index = elementData.findIndex(
-                    (condition) => condition.key === variableId
-                );
-                elementData.splice(index, 1);
-            }
+        if (data.type === "parameter") {
+            params[data.variableName] = text;
         } else {
-            if (element === "params") {
-                elementData = {
-                    ...object.params,
-                    [data.variableName]: text,
-                };
+            const conditionIndex = conditions.findIndex(condition => condition.key === data.variableName);
+            if (conditionIndex !== -1) {
+                conditions[conditionIndex] = { ...conditions[conditionIndex], value: text };
             } else {
-                const variableId = variables.find(
-                    (variable) => variable.name === data.variableName
-                ).id;
-                elementData = [...object.conditions];
-
-                const conditionIndex = elementData.findIndex(
-                    (condition) => condition.key === variableId
-                );
-
-                if (conditionIndex !== -1) {
-                    elementData[conditionIndex] = {
-                        ...elementData[conditionIndex],
-                        value: text,
-                    };
-                } else {
-                    elementData.push({
-                        key: variableId,
-                        type: data.conditionType,
-                        value: text,
-                    });
-                }
+                conditions.push({ key: data.variableName, value: text, type: data.conditionType });
             }
         }
-        setObject({
-            ...object,
-            [element]: elementData,
-        });
+
+        setObject({ ...object, params, conditions });
     };
+
+    useEffect(() => {
+        if (selected && data.type === "parameter") {
+            handleChange("");
+        }
+    }, [selected, data.type]);
+
 
 
     useEffect(() => {
         inputHeight.current = selected ? 48 : 0;
     }, [selected]);
+
+
     return (
         <div className="flex flex-col rounded-xl">
             <button
@@ -106,7 +76,8 @@ const ChoiceTextEntry = ({data, object, setObject}) => {
                        strokeLinejoin="round"></g>
                     <g id="SVGRepo_iconCarrier">
                         <path  className={"stroke-light-purple"} d="M4 12.6111L8.92308 17.5L20 6.5"  strokeWidth="2"
-                               strokeLinecap="round"  strokeLinejoin="round"/>
+                               strokeLinecap="round"  strokeLinejoin="round">
+                        </path>
                     </g>
                 </svg>
             </button>

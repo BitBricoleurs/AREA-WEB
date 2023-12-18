@@ -2,80 +2,53 @@ import {useWorkflowContext} from "../../context/workflowContext.jsx";
 import {ChoiceEntry, ChoiceTextEntry, TextArrayEntry, TextEntry} from "../index.js";
 import React from "react";
 
-const renderSections = (sections) => {
+const renderSections = (sections, nodeId) => {
     return (
         <>
             {sections ? sections.map((section, index) => (
-                    <Section key={index} section={section} />
+                    <Section key={index} section={section} nodeId={nodeId} />
                 ))
                 : null}
         </>
     );
 };
 
-function Section({ section }) {
+const Section = ({ section, nodeId }) => {
 
-    const { trigger, setTrigger } = useWorkflowContext();
-    const sectionDispatch = (section, index) => {
-        switch (section.name) {
+    const { workflow, updateNodeInWorkflow } = useWorkflowContext();
+
+    const currentNode = workflow.find(node => node.id === nodeId);
+
+    const setObject = (newObjectData) => {
+        updateNodeInWorkflow(nodeId, newObjectData);
+    };
+
+    const sectionDispatch = (blockItem, index) => {
+        switch (blockItem.name) {
             case "timeEntry":
-                return (
-                    <TimeEntry
-                        data={section}
-                        key={index}
-                        object={trigger}
-                        setObject={setTrigger}
-                    />
-                );
+                return <TimeEntry data={blockItem} key={index} object={currentNode} setObject={setObject} />;
             case "choice":
-                return (
-                    <ChoiceEntry
-                        data={section}
-                        key={index}
-                        object={trigger}
-                        setObject={setTrigger}
-                    />
-                );
+                return <ChoiceEntry data={blockItem} key={index} object={currentNode} setObject={setObject} />;
             case "choiceTextEntry":
-                return (
-                    <ChoiceTextEntry
-                        data={section}
-                        key={index}
-                        object={trigger}
-                        setObject={setTrigger}
-                    />
-                );
+                return <ChoiceTextEntry data={blockItem} key={index} object={currentNode} setObject={setObject} />;
             case "textArrayEntry":
-                return (
-                    <TextArrayEntry
-                        data={section}
-                        key={index}
-                        object={trigger}
-                        setObject={setTrigger}
-                    />
-                );
+                return <TextArrayEntry data={blockItem} key={index} object={currentNode} setObject={setObject} />;
             case "textEntry":
-                return (
-                    <TextEntry
-                        data={section}
-                        key={index}
-                        object={trigger}
-                        setObject={setTrigger}
-                    />
-                );
+                return <TextEntry data={blockItem} key={index} object={currentNode} setObject={setObject} />;
             default:
                 return null;
         }
     };
+
     return (
         <div className="flex flex-col bg-background rounded-md m-2 pl-2">
-            {section?.block?.map((blockItems, index2) => (
-                <div key={index2} className={`${index2 < section.block.length - 1 ? 'border-b border-gray-600' : ''}`}>
-                    {sectionDispatch(blockItems, index2)}
+            {section?.block?.map((blockItem, index) => (
+                <div key={index} className={`${index < section.block.length - 1 ? 'border-b border-gray-600' : ''}`}>
+                    {sectionDispatch(blockItem, index)}
                 </div>
             ))}
         </div>
     );
-}
+};
 
 export default renderSections;
