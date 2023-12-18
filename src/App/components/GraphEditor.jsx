@@ -19,7 +19,7 @@ function getNodeTriggerFromData(serviceName, serviceTrigger) {
     return {
         id: '0',
         type: 'trigger',
-        data: { serviceName: serviceName, serviceTrigger: serviceTrigger, color: bgColor, logo: logo },
+        data: { serviceName: serviceName, serviceTrigger: serviceTrigger, color: bgColor, logo: logo, id: '0' },
         position: { x: 0, y: 50 },
     }
 }
@@ -60,11 +60,10 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
     const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
 
     const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
-    const { isAddModalOpen, toggleAddModal, isSidebarSettingsOpen, toggleSidebarSettings } = useWorkflowContext();
+    const { isAddModalOpen, toggleAddModal, isSidebarSettingsOpen, toggleSidebarSettings, workflow, setWorkflow, } = useWorkflowContext();
     const [selectedNode, setSelectedNode] = useState(null);
     const [selectedNodeId, setSelectedNodeId] = useState(null);
     const [startClosing, setStartClosing] = useState(false);
-    const { setVariables } = useWorkflowContext(); // Assuming 'setVariables' updates the workflow context
 
     useEffect(() => {
         const triggerNodeData = getNodeTriggerFromData(startingTrigger.serviceName, startingTrigger.description);
@@ -76,10 +75,13 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
             service: startingTrigger.serviceName,
         };
 
-        setVariables(prev => ({
-            ...prev,
-            [triggerNodeData.id]: triggerNodeDataForWorkflow
-        }));
+        setWorkflow(prevWorkflow => {
+            const exists = prevWorkflow.some(node => node.id === triggerNodeData.id);
+            if (!exists) {
+                return [...prevWorkflow, triggerNodeDataForWorkflow];
+            }
+            return prevWorkflow;
+        });
     }, []);
 
     const onNodeDoubleClick = (event, node) => {
@@ -127,7 +129,8 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
                 serviceName: service.serviceName,
                 serviceAction: service.description,
                 color: cardServicesStyles[service.serviceName]?.backgroundColor || cardServicesStyles["default"].backgroundColor,
-                logo: cardServicesStyles[service.serviceName]?.iconPath || cardServicesStyles["default"].iconPath
+                logo: cardServicesStyles[service.serviceName]?.iconPath || cardServicesStyles["default"].iconPath,
+                id: newNodeId,
             },
             position: newPosition
         };
@@ -141,6 +144,14 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
             params: {},
             next_id: null,
         }
+
+        setWorkflow(prevWorkflow => {
+            const exists = prevWorkflow.some(node => node.id === newNodeId);
+            if (!exists) {
+                return [...prevWorkflow, newNodeDataForWorkflow];
+            }
+            return prevWorkflow;
+        });
 
         const updatedEdges = edges.map(edge => {
             if (edge.target === '-1') {
@@ -170,6 +181,14 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
         toggleAddModal();
     };
 
+
+    const TriggerNodeComponent = ({ data, id }) => (
+        <TriggerNode data={data} nodeId={id} />
+    );
+
+    const ActionNodeComponent = ({ data, id }) => (
+        <ActionNode data={data} nodeId={id} />
+    );
 
     const nodeTypes = useMemo(() => ({
         trigger: TriggerNode,

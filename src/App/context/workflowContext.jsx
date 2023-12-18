@@ -14,10 +14,19 @@ export const WorkflowContextProvider = ({children }) => {
         setAddModalOpen(!isAddModalOpen);
     };
 
+    console.log("workflow", workflow);
+
     const toggleSidebarSettings = () => {
         setSidebarSettingsOpen(!isSidebarSettingsOpen);
     };
 
+    const updateNodeInWorkflow = (nodeId, newNodeData) => {
+        setWorkflow((prevWorkflow) => {
+            return prevWorkflow.map(node =>
+                node.id === nodeId ? { ...node, ...newNodeData } : node
+            );
+        });
+    };
 
     const fetchTrigger = async () => {
         const response = await fetch(
@@ -44,6 +53,7 @@ export const WorkflowContextProvider = ({children }) => {
                 toggleAddModal,
                 isSidebarSettingsOpen,
                 toggleSidebarSettings,
+                updateNodeInWorkflow,
             }}
         >
             {children}

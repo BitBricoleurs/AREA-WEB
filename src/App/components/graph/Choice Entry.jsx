@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 //import Calendar from "./calendar";
 
 const ChoiceEntry = ({data, object, setObject}) => {
+
     const [selectedChoice, setSelectedChoice] = useState(1);
 
     const displayRevealComponent = () => {
