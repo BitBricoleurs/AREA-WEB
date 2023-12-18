@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PurpleLogo from "../../assets/icons/purpleLogo.svg";
 import WhiteLogo from "../../assets/icons/whiteLogo.svg";
 
@@ -112,6 +112,7 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPasswordInput, setShowPasswordInput] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleEscapeKey = (e) => {
@@ -138,7 +139,7 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
         setPassword(e.target.value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validateEmail(email)) {
             setNotification({
@@ -151,11 +152,39 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
             setShowPasswordInput(true);
             return;
         }
-        console.log("Form submitted with:", { email, password })
-        setNotification({
-            notificationState: 'Success',
-            message: 'Successfully registered!'
-        });
+        try {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+            console.log(response)
+
+            const data = await response.json();
+
+            if (response.status === 200) {
+                localStorage.setItem('token', data.token);
+
+                navigate('/dashboard');
+
+                setNotification({
+                    notificationState: 'Success',
+                    message: 'Successfully logged in!'
+                });
+            } else {
+                setNotification({
+                    notificationState: 'Error',
+                    message: data.message || 'Invalid email or password'
+                });
+            }
+        } catch (error) {
+            setNotification({
+                notificationState: 'Error',
+                message: 'An error occurred. Please try again.'
+            });
+        }
     };
 
     return (
@@ -257,8 +286,9 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
         setConfirmPassword(e.target.value);
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (!validateEmail(email)) {
             setNotification({
                 notificationState: 'Warning',
@@ -284,12 +314,40 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
             });
             return;
         }
-        console.log("Form submitted with:", { email, password })
-        setNotification({
-            notificationState: 'Success',
-            message: 'Successfully registered!'
-        });
+
+        try {
+            console.log('here')
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password})
+            });
+
+            const data = await response.json();
+
+            if (response.status === 201) {
+                setNotification({
+                    notificationState: 'Success',
+                    message: 'Successfully registered!'
+                });
+
+                // navigate to login
+            } else {
+                setNotification({
+                    notificationState: 'Error',
+                    message: data.message || 'An error occurred during registration'
+                });
+            }
+        } catch (error) {
+            setNotification({
+                notificationState: 'Error',
+                message: 'An error occurred. Please try again.'
+            });
+        }
     };
+
 
 
     return (
