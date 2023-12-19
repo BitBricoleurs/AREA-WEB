@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import VariableTable from "./graph/VariableTable.jsx";
+import { useWorkflowContext } from '/src/App/context/workflowContext.jsx';
+
 
 const SideBarSettings = ({ onClose, startClosing, node, updateNodePosition }) => {
 
     const truncateToTwoDecimals = (num) => Math.floor(num * 100) / 100;
+    const {workflow } = useWorkflowContext();
+    const currentNodeWorkflow = workflow.find((n) => n.id === node.id);
 
     const [position, setPosition] = useState({
         x: truncateToTwoDecimals(node.position.x),
@@ -81,7 +85,7 @@ const SideBarSettings = ({ onClose, startClosing, node, updateNodePosition }) =>
                         <div className="bg-contrast-box-color h-0.5 w-full"/>
                     </div>
                     <div className="flex flex-row w-full items-center">
-                        <VariableTable nodeId={node.id} />
+                        <VariableTable nodeId={node.id}  currentWorkflow={currentNodeWorkflow}/>
                     </div>
                 </div>
             </div>

@@ -9,6 +9,8 @@ export const WorkflowContextProvider = ({children }) => {
     const [workflowId, setWorkflowId] = useState('');
     const [isAddModalOpen, setAddModalOpen] = useState(false);
     const [isSidebarSettingsOpen, setSidebarSettingsOpen] = useState(false);
+    const [workflowName, setWorkflowName] = useState('');
+    const [workflowDescription, setWorkflowDescription] = useState('');
 
     const toggleAddModal = () => {
         setAddModalOpen(!isAddModalOpen);
@@ -18,6 +20,16 @@ export const WorkflowContextProvider = ({children }) => {
         setSidebarSettingsOpen(!isSidebarSettingsOpen);
     };
 
+    const updateNodeInWorkflow = (nodeId, newNodeData) => {
+        setWorkflow((prevWorkflow) => {
+            return prevWorkflow.map(node =>
+                node.id === nodeId ? { ...node, ...newNodeData } : node
+            );
+        });
+    };
+
+    console.log("workflowContext.jsx workflow: ", workflow);
+    console.log("workflowContext.jsx variables: ", variables);
 
     const fetchTrigger = async () => {
         const response = await fetch(
@@ -44,6 +56,11 @@ export const WorkflowContextProvider = ({children }) => {
                 toggleAddModal,
                 isSidebarSettingsOpen,
                 toggleSidebarSettings,
+                updateNodeInWorkflow,
+                workflowName,
+                setWorkflowName,
+                workflowDescription,
+                setWorkflowDescription,
             }}
         >
             {children}

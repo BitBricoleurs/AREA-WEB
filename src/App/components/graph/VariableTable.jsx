@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useWorkflowContext } from '/src/App/context/workflowContext.jsx';
-const DropdownMenu = ({ onSelect, selectedOutput }) => {
+const DropdownMenu = ({ onSelect, selectedOutput, options }) => {
     const [show, setShow] = useState(false);
     const dropdownRef = useRef();
     const buttonRef = useRef();
-    const options = ["None", "Body", "Output", "Success"];
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -48,8 +47,9 @@ const DropdownMenu = ({ onSelect, selectedOutput }) => {
     );
 };
 
-const TableRow = ({ row, index, handleInteraction, getNextId }) => {
+const TableRow = ({ row, index, handleInteraction, getNextId, availableVariables }) => {
     const [isLoaded, setIsLoaded] = useState(false);
+
 
     useEffect(() => {
         const timer = setTimeout(() => setIsLoaded(true), 10);
@@ -71,6 +71,7 @@ const TableRow = ({ row, index, handleInteraction, getNextId }) => {
                 <DropdownMenu
                     selectedOutput={row.output}
                     onSelect={(value) => handleChange('output', value)}
+                    options={availableVariables}
                 />
             </td>
             <td className="">
@@ -86,7 +87,7 @@ const TableRow = ({ row, index, handleInteraction, getNextId }) => {
 };
 
 
-const VariableTable = ({ nodeId }) => {
+const VariableTable = ({ nodeId, currentWorkflow }) => {
     const getNextId = () => {
         return variables.length + 1;
     };
@@ -95,16 +96,31 @@ const VariableTable = ({ nodeId }) => {
 
     const [rows, setRows] = useState(variables.filter(v => v.refers === nodeId));
 
+    const getNodeKeys = () => {
+        const conditionKeys = currentWorkflow?.condition?.map(condition => condition.key) || [];
+        const paramKeys = Object.keys(currentWorkflow?.params || {});
+        return ["None", ...conditionKeys, ...paramKeys];
+    };
+
+    const availableVariables = getNodeKeys();
+
     useEffect(() => {
         setRows(variables.filter(v => v.refers === nodeId));
     }, [nodeId, variables]);
 
     const handleInteraction = (index, key, value) => {
         let newRows = [...rows];
-        if (index < rows.length) {
-            newRows[index] = { ...newRows[index], [key]: value };
+
+        // Si c'est une nouvelle ligne et que 'output' est défini à 'None', ne pas l'ajouter
+        if (key === 'output' && value === '' && !newRows[index].name) {
+            newRows = newRows.filter((_, idx) => idx !== index);
         } else {
-            newRows.push({ id: getNextId(), [key]: value, refers: nodeId });
+            // Mise à jour ou ajout de la ligne
+            if (index < rows.length) {
+                newRows[index] = { ...newRows[index], [key]: value };
+            } else {
+                newRows.push({ id: getNextId(), [key]: value, refers: nodeId });
+            }
         }
 
         setRows(newRows);
@@ -143,6 +159,7 @@ const VariableTable = ({ nodeId }) => {
                         index={index}
                         handleInteraction={handleInteraction}
                         getNextId={getNextId}
+                        availableVariables={availableVariables}
                     />
                 ))}
                 <TableRow
@@ -151,6 +168,7 @@ const VariableTable = ({ nodeId }) => {
                     index={rows.length}
                     handleInteraction={handleInteraction}
                     getNextId={getNextId}
+                    availableVariables={availableVariables}
                 />
                 </tbody>
             </table>
