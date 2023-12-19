@@ -153,6 +153,7 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
             return;
         }
         try {
+            console.log("url: ", `${import.meta.env.VITE_REACT_APP_API_URL}login`)
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}login`, {
                 method: 'POST',
                 headers: {
@@ -165,7 +166,7 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
             const data = await response.json();
 
             if (response.status === 200) {
-                localStorage.setItem('token', data.token);
+                localStorage.setItem('userToken', data.token);
 
                 navigate('/dashboard');
 
@@ -256,7 +257,6 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
 
     useEffect(() => {
         const handleEscapeKey = (e) => {
-            console.log(e.key, document.activeElement.tagName)
             if (e.key === 'Escape' && document.activeElement.tagName === 'BODY') {
                 switchToSelectMethod();
             }
@@ -314,18 +314,19 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
             });
             return;
         }
-
         try {
-            console.log('here')
+            console.log("url: ", `${import.meta.env.VITE_REACT_APP_API_URL}register`)
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}register`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ email, password})
             });
 
+            console.log(response)
             const data = await response.json();
+            console.log(data)
 
             if (response.status === 201) {
                 setNotification({
@@ -333,7 +334,8 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                     message: 'Successfully registered!'
                 });
 
-                // navigate to login
+                switchToLogin();
+                console.log("data: ", data)
             } else {
                 setNotification({
                     notificationState: 'Error',
