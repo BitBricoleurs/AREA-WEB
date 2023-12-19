@@ -1,95 +1,70 @@
 import React, {useState, useRef, useEffect} from "react";
+import AutocompleteInput from "./AutocompleteInput.jsx";
 
 import {useWorkflowContext} from "/src/App/context/workflowContext.jsx"
 
-const ChoiceTextEntry = ({data, object, setObject}) => {
+const ChoiceTextEntry = ({ data, object, setObject }) => {
     const [selected, setSelected] = useState(false);
     const inputHeight = useRef(0);
 
-    const {variables} = useWorkflowContext();
+    if (!object) {
+        console.error("Object is undefined in ChoiceTextEntry");
+        return null;
+    }
+
+    const params = object.params || [];
+    const condition = object.conditions || [];
 
     const handleSelectPress = () => {
         setSelected(!selected);
-        const element = data.type === "parameter" ? "params" : "conditions";
-        let elementData = data.type === "parameter" ? {} : [];
-        if (!selected === false) {
-            if (element === "params") {
-                elementData = {...object.params};
-                delete elementData[data.variableName];
+        if (data.type === "parameter") {
+            if (selected) {
+                delete object.params[data.variableName];
             } else {
-                const variableId = variables.find(
-                    (variable) => variable.name === data.variableName
-                ).id;
-                elementData = [...object.conditions];
-                const index = elementData.findIndex(
-                    (condition) => condition.key === variableId
-                );
-                elementData.splice(index, 1);
-            }
-            setObject({
-                ...object,
-                [element]: elementData,
-            });
-        }
-    };
-
-    const handleChange = (text) => {
-        let element = data.type === "parameter" ? "params" : "conditions";
-        let elementData = data.type === "parameter" ? {} : [];
-        if (text === "") {
-            if (element === "params") {
-                elementData = {...object.params};
-                elementData[data.variableName];
-            } else {
-                const variableId = variables.find(
-                    (variable) => variable.name === data.variableName
-                ).id;
-                elementData = [...object.conditions];
-                const index = elementData.findIndex(
-                    (condition) => condition.key === variableId
-                );
-                elementData.splice(index, 1);
+                object.params[data.variableName] = "";
             }
         } else {
-            if (element === "params") {
-                elementData = {
-                    ...object.params,
-                    [data.variableName]: text,
-                };
-            } else {
-                const variableId = variables.find(
-                    (variable) => variable.name === data.variableName
-                ).id;
-                elementData = [...object.conditions];
-
-                const conditionIndex = elementData.findIndex(
-                    (condition) => condition.key === variableId
-                );
-
-                if (conditionIndex !== -1) {
-                    elementData[conditionIndex] = {
-                        ...elementData[conditionIndex],
-                        value: text,
-                    };
+            if (selected) {
+                    const index = object.conditions.findIndex(cond => cond.key === data.variableName);
+                    if (index !== -1) {
+                        object.conditions.splice(index, 1);
+                    }
                 } else {
-                    elementData.push({
-                        key: variableId,
-                        type: data.conditionType,
-                        value: text,
-                    });
+                    object.conditions.push({ key: data.variableName, value: "", type: data.conditionType });
                 }
             }
+
+            setObject({ ...object });
+        };
+
+    const handleChange = (text) => {
+        if (data.type === "parameter") {
+            params[data.variableName] = text;
+        } else {
+            const conditionIndex = condition.findIndex(condition => condition.key === data.variableName);
+            if (conditionIndex !== -1) {
+                condition[conditionIndex] = { ...condition[conditionIndex], value: text };
+            } else {
+                condition.push({ key: data.variableName, value: text, type: data.conditionType });
+            }
         }
-        setObject({
-            ...object,
-            [element]: elementData,
-        });
+
+        setObject({ ...object, params, condition });
     };
+
+    useEffect(() => {
+        if (selected && data.type === "parameter") {
+            handleChange("");
+        }
+    }, [selected, data.type]);
+
 
 
     useEffect(() => {
         inputHeight.current = selected ? 48 : 0;
     }, [selected]);
+
+
     return (
         <div className="flex flex-col rounded-xl">
             <button
@@ -106,17 +81,17 @@ const ChoiceTextEntry = ({data, object, setObject}) => {
                        strokeLinejoin="round"></g>
                     <g id="SVGRepo_iconCarrier">
                         <path  className={"stroke-light-purple"} d="M4 12.6111L8.92308 17.5L20 6.5"  strokeWidth="2"
-                               strokeLinecap="round"  strokeLinejoin="round"/>
+                               strokeLinecap="round"  strokeLinejoin="round">
+                        </path>
                     </g>
                 </svg>
             </button>
             {selected && <div className="w-full h-[1px] bg-gray-600" />}
             <div className={`transition-height duration-300 ease-in-out flex items-center ${selected ? 'h-8' : 'h-0' } overflow-hidden`}>
                 {selected && (
-                    <input
-                        className=" text-custom-grey w-full placeholder:text-custom-grey bg-background text-[10px] pl-2 outline-none"
-                        type="text"
-                        onChange={(e) => handleChange(e.target.value)}
+                    <AutocompleteInput
+                        className="text-custom-grey w-full placeholder:text-custom-grey bg-background text-[10px] pl-2 outline-none"
+                        onChange={handleChange}
                         placeholder={data.placeholder}
                     />
                 )}

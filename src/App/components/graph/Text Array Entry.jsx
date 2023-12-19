@@ -2,42 +2,43 @@ import React, {useState} from "react";
 
 import {useWorkflowContext} from "/src/App/context/workflowContext.jsx"
 
-const TextArrayEntry = ({data, object, setObject}) => {
+const TextArrayEntry = ({ data, object, setObject }) => {
     const [selected, setSelected] = useState(false);
     const [emailEntries, setEmailEntries] = useState([""]);
-    const {variables} = useWorkflowContext();
 
-    const updateObjectParams = (newEntries) => {
-        const emails = newEntries.filter((entry) => entry.trim() !== "");
-        setObject({
-            ...object,
-            params: {
-                ...object.params,
-                [data.variableName]: emails,
-            },
-        });
+    const updateObject = (newEntries) => {
+        if (data.type === 'condition') {
+            const newConditions = newEntries
+                .filter((entry) => entry.trim() !== "")
+                .map((value) => ({
+                    key: data.variableName,
+                    value: value,
+                    type: data.conditionType
+                }));
+
+            setObject({
+                ...object,
+                conditions: newConditions,
+            });
+        } else {
+            const emails = newEntries.filter((entry) => entry.trim() !== "");
+            setObject({
+                ...object,
+                params: {
+                    ...object.params,
+                    [data.variableName]: emails,
+                },
+            });
+        }
     };
 
     const handleSelectPress = () => {
         setSelected(!selected);
-        const element = data.type === "parameter" ? "params" : "conditions";
 
-        if (!selected === false) {
-            let newElementData;
-            if (element === "params") {
-                newElementData = {...object.params};
-                delete newElementData[data.variableName];
-            } else {
-                const variableId = variables.find(
-                    (variable) => variable.name === data.variableName
-                ).id;
-                newElementData = object.conditions.filter(
-                    (condition) => condition.key !== variableId
-                );
-            }
+        if (!selected) {
             setObject({
                 ...object,
-                [element]: newElementData,
+                conditions: []
             });
         }
     };
@@ -53,14 +54,16 @@ const TextArrayEntry = ({data, object, setObject}) => {
             updatedEntries.splice(index, 1);
         }
         setEmailEntries(updatedEntries);
-        updateObjectParams(updatedEntries);
+        updateObject(updatedEntries);
     };
 
     const handleRemoveEntry = (index) => {
         const updatedEntries = emailEntries.filter((_, i) => i !== index);
         setEmailEntries(updatedEntries);
-        updateObjectParams(updatedEntries);
+        updateObject(updatedEntries);
     };
+
+
 
     return (
         <div className="flex flex-col rounded-xl">

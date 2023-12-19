@@ -57,8 +57,16 @@ const SelectTrigger = ({onTriggerSelect, isModalOpen}) => {
 
 const TriggerModal = ({trigger, onClose, onCreate}) => {
 
-    const [workflowName, setWorkflowName] = useState('');
-    const [workflowDescription, setWorkflowDescription] = useState('');
+    const {workflowName, setWorkflowName} = useWorkflowContext();
+    const {workflowDescription, setWorkflowDescription} = useWorkflowContext();
+
+    const handleWorkflowNameChange = (event) => {
+        setWorkflowName(event.target.value);
+    };
+
+    const handleWorkflowDescriptionChange = (event) => {
+        setWorkflowDescription(event.target.value);
+    };
 
     return (
         <div className="flex fixed z-50 md:inset-0 w-full h-full">
@@ -79,12 +87,18 @@ const TriggerModal = ({trigger, onClose, onCreate}) => {
                             </div>
                             <div className="flex flex-col w-full h-full items-center justify-center mb-8">
                                 <div className="space-y-4">
-                                <LittleInputBox placeholder={"Name"} value={workflowName} onChange={setWorkflowName}/>
-                                <LargeInputBox placeholder={"Description"} value={workflowDescription} onChange={setWorkflowDescription}/>
+                                <LittleInputBox placeholder={"Name"} value={workflowName} onChange={handleWorkflowNameChange}/>
+                                <LargeInputBox placeholder={"Description"} value={workflowDescription} onChange={handleWorkflowDescriptionChange}/>
                                 </div>
                                 <div className="absolute flex flex-row space-x-8 items-center bottom-6">
-                                <button onClick={() => onCreate(trigger, workflowName, workflowDescription)} className="flex items-center w-28 h-10 rounded-md border border-light-purple bg-light-purple hover:bg-contrast-box-color group justify-center transition-all duration-300">
-                                    <span className="font-outfit transition-all duration-300 font-medium text-dark-purple group-hover:text-white">{"Create"}</span>
+                                <button onClick={() => onCreate(trigger, workflowName, workflowDescription)}
+                                        disabled={!workflowName.trim()}
+                                        className={`flex items-center w-28 h-10 rounded-md border ${
+                                            workflowName.trim() ? 'border-light-purple bg-light-purple hover:bg-contrast-box-color' : 'bg-box-color text-background border-box-color'
+                                        } group justify-center transition-all duration-300`}>
+                                    <span className={`font-outfit transition-all duration-300 font-medium ${
+                                            workflowName.trim() ? 'text-dark-purple group-hover:text-white' : 'text-background'
+                                        }`}>{"Create"}</span>
                                 </button>
                                 <button onClick={onClose} className="flex items-center w-28 h-10 rounded-md border border-light-purple hover:bg-light-purple bg-contrast-box-color group justify-center transition-all duration-300">
                                     <span className="font-outfit transition-all duration-300 font-medium group-hover:text-dark-purple text-white">{"Cancel"}</span>
@@ -141,7 +155,7 @@ function AutomateContent()
     if (workflowId) {
         return (
                 <div className="flex mt-14 w-full h-full">
-                <GraphEditor startingTrigger={selectedTrigger} workflowId={workflowId} workflowName={workflowName} workflowDescription={workflowDescription} />
+                <GraphEditor startingTrigger={selectedTrigger} workflowId={workflowId}/>
                 </div>
         );
     }

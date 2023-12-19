@@ -23,10 +23,12 @@ const AppNavBar = ({isSidebarExpanded, onToggleSidebar, currentPage}) => {
                         <path fillRule="evenodd" clipRule="evenodd" d="M19.7071 8.29289C20.0976 8.68342 20.0976 9.31658 19.7071 9.70711L12.7071 16.7071C12.3166 17.0976 11.6834 17.0976 11.2929 16.7071L4.29289 9.70711C3.90237 9.31658 3.90237 8.68342 4.29289 8.29289C4.68342 7.90237 5.31658 7.90237 5.70711 8.29289L12 14.5858L18.2929 8.29289C18.6834 7.90237 19.3166 7.90237 19.7071 8.29289Z" fill="#A9A9A9"/>
                     </svg>
                 </button>
-                <div onMouseLeave={() => setIsDropdownOpen(false)} className={`${
-                isDropdownOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
-                } absolute z-50 right-0 mt-2 w-48 transform transition duration-300 bg-white divide-y divide-gray-100 rounded-md shadow-lg dark:bg-gray-700 dark:divide-gray-600`}
-                style={{ transitionProperty: 'opacity, transform' }}
+                <div
+                    onMouseLeave={() => setIsDropdownOpen(false)}
+                    className={`${
+                        isDropdownOpen ? 'scale-100 opacity-100 pointer-events-auto' : 'scale-95 opacity-0 pointer-events-none'
+                    } absolute z-50 right-0 mt-2 w-48 transform transition duration-300 bg-white divide-y divide-gray-100 rounded-md shadow-lg dark:bg-gray-700 dark:divide-gray-600`}
+                    style={{ transitionProperty: 'opacity, transform' }}
                 >
                         {children}
                     </div>

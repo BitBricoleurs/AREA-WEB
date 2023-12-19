@@ -23,7 +23,8 @@ const isTriggerHasOptions = (trigger) => {
 
 
 function TriggerNode({ data }) {
-    const [selectedTrigger, setSelectedTrigger] = useState(null);
+
+     const [selectedTrigger, setSelectedTrigger] = useState(null);
     const [hasOptions, setHasOptions] = useState(false);
     const [selectedOption, setSelectedOption] = useState([]);
     const [currentSections, setCurrentSections] = useState([]);
@@ -60,7 +61,7 @@ function TriggerNode({ data }) {
                 </div>
                 <span className="text-outfit text-sm text-white ml-2">{"When"}</span>
                 <div className="flex flex-col w-full h-full">
-                    {(currentSections && renderSections(currentSections))}
+                    {(currentSections && renderSections(currentSections, data.id))}
                 </div>
             </div>
             <Handle type="source" position={Position.Bottom} className="bg-light-purple w-8 rounded-md" />

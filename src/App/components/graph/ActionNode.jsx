@@ -29,7 +29,6 @@ function actionNode({ data }) {
     const [selectedOption, setSelectedOption] = useState([]);
     const [currentSections, setCurrentSections] = useState([]);
 
-
     useEffect(() => {
         const selectAction = findAction(data.serviceName, data.serviceAction, ActionsServices);
         setSelectedAction(selectAction);
@@ -60,7 +59,7 @@ function actionNode({ data }) {
                     )}
                 </div>
                 <div className="flex flex-col w-full h-full">
-                    {(currentSections && renderSections(currentSections))}
+                    {(currentSections && renderSections(currentSections, data.id))}
                 </div>
             </div>
             <Handle type="source" position={Position.Bottom} className="bg-light-purple w-8 rounded-md" />

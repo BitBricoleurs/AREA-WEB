@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo} from 'react';
+import React, { useCallback, useState, useEffect, useMemo, useRef} from 'react';
 import ReactFlow, { useNodesState, useEdgesState, addEdge, MiniMap, Controls, ReactFlowProvider, Background, BackgroundVariant} from 'reactflow';
 import { Handle, Position } from 'reactflow';
 import {cardServicesStyles} from "/src/constants";
@@ -8,6 +8,7 @@ import ActionNode from "./graph/ActionNode.jsx";
 import CustomEdge from "./graph/CustomEdge.jsx";
 import AddModal from "./graph/AddModal.jsx";
 import SideBarSettings from "./SideBarSettings.jsx";
+import InteractBurger from "./graph/InteractBurger.jsx";
 
 import 'reactflow/dist/base.css';
 import {useWorkflowContext} from "../context/workflowContext.jsx";
@@ -19,7 +20,7 @@ function getNodeTriggerFromData(serviceName, serviceTrigger) {
     return {
         id: '0',
         type: 'trigger',
-        data: { serviceName: serviceName, serviceTrigger: serviceTrigger, color: bgColor, logo: logo },
+        data: { serviceName: serviceName, serviceTrigger: serviceTrigger, color: bgColor, logo: logo, id: '0' },
         position: { x: 0, y: 50 },
     }
 }
@@ -51,7 +52,7 @@ const proOptions = { hideAttribution: true };
 
 
 
-const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescription}) => {
+const GraphEditor = ({startingTrigger, workflowId}) => {
 
     const initialTriggerNode = [getNodeTriggerFromData(startingTrigger.serviceName, startingTrigger.description)];
     const initialNodes = [...initialTriggerNode, ...initNodes];
@@ -60,11 +61,33 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
     const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
 
     const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
-    const { isAddModalOpen, toggleAddModal, isSidebarSettingsOpen, toggleSidebarSettings } = useWorkflowContext();
+    const { isAddModalOpen, toggleAddModal, isSidebarSettingsOpen, toggleSidebarSettings, workflow, setWorkflow, } = useWorkflowContext();
     const [selectedNode, setSelectedNode] = useState(null);
     const [selectedNodeId, setSelectedNodeId] = useState(null);
     const [startClosing, setStartClosing] = useState(false);
-    const { setVariables } = useWorkflowContext(); // Assuming 'setVariables' updates the workflow context
+
+    const updateNextIdsInWorkflow = (workflow, edges) => {
+        const newWorkflow = workflow.map(node => {
+            const connectedEdge = edges.find(edge => edge.source === node.id);
+            return {
+                ...node,
+                next_id: connectedEdge && connectedEdge.target !== '-1' ? connectedEdge.target : null,
+            };
+        });
+        return newWorkflow;
+    };
+
+    const isFirstRun = useRef(true);
+
+    useEffect(() => {
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
+        }
+
+        const updatedWorkflow = updateNextIdsInWorkflow(workflow, edges);
+        setWorkflow(updatedWorkflow);
+    }, [edges]);
 
     useEffect(() => {
         const triggerNodeData = getNodeTriggerFromData(startingTrigger.serviceName, startingTrigger.description);
@@ -74,12 +97,18 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
             type: triggerNodeData.type,
             type_action: startingTrigger.description,
             service: startingTrigger.serviceName,
+            next_id: null,
+            conditions: [],
+            params: [],
         };
 
-        setVariables(prev => ({
-            ...prev,
-            [triggerNodeData.id]: triggerNodeDataForWorkflow
-        }));
+        setWorkflow(prevWorkflow => {
+            const exists = prevWorkflow.some(node => node.id === triggerNodeData.id);
+            if (!exists) {
+                return [...prevWorkflow, triggerNodeDataForWorkflow];
+            }
+            return prevWorkflow;
+        });
     }, []);
 
     const onNodeDoubleClick = (event, node) => {
@@ -112,14 +141,12 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
         }
     };
 
-
-
     const handleNewAction = (service) => {
         const addNodeIndex = nodes.findIndex(node => node.id === '-1');
         const addNode = nodes[addNodeIndex];
         const newPosition = addNode.position;
 
-        const newNodeId = `${nodes.length + 1}`;
+        const newNodeId = `${nodes.length}`;
         const newNode = {
             id: newNodeId,
             type: 'action',
@@ -127,7 +154,8 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
                 serviceName: service.serviceName,
                 serviceAction: service.description,
                 color: cardServicesStyles[service.serviceName]?.backgroundColor || cardServicesStyles["default"].backgroundColor,
-                logo: cardServicesStyles[service.serviceName]?.iconPath || cardServicesStyles["default"].iconPath
+                logo: cardServicesStyles[service.serviceName]?.iconPath || cardServicesStyles["default"].iconPath,
+                id: newNodeId,
             },
             position: newPosition
         };
@@ -138,9 +166,17 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
             type_action: service.description,
             service: service.serviceName,
             conditions: [],
-            params: {},
+            params: [],
             next_id: null,
         }
+
+        setWorkflow(prevWorkflow => {
+            const exists = prevWorkflow.some(node => node.id === newNodeId);
+            if (!exists) {
+                return [...prevWorkflow, newNodeDataForWorkflow];
+            }
+            return prevWorkflow;
+        });
 
         const updatedEdges = edges.map(edge => {
             if (edge.target === '-1') {
@@ -213,6 +249,7 @@ const GraphEditor = ({startingTrigger, workflowId, workflowName, workflowDescrip
                     variant={BackgroundVariant.Dots}
                 />
                 <Controls className="bg-white fill-dark-purple"/>
+                <InteractBurger/>
                 </ReactFlow>
             </ReactFlowProvider>
             </div>
