@@ -28,35 +28,49 @@ const ChoiceEntry = ({data, object, setObject}) => {
         if (data.required === "true" && index === selectedChoice) {
             return;
         } else if (data.required === "multi" && index === selectedChoice) {
-            delete object.params[data.variableName];
+            if (data.type === "condition") {
+                object.conditions = object.conditions?.filter(cond => cond.key !== data.variableName) || [];
+            } else {
+                delete object.params[data.variableName];
+            }
             newIndex = null;
         }
-        const variableNames = data.options.map((option) => option.variableName);
-        const objectParams = object.params || {};
-        const newParams = Object.keys(objectParams).reduce((acc, key) => {
-            if (
-                !variableNames.includes(key) ||
-                key === data.options[index].variableName
-            ) {
-                acc[key] = object?.params[key];
-            }
-            return acc;
-        }, {});
 
-        if (
-            data.required === "true" ||
-            (data.required === "multi" && index !== selectedChoice)
-        ) {
-            if (data.options[index].variableName) {
-                newParams[data.options[index].variableName] =
-                    data.options[index].label.toLowerCase();
+        if (data.type === "condition") {
+            object.conditions = object.conditions || [];
+
+            const conditionIndex = object.conditions.findIndex(cond => cond.key === data.variableName);
+            const newCondition = {
+                key: data.variableName,
+                value: data.options[index].label.toLowerCase(),
+                type: data.conditionType,
+            };
+
+            if (conditionIndex > -1) {
+                object.conditions[conditionIndex] = newCondition;
+            } else {
+                object.conditions.push(newCondition);
             }
-            newParams[data.variableName] = data.options[index].label.toLowerCase();
+        } else {
+            const variableNames = data.options.map(option => option.variableName);
+            const objectParams = object.params || [];
+            const newParams = Object.keys(objectParams).reduce((acc, key) => {
+                if (!variableNames.includes(key) || key === data.options[index].variableName) {
+                    acc[key] = object?.params[key];
+                }
+                return acc;
+            }, {});
+
+            if (data.required === "true" || (data.required === "multi" && index !== selectedChoice)) {
+                if (data.options[index].variableName) {
+                    newParams[data.options[index].variableName] = data.options[index].label.toLowerCase();
+                }
+                newParams[data.variableName] = data.options[index].label.toLowerCase();
+            }
+            object.params = newParams;
         }
-        setObject({
-            ...object,
-            params: newParams,
-        });
+
+        setObject({ ...object });
         setSelectedChoice(newIndex);
     };
 

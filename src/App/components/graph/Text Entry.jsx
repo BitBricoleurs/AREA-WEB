@@ -6,17 +6,15 @@ const TextEntry = ({ data, object, setObject }) => {
 
     useEffect(() => {
         if (isParameter) {
-            // Set input value from parameters
             setInputValue(object.params?.[data.variableName] || "");
         } else {
-            // Find the condition and set its value
             const condition = object.conditions?.find(cond => cond.key === data.variableName);
-            setInputValue(condition ? condition.value : "");
+            setInputValue(condition ? conditions.value : "");
         }
     }, [object, data.variableName, isParameter]);
 
     const handleChange = (text) => {
-        setInputValue(text); // Update local state
+        setInputValue(text);
 
         if (isParameter) {
             setObject({
@@ -27,14 +25,31 @@ const TextEntry = ({ data, object, setObject }) => {
                 }
             });
         } else {
-            const updatedConditions = object.conditions.map(cond =>
-                cond.key === data.variableName ? { ...cond, value: text } : cond
-            );
+            const currentConditions = object.conditions || [];
 
-            setObject({
-                ...object,
-                conditions: updatedConditions
-            });
+            const conditionIndex = currentConditions.findIndex(cond => cond.key === data.variableName);
+
+            if (conditionIndex > -1) {
+                const updatedConditions = currentConditions.map((cond, index) =>
+                    index === conditionIndex ? { ...cond, value: text } : cond
+                );
+
+                setObject({
+                    ...object,
+                    conditions: updatedConditions
+                });
+            } else {
+                const newCondition = {
+                    key: data.variableName,
+                    value: text,
+                    type: data.conditionType
+                };
+
+                setObject({
+                    ...object,
+                    conditions: [...currentConditions, newCondition]
+                });
+            }
         }
     };
 

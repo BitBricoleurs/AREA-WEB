@@ -9,12 +9,12 @@ export const WorkflowContextProvider = ({children }) => {
     const [workflowId, setWorkflowId] = useState('');
     const [isAddModalOpen, setAddModalOpen] = useState(false);
     const [isSidebarSettingsOpen, setSidebarSettingsOpen] = useState(false);
+    const [workflowName, setWorkflowName] = useState('');
+    const [workflowDescription, setWorkflowDescription] = useState('');
 
     const toggleAddModal = () => {
         setAddModalOpen(!isAddModalOpen);
     };
-
-    console.log("workflow", workflow);
 
     const toggleSidebarSettings = () => {
         setSidebarSettingsOpen(!isSidebarSettingsOpen);
@@ -27,6 +27,9 @@ export const WorkflowContextProvider = ({children }) => {
             );
         });
     };
+
+    console.log("workflowContext.jsx workflow: ", workflow);
+    console.log("workflowContext.jsx variables: ", variables);
 
     const fetchTrigger = async () => {
         const response = await fetch(
@@ -54,6 +57,10 @@ export const WorkflowContextProvider = ({children }) => {
                 isSidebarSettingsOpen,
                 toggleSidebarSettings,
                 updateNodeInWorkflow,
+                workflowName,
+                setWorkflowName,
+                workflowDescription,
+                setWorkflowDescription,
             }}
         >
             {children}

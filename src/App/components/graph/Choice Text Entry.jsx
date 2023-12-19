@@ -1,4 +1,5 @@
 import React, {useState, useRef, useEffect} from "react";
+import AutocompleteInput from "./AutocompleteInput.jsx";
 
 import {useWorkflowContext} from "/src/App/context/workflowContext.jsx"
 
@@ -6,45 +7,49 @@ const ChoiceTextEntry = ({ data, object, setObject }) => {
     const [selected, setSelected] = useState(false);
     const inputHeight = useRef(0);
 
-    const params = object.params || {};
-    const conditions = object.conditions || [];
+    if (!object) {
+        console.error("Object is undefined in ChoiceTextEntry");
+        return null;
+    }
+
+    const params = object.params || [];
+    const condition = object.conditions || [];
 
     const handleSelectPress = () => {
         setSelected(!selected);
-
         if (data.type === "parameter") {
-            if (!selected) {
-                delete params[data.variableName];
+            if (selected) {
+                delete object.params[data.variableName];
             } else {
-                params[data.variableName] = "";
+                object.params[data.variableName] = "";
             }
         } else {
-            if (!selected) {
-                const index = conditions.findIndex(condition => condition.key === data.variableName);
-                if (index !== -1) {
-                    conditions.splice(index, 1);
+            if (selected) {
+                    const index = object.conditions.findIndex(cond => cond.key === data.variableName);
+                    if (index !== -1) {
+                        object.conditions.splice(index, 1);
+                    }
+                } else {
+                    object.conditions.push({ key: data.variableName, value: "", type: data.conditionType });
                 }
-            } else {
-                conditions.push({ key: data.variableName, value: "", type: data.conditionType });
             }
-        }
 
-        setObject({ ...object, params, conditions });
-    };
+            setObject({ ...object });
+        };
 
     const handleChange = (text) => {
         if (data.type === "parameter") {
             params[data.variableName] = text;
         } else {
-            const conditionIndex = conditions.findIndex(condition => condition.key === data.variableName);
+            const conditionIndex = condition.findIndex(condition => condition.key === data.variableName);
             if (conditionIndex !== -1) {
-                conditions[conditionIndex] = { ...conditions[conditionIndex], value: text };
+                condition[conditionIndex] = { ...condition[conditionIndex], value: text };
             } else {
-                conditions.push({ key: data.variableName, value: text, type: data.conditionType });
+                condition.push({ key: data.variableName, value: text, type: data.conditionType });
             }
         }
 
-        setObject({ ...object, params, conditions });
+        setObject({ ...object, params, condition });
     };
 
     useEffect(() => {
@@ -84,10 +89,9 @@ const ChoiceTextEntry = ({ data, object, setObject }) => {
             {selected && <div className="w-full h-[1px] bg-gray-600" />}
             <div className={`transition-height duration-300 ease-in-out flex items-center ${selected ? 'h-8' : 'h-0' } overflow-hidden`}>
                 {selected && (
-                    <input
-                        className=" text-custom-grey w-full placeholder:text-custom-grey bg-background text-[10px] pl-2 outline-none"
-                        type="text"
-                        onChange={(e) => handleChange(e.target.value)}
+                    <AutocompleteInput
+                        className="text-custom-grey w-full placeholder:text-custom-grey bg-background text-[10px] pl-2 outline-none"
+                        onChange={handleChange}
                         placeholder={data.placeholder}
                     />
                 )}
