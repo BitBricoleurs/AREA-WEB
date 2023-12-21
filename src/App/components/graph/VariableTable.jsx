@@ -26,15 +26,15 @@ const DropdownMenu = ({ onSelect, selectedOutput, options }) => {
     return (
         <div className="relative w-full h-full flex">
             <button ref={buttonRef} onClick={() => setShow(!show)}
-                    className="flex justify-center h-8 w-full text-white rounded-md focus:outline-none items-center">
+                    className="flex justify-center h-8 w-full text-light-purple rounded-md focus:outline-none items-center">
                 {selectedOutput || ''}
             </button>
             {show && (
-                <div ref={dropdownRef} className="absolute z-50 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 -translate-y-full">
+                <div ref={dropdownRef} className="absolute z-50 bg-white divide-y divide-custom-grey rounded-lg shadow w-44 dark:bg-background border border-contrast-box-color -translate-y-full">
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
                         {options.map(option => (
                             <li key={option}>
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                <a href="#" className="block px-4 py-1 hover:bg-gray-100 dark:hover:bg-box-color dark:hover:text-white"
                                    onClick={() => handleSelect(option)}>
                                     {option}
                                 </a>
@@ -79,7 +79,7 @@ const TableRow = ({ row, index, handleInteraction, getNextId, availableVariables
                     type="text"
                     value={row.name || ''}
                     onChange={(e) => handleChange('name', e.target.value)}
-                    className="pl-2 w-full bg-box-color hover:bg-contrast-box-color rounded-md h-8 outline-none"
+                    className="pl-2 w-full bg-box-color hover:bg-contrast-box-color text-custom-grey rounded-md h-8 outline-none"
                 />
             </td>
         </tr>
@@ -97,12 +97,13 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
     const [rows, setRows] = useState(variables.filter(v => v.refers === nodeId));
 
     const getNodeKeys = () => {
-        const conditionKeys = currentWorkflow?.condition?.map(condition => condition.key) || [];
+        const conditionKeys = currentWorkflow?.conditions?.map(conditions => conditions.key) || [];
         const paramKeys = Object.keys(currentWorkflow?.params || {});
         return ["None", ...conditionKeys, ...paramKeys];
     };
 
     const availableVariables = getNodeKeys();
+    console.log("VariableTable.jsx availableVariables: ", availableVariables);
 
     useEffect(() => {
         setRows(variables.filter(v => v.refers === nodeId));
@@ -111,11 +112,9 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
     const handleInteraction = (index, key, value) => {
         let newRows = [...rows];
 
-        // Si c'est une nouvelle ligne et que 'output' est défini à 'None', ne pas l'ajouter
         if (key === 'output' && value === '' && !newRows[index].name) {
             newRows = newRows.filter((_, idx) => idx !== index);
         } else {
-            // Mise à jour ou ajout de la ligne
             if (index < rows.length) {
                 newRows[index] = { ...newRows[index], [key]: value };
             } else {
