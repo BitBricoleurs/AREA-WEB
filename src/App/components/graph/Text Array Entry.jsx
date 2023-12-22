@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import AutocompleteInput from "./AutocompleteInput.jsx";
 
 import {useWorkflowContext} from "/src/App/context/workflowContext.jsx"
 
@@ -44,23 +45,29 @@ const TextArrayEntry = ({ data, object, setObject }) => {
     };
 
     const handleChange = (text, index) => {
-        const updatedEntries = [...emailEntries];
+
+        let updatedEntries = [...emailEntries];
         updatedEntries[index] = text;
 
         if (index === emailEntries.length - 1 && text.trim() !== "") {
             updatedEntries.push("");
         }
-        if (text === "") {
+
+        if (text === "" && emailEntries.length > 1) {
             updatedEntries.splice(index, 1);
         }
         setEmailEntries(updatedEntries);
         updateObject(updatedEntries);
+        console.log("emailEntries: ", emailEntries)
     };
-
     const handleRemoveEntry = (index) => {
-        const updatedEntries = emailEntries.filter((_, i) => i !== index);
-        setEmailEntries(updatedEntries);
-        updateObject(updatedEntries);
+        if (emailEntries.length > 1) {
+            let updatedEntries = [...emailEntries];
+            updatedEntries[index] = "";
+            updatedEntries = emailEntries.filter((_, i) => i !== index);
+            setEmailEntries(updatedEntries);
+            updateObject(updatedEntries);
+        }
     };
 
 
@@ -85,13 +92,11 @@ const TextArrayEntry = ({ data, object, setObject }) => {
                     <div className="w-full h-[1px] bg-gray-600"/>
                     {emailEntries.map((entry, index) => (
                         <div key={index}
-                             className="flex flex-row justify-between items-center h-8 ml-2">
-                            <input
-                                className="text-custom-grey bg-background text-[10px] flex-1 pl-2 outline-none"
-                                type="email"
-                                onChange={(e) => handleChange(e.target.value, index)}
-                                value={entry}
-                                placeholder="Email"
+                             className="flex flex-row justify-between items-center h-8">
+                            <AutocompleteInput
+                                className="text-custom-grey w-full placeholder:text-custom-grey bg-background text-[10px] pl-2 outline-none"
+                                onChange={(text) => handleChange(text, index)}
+                                placeholder={data.placeholder}
                             />
                             {index < emailEntries.length - 1 && (
                                 <button className="self-center" onClick={() => handleRemoveEntry(index)}>
