@@ -9,3 +9,5 @@ global.ResizeObserver = class ResizeObserver {
         // do nothing
     }
 };
+
+jest.mock('reactflow/dist/base.css', () => {});
