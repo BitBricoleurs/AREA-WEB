@@ -165,7 +165,8 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
 
             const data = await response.json();
 
-            if (response.status === 200) {
+            console.log("data: ", data)
+            if (data.status === 200) {
                 localStorage.setItem('userToken', data.token);
 
                 navigate('/dashboard');
@@ -324,18 +325,15 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                 body: JSON.stringify({ email, password})
             });
 
-            console.log(response)
             const data = await response.json();
-            console.log(data)
 
-            if (response.status === 201) {
+            if (data.status === 201) {
                 setNotification({
                     notificationState: 'Success',
                     message: 'Successfully registered!'
                 });
 
                 switchToLogin();
-                console.log("data: ", data)
             } else {
                 setNotification({
                     notificationState: 'Error',
