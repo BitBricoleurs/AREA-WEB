@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useWorkflowContext } from '/src/App/context/workflowContext.jsx';
+import { useWorkflowContext } from '../../context/workflowContext.jsx';
 
 const InteractBurger = () => {
     const [isExpanded, setIsExpanded] = useState(false);

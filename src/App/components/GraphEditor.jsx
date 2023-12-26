@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef} from 'react';
 import ReactFlow, { useNodesState, useEdgesState, addEdge, MiniMap, Controls, ReactFlowProvider, Background, BackgroundVariant} from 'reactflow';
 import { Handle, Position } from 'reactflow';
-import {cardServicesStyles} from "/src/constants";
+import { cardServicesStyles } from '../../constants/index';
 import TriggerNode from "./graph/TriggerNode.jsx";
 import AddNode from "./graph/AddNode.jsx";
 import ActionNode from "./graph/ActionNode.jsx";
@@ -14,8 +14,9 @@ import 'reactflow/dist/base.css';
 import {useWorkflowContext} from "../context/workflowContext.jsx";
 
 function getNodeTriggerFromData(serviceName, serviceTrigger) {
-    const bgColor = cardServicesStyles[serviceName].backgroundColor || cardServicesStyles["default"].backgroundColor;
-    const logo = cardServicesStyles[serviceName].iconPath || cardServicesStyles["default"].iconPath;
+    const serviceStyle = cardServicesStyles[serviceName] || cardServicesStyles["default"];
+    const bgColor = serviceStyle.backgroundColor;
+    const logo = serviceStyle.iconPath;
 
     return {
         id: '0',

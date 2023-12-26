@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import AutocompleteInput from "./AutocompleteInput.jsx";
 
-import {useWorkflowContext} from "/src/App/context/workflowContext.jsx"
+import { useWorkflowContext } from '../../context/workflowContext.jsx';
 
 const TextArrayEntry = ({ data, object, setObject }) => {
     const [selected, setSelected] = useState(false);
