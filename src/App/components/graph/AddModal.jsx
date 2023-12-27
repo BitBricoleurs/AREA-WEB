@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import SearchBar from "../SearchBar.jsx";
-import {actions, cardServicesStyles} from "/src/constants/index.js";
+import {actions, cardServicesStyles} from "../../../constants/index.js";
 import Draggable from 'react-draggable';
 
 

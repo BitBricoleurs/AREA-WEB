@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import VariableTable from "./graph/VariableTable.jsx";
-import { useWorkflowContext } from '/src/App/context/workflowContext.jsx';
+import { useWorkflowContext } from '../context/workflowContext.jsx';
 
 
 const SideBarSettings = ({ onClose, startClosing, node, updateNodePosition }) => {

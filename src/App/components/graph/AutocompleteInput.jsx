@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useWorkflowContext } from '/src/App/context/workflowContext.jsx';
+import { useWorkflowContext } from '../../context/workflowContext.jsx';
 
 const AutocompleteInput = ({ className, onChange, placeholder }) => {
     const { variables } = useWorkflowContext();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { getBezierPath, getMarkerEnd } from 'reactflow';
 
-import tailwindConfig from "/tailwind.config.js"
+import tailwindConfig from "../../../../tailwind.config.js"
 const darkPurple = tailwindConfig.theme.extend.colors['dark-purple'];
 const lightPurple = tailwindConfig.theme.extend.colors['light-purple'];
 const success_green = tailwindConfig.theme.extend.colors['success-green'];

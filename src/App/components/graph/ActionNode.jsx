@@ -3,7 +3,7 @@ import {Handle, Position} from "reactflow";
 import NodeHeader from "./NodeHeader.jsx";
 import renderSections from "./RenderForm.jsx";
 import SelectBox from "./SelectBox.jsx";
-import ActionsServices from "/src/constants/Actions.json";
+import ActionsServices from "../../../constants/Actions.json";
 const findService = (serviceName, services) => {
     const service = services.find((s) => s.name === serviceName);
     if (!service) return null;

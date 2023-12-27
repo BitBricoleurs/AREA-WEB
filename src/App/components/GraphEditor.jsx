@@ -11,7 +11,7 @@ import ReactFlow, {
     updateEdge
 } from 'reactflow';
 import { Handle, Position } from 'reactflow';
-import {cardServicesStyles} from "/src/constants";
+import { cardServicesStyles } from '../../constants/index';
 import TriggerNode from "./graph/TriggerNode.jsx";
 import AddNode from "./graph/AddNode.jsx";
 import ActionNode from "./graph/ActionNode.jsx";
@@ -26,7 +26,6 @@ import useGraphEditorHandlers from './graph/useGraphEditorHandlers';
 import 'reactflow/dist/base.css';
 import {useWorkflowContext} from "../context/workflowContext.jsx";
 import {useGraphEditorContext} from "../context/graphEditorContext.jsx";
-
 
 const edgeTypes = {
     default: CustomEdge,

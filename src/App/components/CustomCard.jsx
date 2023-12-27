@@ -1,4 +1,4 @@
-import {cardServicesStyles} from "/src/constants/index.js";
+import { cardServicesStyles } from '../../constants/index';
 import React from "react";
 
 const CustomCard = ({serviceName, description, onSelect}) => {
