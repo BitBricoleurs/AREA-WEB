@@ -48,7 +48,9 @@ const AutocompleteInput = ({ className, onChange, placeholder }) => {
                 if (selectedIndex >= 0) {
                     const selectedVariable = variables[selectedIndex];
                     const lastIndex = inputValue.lastIndexOf('${');
-                    setInputValue(inputValue.substring(0, lastIndex) + '${' + selectedVariable.id + '}'); // Utilisation de l'ID au lieu du nom
+                    const updatedValue = inputValue.substring(0, lastIndex) + '${' + selectedVariable.id + '}';
+                    setInputValue(updatedValue);
+                    onChange(updatedValue);
                 }
                 setSuggestionsVisible(false);
                 break;

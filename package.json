@@ -16,7 +16,8 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.6",
     "react-router-dom": "^6.20.1",
-    "reactflow": "^11.10.1"
+    "reactflow": "^11.10.1",
+    "tw-elements": "^1.1.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.23.6",

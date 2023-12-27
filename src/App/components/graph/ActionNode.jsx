@@ -39,9 +39,11 @@ function actionNode({ data }) {
     }, []);
 
     const handleOptionsChange = (e) => {
-        const option = selectedAction?.options.find((option) => option.value === e.target.value);
+        console.log("selected option: ", selectedAction)
+        const option = selectedAction?.options.find((option) => option.name === e.target.value);
+        console.log("option: ", option)
         setSelectedOption(option);
-        setCurrentSections(option?.section);
+        setCurrentSections(option?.sections);
     };
 
 
@@ -54,7 +56,7 @@ function actionNode({ data }) {
                     <NodeHeader triggerName={data.serviceAction} logo={data.logo} color={data.color}/>
                     {(hasOptions &&
                         <div className={"w-full h-full justify-center items-center flex flex-col"}>
-                            <SelectBox placeholder={"Select a action"} onChange={handleOptionsChange} options={selectedaction?.options} />
+                            <SelectBox placeholder={"Select a action"} onChange={handleOptionsChange} options={selectedAction?.options} />
                         </div>
                     )}
                 </div>

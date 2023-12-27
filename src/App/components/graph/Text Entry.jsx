@@ -9,7 +9,6 @@ const TextEntry = ({ data, object, setObject }) => {
             setInputValue(object.params?.[data.variableName] || "");
         } else {
             const condition = object.conditions?.find(cond => cond.key === data.variableName);
-            console.log("TextEntry.jsx condition: ", condition);
             setInputValue(condition ? condition.value : "");
         }
     }, [object, data.variableName, isParameter]);

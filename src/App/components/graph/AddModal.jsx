@@ -38,7 +38,7 @@ const ActionCard = ({serviceName, description, onSelect}) => {
 }
 
 
-const ActionModal = ({onClose, onSelect}) => {
+const ActionModal = ({onClose, onSelectAction, onSelectCondition, clickedNode}) => {
 
     const [searchInput, setSearchInput] = useState("");
     return (
@@ -63,10 +63,19 @@ const ActionModal = ({onClose, onSelect}) => {
                                 <div className="overflow-y-scroll h-full w-full my-4 mb-14 rounded-lg">
                                     <div className={"grid gap-6 grid-cols-3"}>
                                         {actions.map((service, index) => (
-                                            <div key={index} className="flex items-center justify-center h-full rounded bg-gray-50 dark:bg-box-color border border-contrast-box-color w-full hover:border-light-purple transition-all duration-300">
-                                                <ActionCard serviceName={service.serviceName} description={service.description} onSelect={() => onSelect(service)} />
+                                            <div key={index}
+                                                 className="flex items-center justify-center h-full rounded bg-gray-50 dark:bg-box-color border border-contrast-box-color w-full hover:border-light-purple transition-all duration-300">
+                                                <ActionCard serviceName={service.serviceName}
+                                                            description={service.description}
+                                                            onSelect={() => onSelectAction(service, clickedNode)}/>
                                             </div>
                                         ))}
+                                        <div key={"system"}
+                                             className="flex items-center justify-center h-full rounded bg-gray-50 dark:bg-box-color border border-contrast-box-color w-full hover:border-light-purple transition-all duration-300">
+                                            <ActionCard serviceName={"System"}
+                                                        description={"Conditions"}
+                                                        onSelect={() => onSelectCondition({serviceName: "System", description : "Conditions"}, clickedNode)}/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -4,6 +4,7 @@ import {cardServicesStyles, triggers} from '/src/constants';
 import { useLocation } from 'react-router-dom';
 import {useWorkflowContext} from "../context/workflowContext.jsx";
 import Draggable from 'react-draggable';
+import {GraphEditorContextProvider} from "../context/graphEditorContext.jsx";
 
 
 const SelectTrigger = ({onTriggerSelect, isModalOpen}) => {
@@ -116,7 +117,8 @@ const TriggerModal = ({trigger, onClose, onCreate}) => {
 
 function AutomateContent()
 {
-    const location = useLocation();const [isSelectingTrigger, setIsSelectingTrigger] = useState(false);
+    const location = useLocation();
+    const [isSelectingTrigger, setIsSelectingTrigger] = useState(false);
     const [selectedTrigger, setSelectedTrigger] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [workflowName, setWorkflowName] = useState('');
@@ -132,7 +134,7 @@ function AutomateContent()
         } else {
             setIsSelectingTrigger(true);
         }
-    }, [location.state]);
+    }, []);
 
     const handleTriggerSelect = (trigger) => {
         setSelectedTrigger(trigger);
@@ -151,11 +153,12 @@ function AutomateContent()
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
-
     if (workflowId) {
         return (
                 <div className="flex mt-14 w-full h-full">
-                <GraphEditor startingTrigger={selectedTrigger} workflowId={workflowId}/>
+                    <GraphEditorContextProvider startingTrigger={selectedTrigger}>
+                        <GraphEditor startingTrigger={selectedTrigger} workflowId={workflowId}/>
+                    </GraphEditorContextProvider>
                 </div>
         );
     }
