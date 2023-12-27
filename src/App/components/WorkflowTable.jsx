@@ -5,7 +5,7 @@ const initialSortState = {
     direction: 'asc',
 };
 
-const WorkflowTable = ({ workflows }) => {
+const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
     const [openDropdownId, setOpenDropdownId] = useState(null);
     const [activeStatus, setActiveStatus] = useState(
         workflows.reduce((status, workflow) => {
@@ -31,11 +31,10 @@ const WorkflowTable = ({ workflows }) => {
         setOpenDropdownId(openDropdownId === id ? null : id);
     };
 
-    // Simulate API call to toggle the active state
     const toggleActiveState = async (id) => {
         // Placeholder for your actual API call
         const response = await new Promise((resolve) => {
-            setTimeout(() => resolve({ success: true }), 500); // Simulate API response time
+            setTimeout(() => resolve({ success: true }), 500);
         });
 
         if (response.success) {
@@ -102,7 +101,6 @@ const WorkflowTable = ({ workflows }) => {
     };
 
 
-    // SortArrow component to display the correct arrow
     const SortArrow = ({ direction }) => {
         return (
             <div className="flex justify-center items-center" style={{ width: '20px', height: '20px' }}>
@@ -131,12 +129,16 @@ const WorkflowTable = ({ workflows }) => {
     };
 
 
+    const handleCheckboxChange = (id) => {
+        toggleWorkflowSelection(id);
+    };
 
     return (
         <div className="overflow-x-auto relative">
             <table className="w-full text-sm text-center text-custom-grey bg-contrast-box-color">
                 <thead className="text-xs uppercase bg-box-color border-b border-contrast-box-color text-custom-grey">
                 <tr>
+                    <th className="py-3 px-6">Select</th>
                     <th
                         onClick={() => requestSort('id')}
                         className="py-3 px-6 cursor-pointer flex-row justify-center items-center"
@@ -197,8 +199,15 @@ const WorkflowTable = ({ workflows }) => {
                 <tbody>
                 {sortedWorkflows.map(workflow => (
                     <tr key={workflow.id} className="border-b border-contrast-box-color bg-box-color">
-                        <td className="py-4 px-6">{workflow.id}</td>
-                        <td className="py-4 px-6 text-light-purple">{workflow.name}</td>
+                        <td className="py-4 px-6">
+                            <input
+                                type="checkbox"
+                                checked={workflow.isSelected}
+                                onChange={() => handleCheckboxChange(workflow.id)}
+                            />
+                        </td>
+                        <td className="py-4 px-6 font-light">{workflow.id}</td>
+                        <td className="py-4 px-6 text-light-purple font-normal">{workflow.name}</td>
                         <td className="py-4 px-6">{workflow.lastTimeStarted}</td>
                         <td className="py-4 px-6">{workflow.averageRuntime}</td>
                         <td className="py-4 px-6">{workflow.totalUse}</td>

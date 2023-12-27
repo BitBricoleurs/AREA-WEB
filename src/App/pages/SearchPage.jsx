@@ -1,6 +1,7 @@
 import { AppNavBar, PageNavigator, SearchBar}  from '../../Static/components';
 import React ,{useState} from "react";
 import WorkflowTable from "../components/WorkflowTable.jsx";
+import {useNavigate} from "react-router-dom";
 
 const mockWorkflows = [
     {
@@ -32,21 +33,76 @@ const mockWorkflows = [
 
 const WorkflowTab = () => {
 
+    const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState('');
-    const [workflows, setWorkflows] = useState(mockWorkflows);
+    const [workflows, setWorkflows] = useState(
+        mockWorkflows.map(workflow => ({ ...workflow, isSelected: false }))
+    );
+
 
     const filteredWorkflows = workflows.filter(workflow =>
         workflow.name.toLowerCase().includes(searchInput.toLowerCase())
     );
 
+    const toggleWorkflowSelection = (id) => {
+        setWorkflows(currentWorkflows =>
+            currentWorkflows.map(workflow =>
+                workflow.id === id ? { ...workflow, isSelected: !workflow.isSelected } : workflow
+            )
+        );
+    };
+
+    const isAnyWorkflowSelected = workflows.some(workflow => workflow.isSelected);
+
+    const handleNewWorkflow = () => {
+        navigate('/automate');
+    };
+
+    const handleDeleteWorkflows = () => {
+        const delete_workflows = workflows.filter(workflow => workflow.isSelected).map(workflow => workflow.id);
+        console.log('Delete Workflows clicked', delete_workflows);
+        new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve('Workflows deleted successfully');
+            }, 500);
+        })
+            .then(response => {
+                console.log(response);
+                setWorkflows(currentWorkflows => currentWorkflows.filter(workflow => !workflow.isSelected));
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    };
+
+
     return (
         <>
             <div className="flex flex-col w-full">
                 <div className="flex pt-8 w-full">
-                    <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} searchPlaceHolder={"name workflows..."} />
+                    <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} searchPlaceHolder={"Search name workflows..."} />
                 </div>
-                <div className="flex flex-col flex-grow w-full pt-10">
-                    <WorkflowTable workflows={filteredWorkflows} />
+                <div className="flex items-center justify-between pt-5 pb-4 px-5">
+                    <h2 className="text-2xl font-light text-custom-grey font-outfit">Your Workflows</h2>
+                    <div className="flex space-x-4">
+                        <button
+                            className="bg-light-purple text-white py-2 px-3 rounded-md shadow-md transition duration-300 ease-in-out hover:bg-dark-purple"
+                            onClick={handleNewWorkflow}
+                        >
+                            New Workflow
+                        </button>
+                        <button
+                            className={`py-2 px-3 rounded-md shadow-md transition duration-300 ease-in-out ${isAnyWorkflowSelected ? 'bg-error-red hover:bg-error-red text-white' : 'bg-contrast-box-color text-black'}`}
+                            onClick={handleDeleteWorkflows}
+                            disabled={!isAnyWorkflowSelected}
+                        >
+                            Delete Workflows
+                        </button>
+                    </div>
+                </div>
+
+                <div className="flex flex-col flex-grow w-full pt-4">
+                    <WorkflowTable workflows={filteredWorkflows} toggleWorkflowSelection={toggleWorkflowSelection} />
                 </div>
             </div>
         </>
