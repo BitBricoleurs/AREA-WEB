@@ -6,6 +6,8 @@ import {useWorkflowContext} from "/src/App/context/workflowContext.jsx";
 const useGraphEditorHandlers = () => {
     const { nodes, setNodes, edges, setEdges } = useGraphEditorContext();
     const { workflow, setWorkflow } = useWorkflowContext();
+    const { variables, setVariables } = useWorkflowContext();
+    console.log("variables: ", variables)
 
     const handleDeleteNode = useCallback((changes) => {
         const invinsibleNodeTypes = ['trigger', 'add'];
@@ -16,6 +18,8 @@ const useGraphEditorHandlers = () => {
                 if (invinsibleNodeTypes.includes(nodeToRemove?.type)) {
                     return false;
                 }
+                const updatedVariables = variables.filter(variable => variable.refers !== change.id);
+                setVariables(updatedVariables);
             }
             return true;
         });

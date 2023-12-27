@@ -39,18 +39,21 @@ const ChoiceTextEntry = ({ data, object, setObject }) => {
 
     const handleChange = (text) => {
         if (data.type === "parameter") {
-            params[data.variableName] = text;
+            object.params[data.variableName] = text;
         } else {
-            const conditionIndex = condition.findIndex(condition => condition.key === data.variableName);
+            const conditionIndex = object.conditions.findIndex(cond => cond.key === data.variableName);
             if (conditionIndex !== -1) {
-                condition[conditionIndex] = { ...condition[conditionIndex], value: text };
+                // Mise à jour de la condition existante
+                object.conditions[conditionIndex] = { ...object.conditions[conditionIndex], value: text };
             } else {
-                condition.push({ key: data.variableName, value: text, type: data.conditionType });
+                // Ajout d'une nouvelle condition si elle n'existe pas déjà
+                object.conditions.push({ key: data.variableName, value: text, type: data.conditionType });
             }
         }
 
-        setObject({ ...object, params, condition });
+        setObject({ ...object });
     };
+
 
     useEffect(() => {
         if (selected && data.type === "parameter") {

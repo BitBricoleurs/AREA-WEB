@@ -1,29 +1,60 @@
-import {
-    Input,
-    Timepicker,
-    initTE,
-} from "tw-elements";
-
-initTE({ Input, Timepicker });
+import React, { useState, useEffect } from 'react';
 
 const TimePicker = ({ value, onChange }) => {
+    const [hours, setHours] = useState('');
+    const [minutes, setMinutes] = useState('');
+
+    useEffect(() => {
+        if (value) {
+            const [hrs, mins] = value.split(':');
+            setHours(hrs);
+            setMinutes(mins);
+        }
+    }, [value]);
+
+    const handleHoursChange = (e) => {
+        const val = e.target.value;
+        if (/^\d*$/.test(val) && val.length <= 2) {
+            const hrs = Math.max(0, Math.min(23, parseInt(val, 10) || 0));
+            setHours(hrs.toString());
+            onChange(`${hrs}:${minutes}`);
+        }
+    };
+
+    const handleMinutesChange = (e) => {
+        const val = e.target.value;
+        if (/^\d*$/.test(val) && val.length <= 2) {
+            const mins = Math.max(0, Math.min(59, parseInt(val, 10) || 0));
+            setMinutes(mins.toString());
+            onChange(`${hours}:${mins}`);
+        }
+    };
+
     return (
-        <div className="relative" data-te-timepicker-init data-te-input-wrapper-init>
-            <input
-                type="text"
-                className="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                id="form1"
-                value={value}
-                onChange={onChange}
-            />
-            <label
-                htmlFor="form1"
-                className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-            >
-                Select a time
-            </label>
+        <div className="bg-background rounded-lg flex flex-row items-center justify-center space-x-6">
+            <span className="text-[12px] text-white py-1 ">Time of day</span>
+            <div className=" flex flex-row rounded-lg p-2">
+                <input
+                    type="text"
+                    name="hours"
+                    value={hours}
+                    onChange={handleHoursChange}
+                    className="text-[12px]  outline-none w-6 pl-2 py-1 bg-contrast-box-color text-white rounded-l-lg"
+                    placeholder="HH"
+                />
+                <span className="text-[12px] text-white bg-contrast-box-color py-1">:</span>
+                <input
+                    type="text"
+                    name="minutes"
+                    value={minutes}
+                    onChange={handleMinutesChange}
+                    className="text-[12px] outline-none w-6 bg-contrast-box-color text-white rounded-r-lg py-1 pl-1"
+                    placeholder="MM"
+                />
+            </div>
         </div>
     );
 };
 
 export default TimePicker;
+

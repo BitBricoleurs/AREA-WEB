@@ -4,6 +4,7 @@ import NodeHeader from "./NodeHeader.jsx";
 import renderSections from "./RenderForm.jsx";
 import SelectBox from "./SelectBox.jsx";
 import ActionsServices from "../../../constants/Actions.json";
+import {useWorkflowContext} from "../../context/workflowContext.jsx";
 const findService = (serviceName, services) => {
     const service = services.find((s) => s.name === serviceName);
     if (!service) return null;
@@ -24,6 +25,8 @@ const isActionHasOptions = (action) => {
 
 function actionNode({ data }) {
 
+    const { updateWorkflowNode } = useWorkflowContext();
+
     const [selectedAction, setSelectedAction] = useState(null);
     const [hasOptions, setHasOptions] = useState(false);
     const [selectedOption, setSelectedOption] = useState([]);
@@ -39,11 +42,14 @@ function actionNode({ data }) {
     }, []);
 
     const handleOptionsChange = (e) => {
-        console.log("selected option: ", selectedAction)
         const option = selectedAction?.options.find((option) => option.name === e.target.value);
-        console.log("option: ", option)
         setSelectedOption(option);
         setCurrentSections(option?.sections);
+        const newParams = {
+            ...data.params,
+            options: option.name
+        };
+        updateWorkflowNode(data.id, { params: newParams });
     };
 
 
