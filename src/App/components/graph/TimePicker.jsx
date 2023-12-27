@@ -1,54 +1,78 @@
 import React, { useState, useEffect } from 'react';
 
-const TimePicker = ({ value, onChange }) => {
+const TimePicker = ({ data, object, setObject }) => {
     const [hours, setHours] = useState('');
     const [minutes, setMinutes] = useState('');
 
     useEffect(() => {
-        if (value) {
-            const [hrs, mins] = value.split(':');
+        const timeValue = object.params?.[data.variableName] || '';
+        if (timeValue) {
+            const [hrs, mins] = timeValue.split(':');
             setHours(hrs);
             setMinutes(mins);
         }
-    }, [value]);
+    }, [object, data.variableName]);
+
+    const updateTime = () => {
+        let formattedHours = hours;
+        let formattedMinutes = minutes;
+
+        if (parseInt(hours, 10) > 23) {
+            formattedHours = '23';
+        }
+        if (parseInt(minutes, 10) > 59) {
+            formattedMinutes = '59';
+        }
+
+        setObject({
+            ...object,
+            params: {
+                ...object.params,
+                [data.variableName]: `${formattedHours.padStart(2, '0')}:${formattedMinutes.padStart(2, '0')}`
+            }
+        });
+    };
 
     const handleHoursChange = (e) => {
         const val = e.target.value;
         if (/^\d*$/.test(val) && val.length <= 2) {
-            const hrs = Math.max(0, Math.min(23, parseInt(val, 10) || 0));
-            setHours(hrs.toString());
-            onChange(`${hrs}:${minutes}`);
+            setHours(val);
         }
     };
 
     const handleMinutesChange = (e) => {
         const val = e.target.value;
         if (/^\d*$/.test(val) && val.length <= 2) {
-            const mins = Math.max(0, Math.min(59, parseInt(val, 10) || 0));
-            setMinutes(mins.toString());
-            onChange(`${hours}:${mins}`);
+            setMinutes(val);
         }
     };
 
+    // Ensuring the blur event doesn't cause any side effects other than updating the time
+    const handleBlur = () => {
+        updateTime();
+    };
+
     return (
-        <div className="bg-background rounded-lg flex flex-row items-center justify-center space-x-6">
-            <span className="text-[12px] text-white py-1 ">Time of day</span>
-            <div className=" flex flex-row rounded-lg p-2">
+        <div className="bg-background rounded-lg flex flex-row items-center justify-between  py-1">
+            <span className="text-[12px] text-white py-1">Time of day</span>
+            <div className="flex flex-row rounded-lg justify-end bg-contrast-box-color items-center mr-2">
                 <input
                     type="text"
                     name="hours"
                     value={hours}
                     onChange={handleHoursChange}
-                    className="text-[12px]  outline-none w-6 pl-2 py-1 bg-contrast-box-color text-white rounded-l-lg"
+                    onBlur={handleBlur}
+                    className="text-[12px] outline-none w-6 text-center bg-contrast-box-color text-white rounded-l-lg placeholder:text-[10px] stay-bg-color"
                     placeholder="HH"
                 />
-                <span className="text-[12px] text-white bg-contrast-box-color py-1">:</span>
+                <span className="text-[12px] text-white bg-contrast-box-color ">:</span>
                 <input
                     type="text"
                     name="minutes"
                     value={minutes}
                     onChange={handleMinutesChange}
-                    className="text-[12px] outline-none w-6 bg-contrast-box-color text-white rounded-r-lg py-1 pl-1"
+                    onBlur={handleBlur}
+                    className="text-[12px] outline-none w-6  text-center bg-contrast-box-color text-white rounded-r-lg  placeholder:text-[10px] stay-bg-color"
                     placeholder="MM"
                 />
             </div>
@@ -57,4 +81,3 @@ const TimePicker = ({ value, onChange }) => {
 };
 
 export default TimePicker;
-

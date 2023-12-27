@@ -43,10 +43,8 @@ const ChoiceTextEntry = ({ data, object, setObject }) => {
         } else {
             const conditionIndex = object.conditions.findIndex(cond => cond.key === data.variableName);
             if (conditionIndex !== -1) {
-                // Mise à jour de la condition existante
                 object.conditions[conditionIndex] = { ...object.conditions[conditionIndex], value: text };
             } else {
-                // Ajout d'une nouvelle condition si elle n'existe pas déjà
                 object.conditions.push({ key: data.variableName, value: text, type: data.conditionType });
             }
         }
