@@ -10,6 +10,7 @@ import ChoiceTextEntry from "./graph/Choice Text Entry.jsx";
 import TextEntry from "./graph/Text Entry.jsx";
 import TextArrayEntry from "./graph/Text Array Entry.jsx";
 import CustomCard from "./CustomCard.jsx";
+import TimePicker from "./graph/TimePicker.jsx";
 
 export {
     PrivateRoute,
@@ -24,4 +25,5 @@ export {
     TextEntry,
     TextArrayEntry,
     CustomCard,
+    TimePicker
 };

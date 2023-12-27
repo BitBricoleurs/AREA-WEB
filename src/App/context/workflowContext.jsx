@@ -28,9 +28,6 @@ export const WorkflowContextProvider = ({children }) => {
         });
     };
 
-    console.log("workflowContext.jsx workflow: ", workflow);
-    console.log("workflowContext.jsx variables: ", variables);
-
     const fetchTrigger = async () => {
         const response = await fetch(
             `${process.env.REACT_APP_BACKEND_URL}/triggers`
@@ -39,6 +36,29 @@ export const WorkflowContextProvider = ({children }) => {
         setTrigger(data);
         setWorkflowId(data.workflow);
     };
+
+    const updateWorkflowNode = (nodeId, newData) => {
+        setWorkflow(prevWorkflow => {
+            return prevWorkflow.map(node => {
+                if (node.id === nodeId) {
+                    return { ...node, ...newData };
+                }
+                return node;
+            });
+        });
+    };
+
+    const addWorkflowNode = (node) => {
+        setWorkflow(prevWorkflow => {
+            if (prevWorkflow.some(n => n.id === node.id)) {
+                return prevWorkflow;
+            }
+            return [...prevWorkflow, node];
+        });
+    }
+
+    console.log("workflow: ", workflow)
+
 
     return (
         <WorkflowContext.Provider
@@ -61,6 +81,8 @@ export const WorkflowContextProvider = ({children }) => {
                 setWorkflowName,
                 workflowDescription,
                 setWorkflowDescription,
+                updateWorkflowNode,
+                addWorkflowNode
             }}
         >
             {children}
