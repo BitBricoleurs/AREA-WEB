@@ -2,6 +2,7 @@ import { AppNavBar, PageNavigator, SearchBar}  from '../../Static/components';
 import React ,{useState} from "react";
 import WorkflowTable from "../components/WorkflowTable.jsx";
 import {useNavigate} from "react-router-dom";
+import WorkflowHistoryTable from "../components/WorkflowHistoryTable.jsx";
 
 const mockWorkflows = [
     {
@@ -30,6 +31,33 @@ const mockWorkflows = [
     }
 ]
 
+
+const mockHistory = [
+    {
+        "id": 101,
+        "name": "Daily Data Backup",
+        "startTime": "2022-08-01T09:30:00Z",
+        "endTime": "2022-08-01T09:45:30Z",
+        "duration": "15min30s",
+        "status": "Success"
+    },
+    {
+        "id": 102,
+        "name": "Weekly Data Backup",
+        "startTime": "2022-08-01T09:30:00Z",
+        "endTime": "2022-08-01T09:45:30Z",
+        "duration": "30min30s",
+        "status": "Failed"
+    },
+    {
+        "id": 103,
+        "name": "Monthly Data Backup",
+        "startTime": "2022-08-01T09:30:00Z",
+        "endTime": "2022-08-01T09:45:30Z",
+        "duration": "45min30s",
+        "status": "Running"
+    }
+];
 
 const WorkflowTab = () => {
 
@@ -79,10 +107,11 @@ const WorkflowTab = () => {
     return (
         <>
             <div className="flex flex-col w-full">
-                <div className="flex pt-8 w-full">
+                <div className="flex pt-8 w-full pb-12">
                     <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} searchPlaceHolder={"Search name workflows..."} />
                 </div>
-                <div className="flex items-center justify-between pt-5 pb-4 px-5">
+                <div className="bg-box-color border border-contrast-box-color rounded-lg pt-5 pb-5 px-5">
+                    <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-light text-custom-grey font-outfit">Your Workflows</h2>
                     <div className="flex space-x-4">
                         <button
@@ -105,23 +134,30 @@ const WorkflowTab = () => {
                     <WorkflowTable workflows={filteredWorkflows} toggleWorkflowSelection={toggleWorkflowSelection} />
                 </div>
             </div>
+            </div>
         </>
     )
 }
 
 const HistoryTab = () => {
     const [searchInput, setSearchInput] = useState('');
+    const [workflows, setWorkflows] = useState(mockHistory);
+
+    const filteredWorkflows = workflows.filter(workflow =>
+        workflow.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
 
     return (
         <>
             <div className="flex flex-col w-full">
-                <div className="flex pt-8 w-full">
-                    <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} searchPlaceHolder={"History"}/>
+                <div className="flex pt-8 w-full pb-12">
+                    <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} searchPlaceHolder={"Search name workflows..."} />
                 </div>
-                <div className="flex flex-col flex-grow w-full pt-10">
-                    <div className="flex bg-box-color border-contrast-box-color border w-full h-[529px] rounded-md">
-                    </div>
+                <div className="bg-box-color border border-contrast-box-color rounded-lg pt-5 pb-5 px-5">
+                    <h2 className="text-2xl font-light text-custom-grey font-outfit mb-4">Workflows History</h2>
+                    <WorkflowHistoryTable workflows={filteredWorkflows} />
                 </div>
+
             </div>
         </>
     )

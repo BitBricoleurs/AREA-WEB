@@ -46,19 +46,6 @@ const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
         setOpenDropdownId(null)
     };
 
-    const toggleSortDirection = (key) => {
-        setSortConfig((currentSortConfig) => {
-            if (currentSortConfig.key === key) {
-                if (currentSortConfig.direction === 'asc') {
-                    return { key, direction: 'desc' };
-                } else if (currentSortConfig.direction === 'desc') {
-                    return { key, direction: 'none' };
-                }
-            }
-            return { key, direction: 'asc' };
-        });
-    };
-
     useEffect(() => {
         setSortedWorkflows([...workflows]);
     }, [workflows]);
@@ -135,7 +122,7 @@ const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
 
     return (
         <div className="overflow-x-auto relative">
-            <table className="w-full text-sm text-center text-custom-grey bg-contrast-box-color">
+            <table className="w-full text-sm text-center text-custom-grey bg-contrast-box-color rounded-lg border border-contrast-box-color">
                 <thead className="text-xs uppercase bg-box-color border-b border-contrast-box-color text-custom-grey">
                 <tr>
                     <th className="py-3 px-6">Select</th>
