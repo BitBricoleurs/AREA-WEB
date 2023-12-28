@@ -1,22 +1,31 @@
 import { useState, useEffect } from "react";
 
 const TextEntry = ({ data, object, setObject }) => {
-    const isParameter = data.type === "parameter";
     const [inputValue, setInputValue] = useState("");
 
     useEffect(() => {
-        if (isParameter) {
-            setInputValue(object.params?.[data.variableName] || "");
+        const condition = object.conditions?.find(cond => cond.key === data.variableName);
+        if (condition) {
+            setInputValue(condition.value);
         } else {
-            const condition = object.conditions?.find(cond => cond.key === data.variableName);
-            setInputValue(condition ? condition.value : "");
+            setInputValue(object.params?.[data.variableName] || "");
         }
-    }, [object, data.variableName, isParameter]);
+    }, [object, data.variableName]);
 
     const handleChange = (text) => {
         setInputValue(text);
+        const conditionIndex = object.conditions?.findIndex(cond => cond.key === data.variableName);
 
-        if (isParameter) {
+        if (conditionIndex > -1) {
+            const updatedConditions = object.conditions.map((cond, index) =>
+                index === conditionIndex ? { ...cond, value: text } : cond
+            );
+
+            setObject({
+                ...object,
+                conditions: updatedConditions
+            });
+        } else {
             setObject({
                 ...object,
                 params: {
@@ -24,32 +33,6 @@ const TextEntry = ({ data, object, setObject }) => {
                     [data.variableName]: text
                 }
             });
-        } else {
-            const currentConditions = object.conditions || [];
-
-            const conditionIndex = currentConditions.findIndex(cond => cond.key === data.variableName);
-
-            if (conditionIndex > -1) {
-                const updatedConditions = currentConditions.map((cond, index) =>
-                    index === conditionIndex ? { ...cond, value: text } : cond
-                );
-
-                setObject({
-                    ...object,
-                    conditions: updatedConditions
-                });
-            } else {
-                const newCondition = {
-                    key: data.variableName,
-                    value: text,
-                    type: data.conditionType
-                };
-
-                setObject({
-                    ...object,
-                    conditions: [...currentConditions, newCondition]
-                });
-            }
         }
     };
 

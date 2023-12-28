@@ -1,27 +1,81 @@
-import {
-    Input,
-    Timepicker,
-    initTE,
-} from "tw-elements";
+import React, { useState, useEffect } from 'react';
 
-initTE({ Input, Timepicker });
+const TimePicker = ({ data, object, setObject }) => {
+    const [hours, setHours] = useState('');
+    const [minutes, setMinutes] = useState('');
 
-const TimePicker = ({ value, onChange }) => {
+    useEffect(() => {
+        const timeValue = object.params?.[data.variableName] || '';
+        if (timeValue) {
+            const [hrs, mins] = timeValue.split(':');
+            setHours(hrs);
+            setMinutes(mins);
+        }
+    }, [object, data.variableName]);
+
+    const updateTime = () => {
+        let formattedHours = hours;
+        let formattedMinutes = minutes;
+
+        if (parseInt(hours, 10) > 23) {
+            formattedHours = '23';
+        }
+        if (parseInt(minutes, 10) > 59) {
+            formattedMinutes = '59';
+        }
+
+        setObject({
+            ...object,
+            params: {
+                ...object.params,
+                [data.variableName]: `${formattedHours.padStart(2, '0')}:${formattedMinutes.padStart(2, '0')}`
+            }
+        });
+    };
+
+    const handleHoursChange = (e) => {
+        const val = e.target.value;
+        if (/^\d*$/.test(val) && val.length <= 2) {
+            setHours(val);
+        }
+    };
+
+    const handleMinutesChange = (e) => {
+        const val = e.target.value;
+        if (/^\d*$/.test(val) && val.length <= 2) {
+            setMinutes(val);
+        }
+    };
+
+    // Ensuring the blur event doesn't cause any side effects other than updating the time
+    const handleBlur = () => {
+        updateTime();
+    };
+
     return (
-        <div className="relative" data-te-timepicker-init data-te-input-wrapper-init>
-            <input
-                type="text"
-                className="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                id="form1"
-                value={value}
-                onChange={onChange}
-            />
-            <label
-                htmlFor="form1"
-                className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-            >
-                Select a time
-            </label>
+        <div className="bg-background rounded-lg flex flex-row items-center justify-between  py-1">
+            <span className="text-[12px] text-white py-1">Time of day</span>
+            <div className="flex flex-row rounded-lg justify-end bg-contrast-box-color items-center mr-2">
+                <input
+                    type="text"
+                    name="hours"
+                    value={hours}
+                    onChange={handleHoursChange}
+                    onBlur={handleBlur}
+                    className="text-[12px] outline-none w-6 text-center bg-contrast-box-color text-white rounded-l-lg placeholder:text-[10px] stay-bg-color"
+                    placeholder="HH"
+                />
+                <span className="text-[12px] text-white bg-contrast-box-color ">:</span>
+                <input
+                    type="text"
+                    name="minutes"
+                    value={minutes}
+                    onChange={handleMinutesChange}
+                    onBlur={handleBlur}
+                    className="text-[12px] outline-none w-6  text-center bg-contrast-box-color text-white rounded-r-lg  placeholder:text-[10px] stay-bg-color"
+                    placeholder="MM"
+                />
+            </div>
         </div>
     );
 };
