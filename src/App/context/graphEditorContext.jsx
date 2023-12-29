@@ -22,31 +22,6 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
         }
     }
 
-    function handleSetSelectedTrigger(startingTrigger, setWorkflow) {
-
-
-        const triggerNodeData = getNodeTriggerFromData(startingTrigger.serviceName, startingTrigger.description);
-
-        const triggerNodeDataForWorkflow = {
-            id: triggerNodeData.id,
-            type: triggerNodeData.type,
-            type_action: startingTrigger.description,
-            service: startingTrigger.serviceName,
-            next_id: null,
-            conditions: [],
-            params: [],
-        };
-
-
-        setWorkflow(prevWorkflow => {
-            const exists = prevWorkflow.some(node => node.id === triggerNodeData.id);
-            if (!exists) {
-                return [...prevWorkflow, triggerNodeDataForWorkflow];
-            }
-            return prevWorkflow;
-        });
-    }
-
 
     const initialTriggerNode = [getNodeTriggerFromData(startingTrigger.serviceName, startingTrigger.description)];
     const initialNodes = [...initialTriggerNode, ...initNodes];
@@ -204,7 +179,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
     }
 
     return (
-        <GraphEditorContext.Provider value={{ nodes, setNodes, edges, setEdges, addNode, addEdge, onNodesChange, onEdgesChange, getNodeTriggerFromData, handleSetSelectedTrigger, replaceNode, clickedNode, setClickedNode, handleNewAction, handleNewCondition}}>
+        <GraphEditorContext.Provider value={{ nodes, setNodes, edges, setEdges, addNode, addEdge, onNodesChange, onEdgesChange, getNodeTriggerFromData, replaceNode, clickedNode, setClickedNode, handleNewAction, handleNewCondition}}>
             {children}
         </GraphEditorContext.Provider>
     );
