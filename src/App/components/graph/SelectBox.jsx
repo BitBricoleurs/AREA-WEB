@@ -5,7 +5,7 @@ const SelectBox = ({ placeholder, value, onChange, options }) => {
     return (
         <div className="flex flex-col w-full items-center">
             <select
-                className={"font-outfit w-full text- pl-2 text-sm py-0.5 text-custom-grey border border-contrast-box-color rounded-lg bg-background dark:border-contrast-box-color dark:placeholder-gray-400 dark:text-custom-grey ring-background outline-none focus:border-light-purple"}
+                className={"placeholder:text-custom-grey text-[12px] pl-1 bg-background rounded-lg h-8 font-outfit w-full py-0.5 text-custom-grey border border-contrast-box-color dark:border-contrast-box-color dark:placeholder-gray-400 dark:text-custom-grey ring-background outline-none focus:border-light-purple"}
                 value={value}
                 onChange={onChange}
             >

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-//import Weekdays from "./weekdays";
-//import Calendar from "./calendar";
+import DayPicker from './WeekDays.jsx';
+import Calendar from "./Calendar.jsx";
 
 const ChoiceEntry = ({data, object, setObject}) => {
 
@@ -8,16 +8,16 @@ const ChoiceEntry = ({data, object, setObject}) => {
 
     const displayRevealComponent = () => {
         switch (data?.options[selectedChoice]?.reveal) {
-            //case "Calendar":
-            //    return (
-            //        <Calendar
-            //            update={selectedChoice}
-            //            object={object}
-            //            setObject={setObject}
-            //       />
-            //   );
-            //case "Weekdays":
-            //   return <Weekdays object={object} setObject={setObject}/>;
+            case "Calendar":
+                return (
+                    <Calendar
+                        update={selectedChoice}
+                        object={object}
+                        setObject={setObject}
+                   />
+               );
+            case "Weekdays":
+               return <DayPicker object={object} setObject={setObject}/>;
             default:
                 return null;
         }

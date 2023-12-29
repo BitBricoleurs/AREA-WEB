@@ -4,6 +4,7 @@ import NodeHeader from "./NodeHeader.jsx";
 import renderSections from "./RenderForm.jsx";
 import SelectBox from "./SelectBox.jsx";
 import ActionsServices from "../../../constants/Actions.json";
+import {useWorkflowContext} from "../../context/workflowContext.jsx";
 const findService = (serviceName, services) => {
     const service = services.find((s) => s.name === serviceName);
     if (!service) return null;
@@ -24,6 +25,8 @@ const isActionHasOptions = (action) => {
 
 function actionNode({ data }) {
 
+    const { updateWorkflowNode } = useWorkflowContext();
+
     const [selectedAction, setSelectedAction] = useState(null);
     const [hasOptions, setHasOptions] = useState(false);
     const [selectedOption, setSelectedOption] = useState([]);
@@ -39,9 +42,14 @@ function actionNode({ data }) {
     }, []);
 
     const handleOptionsChange = (e) => {
-        const option = selectedAction?.options.find((option) => option.value === e.target.value);
+        const option = selectedAction?.options.find((option) => option.name === e.target.value);
         setSelectedOption(option);
-        setCurrentSections(option?.section);
+        setCurrentSections(option?.sections);
+        const newParams = {
+            ...data.params,
+            options: option.name
+        };
+        updateWorkflowNode(data.id, { params: newParams });
     };
 
 
@@ -54,7 +62,7 @@ function actionNode({ data }) {
                     <NodeHeader triggerName={data.serviceAction} logo={data.logo} color={data.color}/>
                     {(hasOptions &&
                         <div className={"w-full h-full justify-center items-center flex flex-col"}>
-                            <SelectBox placeholder={"Select a action"} onChange={handleOptionsChange} options={selectedaction?.options} />
+                            <SelectBox placeholder={"Select a action"} onChange={handleOptionsChange} options={selectedAction?.options} />
                         </div>
                     )}
                 </div>

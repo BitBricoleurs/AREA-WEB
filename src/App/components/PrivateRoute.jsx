@@ -1,8 +1,11 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
+import { useContextLogin} from "../context/loginContext.jsx";
 
 const isAuthenticated = () => {
-    return localStorage.getItem('userToken') !== null;
+
+    const { tokenExists } = useContextLogin();
+    return tokenExists();
 };
 
 const PrivateRoute = ({ children }) => {

@@ -1,5 +1,5 @@
 import {useWorkflowContext} from "../../context/workflowContext.jsx";
-import {ChoiceEntry, ChoiceTextEntry, TextArrayEntry, TextEntry} from "../index.js";
+import {ChoiceEntry, ChoiceTextEntry, TextArrayEntry, TextEntry, TimePicker} from "../index.js";
 import React from "react";
 
 const renderSections = (sections, nodeId) => {
@@ -26,7 +26,7 @@ const Section = ({ section, nodeId }) => {
     const sectionDispatch = (blockItem, index) => {
         switch (blockItem.name) {
             case "timeEntry":
-                return <TimeEntry data={blockItem} key={index} object={currentNode} setObject={setObject} />;
+                return <TimePicker data={blockItem} key={index} object={currentNode} setObject={setObject} />;
             case "choice":
                 return <ChoiceEntry data={blockItem} key={index} object={currentNode} setObject={setObject} />;
             case "choiceTextEntry":

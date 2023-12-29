@@ -67,9 +67,10 @@ const WorkflowTab = () => {
 
     const fetchWorkflowDetails = async (workflowId) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}your-workflow/${workflowId}`, {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}specific-workflow/${workflowId}`, {
                 method: 'GET',
                 headers: {
+                    'ngrok-skip-browser-warning': true,
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                     'Content-Type': 'application/json'
                 }
@@ -89,6 +90,7 @@ const WorkflowTab = () => {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-user-workflows-ids`, {
                 method: 'GET',
                 headers: {
+                    'ngrok-skip-browser-warning': true,
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                 },
@@ -97,21 +99,18 @@ const WorkflowTab = () => {
                 throw new Error(`Network response was not ok, status: ${response.status}`);
             }
 
-            console.log('Url:', `${import.meta.env.VITE_REACT_APP_API_URL}get-user-workflows-ids`);
-            console.log('Token:', localStorage.getItem('userToken'));
             const data = await response.json();
-            console.log('Data:', data);
 
             const workflowIds = data.workflow_ids;
-            console.log('Workflow IDs:', workflowIds);
 
-            /*
             const workflowDetailsPromises = workflowIds.map(id => fetchWorkflowDetails(id));
             const workflowsData = await Promise.all(workflowDetailsPromises);
-
-            setWorkflows(workflowsData.map(workflow => ({ ...workflow, isSelected: false })));
-            console.log(workflowsData);
-            */
+            const workflowsFormatted = workflowsData.map(data => {
+                const { workflow, ...rest } = data;
+                return { ...workflow, ...rest, isSelected: false };
+            });
+            console.log(" dsds", workflowsFormatted);
+            setWorkflows(workflowsFormatted);
         } catch (error) {
             console.error('Error fetching workflows:', error);
         }
@@ -141,21 +140,38 @@ const WorkflowTab = () => {
         navigate('/automate');
     };
 
-    const handleDeleteWorkflows = () => {
-        const delete_workflows = workflows.filter(workflow => workflow.isSelected).map(workflow => workflow.id);
-        console.log('Delete Workflows clicked', delete_workflows);
-        new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve('Workflows deleted successfully');
-            }, 500);
-        })
-            .then(response => {
-                console.log(response);
-                setWorkflows(currentWorkflows => currentWorkflows.filter(workflow => !workflow.isSelected));
-            })
-            .catch(error => {
-                console.error(error);
+    const deleteWorkflow = async (workflowId) => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/delete-workflow/${workflowId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                    'Content-Type': 'application/json'
+                }
             });
+
+            if (!response.ok) {
+                throw new Error(`Network response was not ok, status: ${response.status}`);
+            }
+
+            return response.json();
+        } catch (error) {
+            console.error('Error deleting workflow:', error);
+            throw error; // Propager l'erreur pour la gérer dans handleDeleteWorkflows
+        }
+    };
+
+    const handleDeleteWorkflows = async () => {
+        try {
+            const deleteWorkflowsIds = workflows.filter(workflow => workflow.isSelected).map(workflow => workflow.id);
+            console.log('Delete Workflows clicked', deleteWorkflowsIds);
+
+            await Promise.all(deleteWorkflowsIds.map(id => deleteWorkflow(id)));
+
+            setWorkflows(currentWorkflows => currentWorkflows.filter(workflow => !workflow.isSelected));
+        } catch (error) {
+            console.error('Error handling delete workflows:', error);
+        }
     };
 
 

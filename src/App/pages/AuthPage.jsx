@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PurpleLogo from "../../assets/icons/purpleLogo.svg";
 import WhiteLogo from "../../assets/icons/whiteLogo.svg";
+import {useContextLogin} from "../context/loginContext.jsx";
 
 const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -113,6 +114,7 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
     const [password, setPassword] = useState('');
     const [showPasswordInput, setShowPasswordInput] = useState(false);
     const navigate = useNavigate();
+    const { login } = useContextLogin();
 
     useEffect(() => {
         const handleEscapeKey = (e) => {
@@ -157,6 +159,7 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}login`, {
                 method: 'POST',
                 headers: {
+                    'ngrok-skip-browser-warning': '45687',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ email, password })
@@ -164,17 +167,14 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
             console.log(response)
 
             const data = await response.json();
-
-            console.log("data: ", data)
-            if (data.status === 200) {
-                localStorage.setItem('userToken', data.token);
-
-                navigate('/dashboard');
+            if (response.status === 200) {
+                login(data.user, data.token);
 
                 setNotification({
                     notificationState: 'Success',
                     message: 'Successfully logged in!'
                 });
+                navigate('/dashboard');
             } else {
                 setNotification({
                     notificationState: 'Error',
@@ -253,6 +253,7 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPasswordInput, setShowPasswordInput] = useState(false);
 
@@ -282,6 +283,9 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
         setPassword(e.target.value);
     };
 
+    const handleNameChange = (e) => {
+        setName(e.target.value);
+    };
 
     const handleConfirmPasswordChange = (e) => {
         setConfirmPassword(e.target.value);
@@ -299,6 +303,13 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
         }
         if (!showPasswordInput) {
             setShowPasswordInput(true);
+            return;
+        }
+        if (!name) {
+            setNotification({
+                notificationState: 'Warning',
+                message: 'Please enter your name'
+            });
             return;
         }
         if (password.length < 8) {
@@ -320,9 +331,10 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}register`, {
                 method: 'POST',
                 headers: {
+                    'ngrok-skip-browser-warning': true,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password})
+                body: JSON.stringify({ email, password, name })
             });
 
             const data = await response.json();
@@ -359,11 +371,14 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                         Bot
                     </span>Butler
                 </span>
-                <form className="max-w-sm mx-auto font-outfit flex flex-col items-center pt-[6%]" onSubmit={handleSubmit}>
+                <form className="max-w-sm mx-auto font-outfit flex flex-col items-center pt-[6%]"
+                      onSubmit={handleSubmit}>
                     <div className="relative mb-6 flex">
                         <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-light-purple">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
+                                 stroke="currentColor" className="w-4 h-4 text-light-purple">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
                             </svg>
 
                         </div>
@@ -371,13 +386,35 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                                value={email}
                                onChange={handleEmailChange}
                                id="input-group-1"
-                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md" placeholder="name@botbutler.com"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md"
+                               placeholder="name@botbutler.com"
                         />
                     </div>
-                    <div className={`relative mb-6 transition-opacity duration-500 ${showPasswordInput ? 'opacity-100' : 'opacity-0'}`}>
+                    <div
+                        className={`relative mb-6 transition-opacity duration-500 ${showPasswordInput ? 'opacity-100' : 'opacity-0'}`}>
                         <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-light-purple">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="w-4 h-4 text-light-purple">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+                            </svg>
+
+                        </div>
+                        <input type="text"
+                               value={name}
+                               onChange={handleNameChange}
+                               id="name"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md"
+                               placeholder="Your name"
+                        />
+                    </div>
+                    <div
+                        className={`relative mb-6 transition-opacity duration-500 ${showPasswordInput ? 'opacity-100' : 'opacity-0'}`}>
+                        <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="w-4 h-4 text-light-purple">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
                             </svg>
 
                         </div>
@@ -385,14 +422,18 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                                value={password}
                                onChange={handlePasswordChange}
                                id="password"
-                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md" placeholder="password"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md"
+                               placeholder="password"
                         />
                     </div>
 
-                    <div className={`relative mb-6 transition-opacity duration-500 ${showPasswordInput ? 'opacity-100' : 'opacity-0'}`}>
+                    <div
+                        className={`relative mb-6 transition-opacity duration-500 ${showPasswordInput ? 'opacity-100' : 'opacity-0'}`}>
                         <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-light-purple">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="w-4 h-4 text-light-purple">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
                             </svg>
 
                         </div>
@@ -400,18 +441,25 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                                value={confirmPassword}
                                onChange={handleConfirmPasswordChange}
                                id="confirmPassword"
-                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md" placeholder="confirm password"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md"
+                               placeholder="confirm password"
                         />
                     </div>
                     <div className="flex items-center pt-4">
-                        <input id="link-checkbox" type="checkbox" value="" className="w-3 h-3 bg-custom-grey border-contrast-box-color rounded dark:focus:ring-blue-600 dark:ring-offset-light-purple focus:ring-2 dark:bg-light-purple dark:border-light-purple"/>
-                        <label htmlFor="link-checkbox" className="ms-2 text-xs font-medium text-gray-900 dark:text-gray-300">Keep me sign in</label>
+                        <input id="link-checkbox" type="checkbox" value=""
+                               className="w-3 h-3 bg-custom-grey border-contrast-box-color rounded dark:focus:ring-blue-600 dark:ring-offset-light-purple focus:ring-2 dark:bg-light-purple dark:border-light-purple"/>
+                        <label htmlFor="link-checkbox"
+                               className="ms-2 text-xs font-medium text-gray-900 dark:text-gray-300">Keep me sign
+                            in</label>
                     </div>
-                    <input type="submit" hidden />
+                    <input type="submit" hidden/>
                 </form>
                 <div className="flex flex-col items-center justify-center w-full pt-[4%] pb-[4%] font-thin">
-                    <button className="text-xs  text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group" onClick={switchToLogin}>
-                        Already have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign in</span>
+                    <button
+                        className="text-xs  text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group"
+                        onClick={switchToLogin}>
+                        Already have an account? <span
+                        className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign in</span>
                     </button>
                 </div>
             </div>
@@ -419,7 +467,7 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
     )
 }
 
-const NotificationManager = ({ notification, setNotification }) => {
+const NotificationManager = ({notification, setNotification}) => {
 
     useEffect(() => {
         if (notification.notificationState !== 'Hide') {

@@ -190,6 +190,7 @@ export default function SettingsPage() {
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}me`, {
                     method: 'GET',
                     headers: {
+                        'ngrok-skip-browser-warning': true,
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     }
@@ -200,17 +201,22 @@ export default function SettingsPage() {
                     if (data.role === 'admin') {
                         setIsAdmin(true);
                         setActiveTab('admin');
+                    } else {
+                        setIsAdmin(false);
                     }
                 } else {
                     console.error('Failed to fetch user data');
+                    setIsAdmin(false);
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
+                setIsAdmin(false);
             }
         };
 
-        checkAdminRole().then(r => console.log('Admin role checked'));
+        checkAdminRole();
     }, []);
+
 
     const tabs = [
         { name: 'admin', label: 'Admin', component: <AdminTab />, barWidth: 75, barOffset: 144, disabled: !isAdmin},

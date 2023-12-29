@@ -7,15 +7,18 @@ const initialSortState = {
 
 const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
     const [openDropdownId, setOpenDropdownId] = useState(null);
-    const [activeStatus, setActiveStatus] = useState(
-        workflows.reduce((status, workflow) => {
-            status[workflow.id] = workflow.state === 'Active';
-            return status;
-        }, {})
+    const [activeStatus, setActiveStatus] = useState({}
     );
     const [sortConfig, setSortConfig] = useState(initialSortState);
     const [sortedWorkflows, setSortedWorkflows] = useState([...workflows]);
 
+    useEffect(() => {
+        const updatedStatus = workflows.reduce((status, workflow) => {
+            status[workflow.id] = workflow.state === 'Active';
+            return status;
+        }, {});
+        setActiveStatus(updatedStatus);
+    }, [workflows]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -32,19 +35,33 @@ const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
     };
 
     const toggleActiveState = async (id) => {
-        // Placeholder for your actual API call
-        const response = await new Promise((resolve) => {
-            setTimeout(() => resolve({ success: true }), 500);
-        });
+        try {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/toggle-workflow/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
 
-        if (response.success) {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok, status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log(data);
+
             setActiveStatus((prevStatus) => ({
                 ...prevStatus,
                 [id]: !prevStatus[id]
             }));
+        } catch (error) {
+            console.error('Error toggling workflow active state:', error);
+        } finally {
+            setOpenDropdownId(null);
         }
-        setOpenDropdownId(null)
     };
+
 
     useEffect(() => {
         setSortedWorkflows([...workflows]);
@@ -184,7 +201,9 @@ const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
                 </tr>
                 </thead>
                 <tbody>
-                {sortedWorkflows.map(workflow => (
+                {sortedWorkflows.map(workflow => {
+                    console.log(workflow)
+                    return (
                     <tr key={workflow.id} className="border-b border-contrast-box-color bg-box-color">
                         <td className="py-4 px-6">
                             <input
@@ -206,7 +225,7 @@ const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
                                     type="button"
                                 >
                                     <span className={`mr-2 inline-block w-3 h-3 rounded-full ${activeStatus[workflow.id] ? 'bg-success-green' : 'bg-error-red'}`}></span>
-                                    {activeStatus[workflow.id] ? 'Active' : 'Deactivate'}
+                                    {activeStatus[workflow.id] ? 'Active' : 'Disabled'}
                                     <svg
                                         className={`w-4 h-4 transform transition-transform ${openDropdownId === workflow.id ? 'rotate-180' : 'rotate-0'}`}
                                         xmlns="http://www.w3.org/2000/svg"
@@ -229,14 +248,14 @@ const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
                                             onClick={() => toggleActiveState(workflow.id)}
                                             className="block w-full px-4 py-2 text-left text-sm text-custom-grey"
                                         >
-                                            {activeStatus[workflow.id] ? 'Deactivate' : 'Activate'}
+                                            {activeStatus[workflow.id] ? 'Disabled' : 'Active'}
                                         </button>
                                     </div>
                                 )}
                             </div>
                         </td>
                     </tr>
-                ))}
+                )})}
                 </tbody>
             </table>
         </div>
