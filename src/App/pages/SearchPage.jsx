@@ -1,5 +1,5 @@
-import { AppNavBar, PageNavigator, SearchBar}  from '../../Static/components';
-import React ,{useState} from "react";
+import {AppNavBar, PageNavigator, SearchBar} from '../../Static/components';
+import React, {useEffect, useState} from "react";
 import WorkflowTable from "../components/WorkflowTable.jsx";
 import {useNavigate} from "react-router-dom";
 import WorkflowHistoryTable from "../components/WorkflowHistoryTable.jsx";
@@ -63,9 +63,64 @@ const WorkflowTab = () => {
 
     const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState('');
-    const [workflows, setWorkflows] = useState(
-        mockWorkflows.map(workflow => ({ ...workflow, isSelected: false }))
-    );
+    const [workflows, setWorkflows] = useState([]);
+
+    const fetchWorkflowDetails = async (workflowId) => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}your-workflow/${workflowId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log(response);
+            if (!response.ok) {
+                throw new Error(`Network response was not ok, status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching workflow details:', error);
+        }
+    };
+
+    const fetchWorkflows = async () => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-user-workflows-ids`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`Network response was not ok, status: ${response.status}`);
+            }
+
+            console.log('Url:', `${import.meta.env.VITE_REACT_APP_API_URL}get-user-workflows-ids`);
+            console.log('Token:', localStorage.getItem('userToken'));
+            const data = await response.json();
+            console.log('Data:', data);
+
+            const workflowIds = data.workflow_ids;
+            console.log('Workflow IDs:', workflowIds);
+
+            /*
+            const workflowDetailsPromises = workflowIds.map(id => fetchWorkflowDetails(id));
+            const workflowsData = await Promise.all(workflowDetailsPromises);
+
+            setWorkflows(workflowsData.map(workflow => ({ ...workflow, isSelected: false })));
+            console.log(workflowsData);
+            */
+        } catch (error) {
+            console.error('Error fetching workflows:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchWorkflows();
+    }, []);
+
 
 
     const filteredWorkflows = workflows.filter(workflow =>
