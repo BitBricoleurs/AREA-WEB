@@ -1,8 +1,12 @@
 import whiteLogo from "../../assets/icons/whiteLogo.svg";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import { Link } from 'react-router-dom';
+import {useContextLogin} from "../context/loginContext.jsx";
 
 const AppNavBar = ({isSidebarExpanded, onToggleSidebar, currentPage}) => {
+    const {tokenExists, logout, getMe, isLoading} = useContextLogin();
+
+
     const Dropdown = ({ buttonContent, children }) => {
         const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -51,6 +55,28 @@ const AppNavBar = ({isSidebarExpanded, onToggleSidebar, currentPage}) => {
         return () => window.removeEventListener('resize', checkWindowSize);
     }, []);
 
+    const [userName, setUserName] = useState('Account');
+
+    useMemo(() => {
+        const fetchUser = async () => {
+            if (tokenExists()) {
+                try {
+                    const userData = await getMe();
+                    setUserName(userData.name);
+                } catch (error) {
+                    console.error("Error fetching user data", error);
+                    logout();
+                }
+            } else {
+                logout();
+            }
+        };
+        fetchUser();
+    }, []);
+
+
+
+
     const isCurrentPage = (page) => currentPage === page;
 
     return (
@@ -75,17 +101,19 @@ const AppNavBar = ({isSidebarExpanded, onToggleSidebar, currentPage}) => {
                                     </Link>
                                     <Dropdown buttonContent={
                                         <div className="flex items-center space-x-3 mx-3 sm:mx-6 font-thin">
-                                        <span className="text-md">Account</span>
+                                            {isLoading ? (
+                                                <div>Chargement...</div>
+                                            ) : (
+                                                <span className="text-md">{userName}</span>
+                                            )}
                                         </div>
                                     } >
                                         <div className="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabIndex="-1">
                                             <div className="py-1" role="none">
-                                                <a href="#" className="text-custom-grey block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-0">Account settings</a>
-                                                <a href="#" className="text-custom-grey block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-1">Support</a>
-                                                <a href="#" className="text-custom-grey block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-2">License</a>
-                                                <form method="POST" action="#" role="none">
-                                                    <button type="submit" className="text-custom-grey block w-full px-4 py-2 text-left text-sm" role="menuitem" tabIndex="-1" id="menu-item-3">Sign out</button>
-                                                </form>
+
+                                                <Link to="/settings" className="text-custom-grey block px-4 py-2 text-sm hover:text-light-purple" role="menuitem" tabIndex="-1" id="menu-item-0">Account settings</Link>
+                                                <Link to="https://github.com/BitBricoleurs/AREA-WEB" className="text-custom-grey block px-4 py-2 text-sm hover:text-light-purple" role="menuitem" tabIndex="-1" id="menu-item-2">License</Link>
+                                                    <button onClick={logout} className="text-custom-grey block w-full px-4 py-2 text-left text-sm hover:text-light-purple" role="menuitem" tabIndex="-1" id="menu-item-3">Sign out</button>
                                             </div>
                                         </div>
                                     </Dropdown>

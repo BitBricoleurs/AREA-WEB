@@ -53,12 +53,6 @@ const GraphEditor = ({startingTrigger, workflowId}) => {
 
     const { modifiedOnNodesChange, handleEdges } = useGraphEditorHandlers();
 
-
-    useEffect(() => {
-        console.log("useEffect workflow:", workflow);
-        handleSetSelectedTrigger(startingTrigger, setWorkflow);
-    }, []);
-
     useEffect(() => {
         if (workflow.length === 0) {
             return;

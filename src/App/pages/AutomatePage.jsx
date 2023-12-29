@@ -124,13 +124,13 @@ function AutomateContent()
     const [workflowName, setWorkflowName] = useState('');
     const [workflowDescription, setWorkflowDescription] = useState('');
     const {workflowId, setWorkflowId} = useWorkflowContext();
+    const {createWorkflow} = useWorkflowContext();
 
 
     useEffect(() => {
         const id = location.state?.workflowID;
         if (id && id !== 'new') {
             setWorkflowId(id);
-            // Fetch API
         } else {
             setIsSelectingTrigger(true);
         }
@@ -141,14 +141,20 @@ function AutomateContent()
         setIsModalOpen(true);
     };
 
-    const handleCreateWorkflow = (trigger, newWorkflowName, newWorkFlowDescription) => {
-        setWorkflowId('0');
-        setIsSelectingTrigger(false);
-        setIsModalOpen(false);
+    const handleCreateWorkflow = async (trigger, newWorkflowName, newWorkFlowDescription) => {
         setWorkflowName(newWorkflowName);
         setWorkflowDescription(newWorkFlowDescription);
 
+        try {
+            const workflowData = await createWorkflow(trigger);
+            setIsSelectingTrigger(false);
+            setIsModalOpen(false);
+            console.log("Workflow créé avec succès:", workflowData);
+        } catch (error) {
+            console.error("Erreur lors de la création du workflow:", error);
+        }
     }
+
 
     const handleCloseModal = () => {
         setIsModalOpen(false);

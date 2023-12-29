@@ -7,15 +7,13 @@ const InteractBurger = () => {
 
     const handleToggle = () => {
         if (isExpanded) {
-            // Commencer l'animation de fermeture
             setIsClosing(true);
-            const animationDuration = 500; // Durée correspondant à 'duration-500' dans Tailwind
+            const animationDuration = 500;
             setTimeout(() => {
                 setIsExpanded(false);
                 setIsClosing(false);
             }, animationDuration);
         } else {
-            // Ouvrir le contenu sans animation de fermeture
             setIsExpanded(true);
         }
     };
