@@ -24,11 +24,12 @@ export const LoginContextProvider = ({ children }) => {
     };
 
     const getMe = async () => {
-        setIsLoading(true); // Commence le chargement
+        setIsLoading(true);
         try {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}me`, {
                 method: 'GET',
                 headers: {
+                    'ngrok-skip-browser-warning': '69420',
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                 },

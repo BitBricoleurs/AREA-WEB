@@ -7,7 +7,7 @@ const SideBarSettings = ({ onClose, startClosing, node, updateNodePosition }) =>
 
     const truncateToTwoDecimals = (num) => Math.floor(num * 100) / 100;
     const {workflow } = useWorkflowContext();
-    const currentNodeWorkflow = workflow.find((n) => n.id === node.id);
+    const currentNodeWorkflow = workflow.find((n) => n.id == node.id);
 
     const [position, setPosition] = useState({
         x: truncateToTwoDecimals(node.position.x),

@@ -70,7 +70,7 @@ const GraphEditor = ({startingTrigger, workflowId}) => {
     const updateNodePosition = (nodeId, newPosition) => {
         setNodes((nds) =>
             nds.map((node) => {
-                if (node.id === nodeId) {
+                if (node.id == nodeId) {
                     return { ...node, position: { ...newPosition } };
                 }
                 return node;

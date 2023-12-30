@@ -1,5 +1,6 @@
 import React from 'react';
 import { useContext, useState, createContext } from "react";
+import {useGraphEditorContext} from "./graphEditorContext.jsx";
 
 const WorkflowContext = createContext();
 
@@ -12,6 +13,7 @@ export const WorkflowContextProvider = ({children }) => {
     const [isSidebarSettingsOpen, setSidebarSettingsOpen] = useState(false);
     const [workflowName, setWorkflowName] = useState('');
     const [workflowDescription, setWorkflowDescription] = useState('');
+    const [isLoaded, setIsLoaded] = useState(false);
 
     const toggleAddModal = () => {
         setAddModalOpen(!isAddModalOpen);
@@ -24,7 +26,7 @@ export const WorkflowContextProvider = ({children }) => {
     const updateNodeInWorkflow = (nodeId, newNodeData) => {
         setWorkflow((prevWorkflow) => {
             return prevWorkflow.map(node =>
-                node.id === nodeId ? { ...node, ...newNodeData } : node
+                node.id == nodeId ? { ...node, ...newNodeData } : node
             );
         });
     };
@@ -34,7 +36,7 @@ export const WorkflowContextProvider = ({children }) => {
         const triggerNodeDataForWorkflow = {
             id: 0,
             type: 'trigger',
-            type_action: selectedTrigger.description,
+            type_trigger: selectedTrigger.description,
             service: selectedTrigger.serviceName,
             next_id: null,
             conditions: [],
@@ -53,6 +55,7 @@ export const WorkflowContextProvider = ({children }) => {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}create-workflow`, {
             method: 'POST',
             headers: {
+                'ngrok-skip-browser-warning': '69420',
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
             },
@@ -67,11 +70,9 @@ export const WorkflowContextProvider = ({children }) => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        console.log("The worflow sent is : ", tmpWorkflow)
         const data = await response.json();
         setWorkflowId(data.workflow_id);
-        console.log(data);
-        const test = await loadWorkflow(data.workflow_id);
+        setWorkflow(tmpWorkflow);
         return data;
     }
 
@@ -79,15 +80,16 @@ export const WorkflowContextProvider = ({children }) => {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}edit-workflow/${workflowId}`, {
             method: 'PUT',
             headers: {
+                'ngrok-skip-browser-warning': '69420',
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
             },
-            body: {
-                "name_workflow": workflowName,
-                "description" : workflowDescription,
-                "workflow": workflow,
-                "variables": variables
-            },
+            body: JSON.stringify({
+                'name_workflow': '',
+                'description': '',
+                'workflow': workflow,
+                'variables': variables
+            }),
         });
 
         if (!response.ok) {
@@ -95,8 +97,6 @@ export const WorkflowContextProvider = ({children }) => {
         }
 
         const data = await response.json();
-
-        console.log(data);
         return data;
     }
 
@@ -104,6 +104,7 @@ export const WorkflowContextProvider = ({children }) => {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-workflow/${workflowId}`, {
             method: 'GET',
             headers: {
+                'ngrok-skip-browser-warning': '69420',
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
             },
@@ -115,19 +116,20 @@ export const WorkflowContextProvider = ({children }) => {
 
         const data = await response.json();
 
+
         setWorkflowName(data.name_workflow);
         setWorkflowDescription(data.description);
         setWorkflow(data.workflow);
         setVariables(data.variables);
-
-        console.log(data);
+        setIsLoaded(true)
+        setWorkflowId(workflowId)
         return data;
     }
 
     const updateWorkflowNode = (nodeId, newData) => {
         setWorkflow(prevWorkflow => {
             return prevWorkflow.map(node => {
-                if (node.id === nodeId) {
+                if (node.id == nodeId) {
                     return { ...node, ...newData };
                 }
                 return node;
@@ -137,15 +139,12 @@ export const WorkflowContextProvider = ({children }) => {
 
     const addWorkflowNode = (node) => {
         setWorkflow(prevWorkflow => {
-            if (prevWorkflow.some(n => n.id === node.id)) {
+            if (prevWorkflow.some(n => n.id == node.id)) {
                 return prevWorkflow;
             }
             return [...prevWorkflow, node];
         });
     }
-
-    console.log("workflow: ", workflow)
-
 
     return (
         <WorkflowContext.Provider
@@ -169,7 +168,9 @@ export const WorkflowContextProvider = ({children }) => {
                 setWorkflowDescription,
                 updateWorkflowNode,
                 addWorkflowNode,
-                createWorkflow
+                createWorkflow,
+                editWorkflow,
+                isLoaded
             }}
         >
             {children}

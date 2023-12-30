@@ -11,8 +11,10 @@ const findService = (serviceName, services) => {
 }
 const findTrigger = (serviceName, triggerName, triggerServices) => {
     const service = findService(serviceName, triggerServices);
+    console.log("service: ", service)
     if (!service) return null;
     const trigger = service.triggers.find((a) => a.name === triggerName);
+    console.log("trigger: ", trigger, triggerName)
     if (!trigger) return null;
     return trigger;
 };
@@ -32,6 +34,7 @@ function TriggerNode({ data }) {
 
     useEffect(() => {
         const selectTrigger = findTrigger(data.serviceName, data.serviceTrigger, TriggerServices);
+        console.log("selectTrigger: ", selectTrigger);
         setSelectedTrigger(selectTrigger);
         setHasOptions(isTriggerHasOptions(selectTrigger));
         if (!hasOptions) {
