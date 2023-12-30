@@ -3,12 +3,13 @@ import {useEdgesState, useNodesState} from "reactflow";
 import {cardServicesStyles} from "../../constants/index.js";
 import {initEdges, initNodes} from "/src/constants/InitGraph.jsx";
 import {useWorkflowContext} from "./workflowContext.jsx";
+import {data} from "autoprefixer";
 
 const GraphEditorContext = createContext();
 
 export const GraphEditorContextProvider = React.memo(({ children, startingTrigger}) => {
 
-    const {addWorkflowNode, toggleAddModal} = useWorkflowContext()
+    const {addWorkflowNode, toggleAddModal, isLoaded, workflow} = useWorkflowContext()
 
     function getNodeTriggerFromData(serviceName, serviceTrigger) {
         const bgColor = cardServicesStyles[serviceName].backgroundColor || cardServicesStyles["default"].backgroundColor;
@@ -22,12 +23,66 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
         }
     }
 
+    const convertWorkflowToNodes = (workflowData) => {
+
+        let nodes = [];
+
+
+        workflowData.forEach((node) => {
+            let nodeData;
+            if (node.type === 'trigger') {
+                console.warn("node: ", node)
+                nodeData = { serviceTrigger: node.type_trigger };
+            } else if (node.type === 'action') {
+                nodeData = { serviceAction: node.type_action };
+            }
+
+            const newNode = {
+                id: node.id.toString(),
+                type: node.type,
+                data: {
+                    ...nodeData,
+                    serviceName: node.service,
+                    color: cardServicesStyles[node.service]?.backgroundColor || cardServicesStyles["default"].backgroundColor,
+                    logo: cardServicesStyles[node.service]?.iconPath || cardServicesStyles["default"].iconPath,
+                    id: node.id.toString(),
+                },
+                position: { x: 0, y: 50 },
+            };
+            nodes.push(newNode);
+        });
+        return nodes;
+    };
+
+    const convertWorkflowToEdges = (workflowData) => {
+        let edges = [];
+
+        workflowData.forEach((node) => {
+            const nextId = node.next_id === -1 ? null : node.next_id;
+
+            if (nextId !== null && nextId !== undefined) {
+                const edge = {
+                    id: `e${node.id}-${nextId}`,
+                    source: node.id.toString(),
+                    target: nextId.toString(),
+                };
+                edges.push(edge);
+            }
+        });
+        return edges;
+    };
 
     const initialTriggerNode = [getNodeTriggerFromData(startingTrigger.serviceName, startingTrigger.description)];
-    const initialNodes = [...initialTriggerNode, ...initNodes];
-
+    let initialNodes = [...initialTriggerNode, ...initNodes];
+    let initialEdges = [...initEdges];
+    if (isLoaded) {
+        initialNodes = convertWorkflowToNodes(workflow);
+        initialEdges = convertWorkflowToEdges(workflow);
+        console.log("initialNodes: ", initialNodes)
+        console.log("initialEdges: ", initialEdges)
+    }
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
+    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     const [clickedNode, setClickedNode] = useState(null);
 
     const addNode = (newNode) => {
@@ -54,7 +109,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
 
     const replaceNode = (clickedNode, newNode) => {
         setNodes((prevNodes) => {
-            const nodeIndex = prevNodes.findIndex(node => node.id === clickedNode.id);
+            const nodeIndex = prevNodes.findIndex(node => node.id == clickedNode.id);
             if (nodeIndex === -1) return prevNodes;
 
             const updatedNewNode = { ...newNode, clickedNode };
@@ -68,9 +123,9 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
 
         setEdges((prevEdges) => {
             return prevEdges.map(edge => {
-                if (edge.source === clickedNode.id) {
+                if (edge.source == clickedNode.id) {
                     return { ...edge, source: newNode.id };
-                } else if (edge.target === clickedNode.id) {
+                } else if (edge.target == clickedNode.id) {
                     return { ...edge, target: newNode.id };
                 }
                 return edge;
@@ -165,7 +220,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
         const conditionNodeDataForWorkflow = {
             id: newNodeId,
             type: 'condition',
-            type_action: 'Condition',
+            type_condition: '',
             service: 'System',
             next_id_src_success: null,
             next_id_src_fail: null,
@@ -178,8 +233,9 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
         toggleAddModal();
     }
 
+
     return (
-        <GraphEditorContext.Provider value={{ nodes, setNodes, edges, setEdges, addNode, addEdge, onNodesChange, onEdgesChange, getNodeTriggerFromData, replaceNode, clickedNode, setClickedNode, handleNewAction, handleNewCondition}}>
+        <GraphEditorContext.Provider value={{ nodes, setNodes, edges, setEdges, addNode, addEdge, onNodesChange, onEdgesChange, getNodeTriggerFromData, replaceNode, clickedNode, setClickedNode, handleNewAction, handleNewCondition, convertWorkflowToNodes}}>
             {children}
         </GraphEditorContext.Provider>
     );

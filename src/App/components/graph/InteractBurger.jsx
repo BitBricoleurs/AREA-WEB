@@ -18,7 +18,7 @@ const InteractBurger = () => {
         }
     };
 
-    const { workflowName, workflowDescription, workflow, variables } = useWorkflowContext();
+    const { workflowName, workflowDescription, workflow, variables, editWorkflow } = useWorkflowContext();
 
     const downloadJson = () => {
         const data = {
@@ -40,6 +40,10 @@ const InteractBurger = () => {
 
         URL.revokeObjectURL(url);
     };
+
+    const handleSave = async () => {
+        await editWorkflow();
+    }
 
     return (
         <div className={`fixed right-0 mt-4 mr-4 z-50 transition-all duration-500 ease-in-out ${isExpanded ? 'w-1/4 h-1/4 bg-box-color bg-opacity-95 rounded-lg' : 'w-10 h-10'} ${isClosing ? 'opacity-100 scale-95' : 'opacity-100 scale-100'}`}>
@@ -67,7 +71,8 @@ const InteractBurger = () => {
                     onClick={downloadJson}>
                         <span className="font-outfit text-sm font-medium text-light-purple group-hover:text-background">{"Download"}</span>
                     </button>
-                    <button className="flex flex-col justify-center items-center w-1/3 h-10 mt-4 hover:bg-contrast-box-color rounded-lg bg-light-purple group transition-all duration-300">
+                    <button className="flex flex-col justify-center items-center w-1/3 h-10 mt-4 hover:bg-contrast-box-color rounded-lg bg-light-purple group transition-all duration-300"
+                    onClick={handleSave}>
                         <span className="font-outfit text-sm font-medium group-hover:text-light-purple text-background">{"Save"}</span>
                     </button>
                 </div>

@@ -124,7 +124,7 @@ function AutomateContent()
     const [workflowName, setWorkflowName] = useState('');
     const [workflowDescription, setWorkflowDescription] = useState('');
     const {workflowId, setWorkflowId} = useWorkflowContext();
-    const {createWorkflow} = useWorkflowContext();
+    const {createWorkflow, setWorkflow} = useWorkflowContext();
 
 
     useEffect(() => {

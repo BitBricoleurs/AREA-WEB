@@ -8,13 +8,14 @@ const useGraphEditorHandlers = () => {
     const { workflow, setWorkflow } = useWorkflowContext();
     const { variables, setVariables } = useWorkflowContext();
     console.log("variables: ", variables)
+    console.log("workflow: ", workflow)
 
     const handleDeleteNode = useCallback((changes) => {
         const invinsibleNodeTypes = ['trigger', 'add'];
 
         return changes.filter((change) => {
             if (change.type === 'remove') {
-                const nodeToRemove = nodes.find(node => node.id === change.id);
+                const nodeToRemove = nodes.find(node => node.id == change.id);
                 if (invinsibleNodeTypes.includes(nodeToRemove?.type)) {
                     return false;
                 }

@@ -17,7 +17,7 @@ const Section = ({ section, nodeId }) => {
 
     const { workflow, updateNodeInWorkflow } = useWorkflowContext();
 
-    const currentNode = workflow.find(node => node.id === nodeId);
+    const currentNode = workflow.find(node => node.id == nodeId);
 
     const setObject = (newObjectData) => {
         updateNodeInWorkflow(nodeId, newObjectData);
