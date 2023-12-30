@@ -7,14 +7,19 @@ const initialSortState = {
 
 const UserTable = ({ users, toggleUserSelection }) => {
     const [openDropdownId, setOpenDropdownId] = useState(null);
-    const [activeStatus, setActiveStatus] = useState(
-        users.reduce((status, users) => {
-            status[users.id] = users.state === 'Admin';
-            return status;
-        }, {})
+    const [activeStatus, setActiveStatus] = useState({}
     );
     const [sortConfig, setSortConfig] = useState(initialSortState);
     const [sortedUsers, setSortedUsers] = useState([...users]);
+
+
+    useEffect(() => {
+        const updatedStatus = users.reduce((status, workflow) => {
+            status[workflow.user_id] = workflow.role === 'admin';
+            return status;
+        }, {});
+        setActiveStatus(updatedStatus);
+    }, [users]);
 
 
     useEffect(() => {
@@ -32,18 +37,33 @@ const UserTable = ({ users, toggleUserSelection }) => {
     };
 
     const toggleActiveState = async (id) => {
-        const response = await new Promise((resolve) => {
-            setTimeout(() => resolve({ success: true }), 500);
-        });
+        try {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}toggle-admin/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
 
-        if (response.success) {
+            if (!response.ok) {
+                throw new Error(`Error toggling user role: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log(data.message);
+
             setActiveStatus((prevStatus) => ({
                 ...prevStatus,
                 [id]: !prevStatus[id]
             }));
+        } catch (error) {
+            console.error('Error toggling user role:', error);
+        } finally {
+            setOpenDropdownId(null);
         }
-        setOpenDropdownId(null)
     };
+
 
     useEffect(() => {
         setSortedUsers([...users]);
@@ -166,28 +186,28 @@ const UserTable = ({ users, toggleUserSelection }) => {
                 </thead>
                 <tbody>
                 {sortedUsers.map(users => (
-                    <tr key={users.id} className="border-b border-contrast-box-color bg-box-color">
+                    <tr key={users.user_id} className="border-b border-contrast-box-color bg-box-color">
                         <td className="py-4 px-6">
                             <input
                                 type="checkbox"
                                 checked={users.isSelected}
-                                onChange={() => handleCheckboxChange(users.id)}
+                                onChange={() => handleCheckboxChange(users.user_id)}
                             />
                         </td>
-                        <td className="py-4 px-6 font-light">{users.id}</td>
+                        <td className="py-4 px-6 font-light">{users.user_id}</td>
                         <td className="py-4 px-6 text-light-purple font-normal">{users.name}</td>
                         <td className="py-4 px-6">{users.email}</td>
                         <td className="py-4 px-6">
-                            <div className="relative inline-block text-left" data-dropdown-id={users.id}>
+                            <div className="relative inline-block text-left" data-dropdown-id={users.user_id}>
                                 <button
-                                    onClick={() => toggleDropdown(users.id)}
+                                    onClick={() => toggleDropdown(users.user_id)}
                                     className="inline-flex justify-center items-center gap-2 px-4 py-2 text-white text-sm font-medium rounded-md hover:bg-contrast-box-color focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
                                     type="button"
                                 >
-                                    <span className={`mr-2 inline-block w-3 h-3 rounded-full ${activeStatus[users.id] ? 'bg-success-green' : 'bg-error-red'}`}></span>
-                                    {activeStatus[users.id] ? 'Admin' : 'User'}
+                                    <span className={`mr-2 inline-block w-3 h-3 rounded-full ${activeStatus[users.user_id] ? 'bg-success-green' : 'bg-error-red'}`}></span>
+                                    {activeStatus[users.user_id] ? 'admin' : 'user'}
                                     <svg
-                                        className={`w-4 h-4 transform transition-transform ${openDropdownId === users.id ? 'rotate-180' : 'rotate-0'}`}
+                                        className={`w-4 h-4 transform transition-transform ${openDropdownId === users.user_id ? 'rotate-180' : 'rotate-0'}`}
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="none"
                                         viewBox="0 0 24 24"
@@ -196,7 +216,7 @@ const UserTable = ({ users, toggleUserSelection }) => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
-                                {openDropdownId === users.id && (
+                                {openDropdownId === users.user_id && (
                                     <div
                                         className="absolute z-10 mt-1 py-1 w-36 rounded-md shadow-lg bg-box-color hover:bg-contrast-box-color ring-1 ring-black ring-opacity-5 focus:outline-none transition-opacity duration-300"
                                         style={{
@@ -205,10 +225,10 @@ const UserTable = ({ users, toggleUserSelection }) => {
                                         }}
                                     >
                                         <button
-                                            onClick={() => toggleActiveState(users.id)}
+                                            onClick={() => toggleActiveState(users.user_id)}
                                             className="block w-full px-4 py-2 text-left text-sm text-custom-grey"
                                         >
-                                            {activeStatus[users.id] ? 'User' : 'Admin'}
+                                            {activeStatus[users.user_id] ? 'user' : 'admin'}
                                         </button>
                                     </div>
                                 )}

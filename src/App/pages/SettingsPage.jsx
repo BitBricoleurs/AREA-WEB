@@ -7,28 +7,37 @@ import githubIcon from '../../assets/icons/githubIcon.svg';
 import jenkinsIcon from '../../assets/icons/jenkinsIcon.svg';
 import jiraIcon from '../../assets/icons/jiraIcon.svg';
 
-const mockUser = [
-    {
-        "id": 1,
-        "name": "John Doe",
-        "email": "john.doe@gmail.com",
-        "role": "Admin",
-    },
-    {
-        "id": 2,
-        "name": "Jane Doe",
-        "email": "jane.doe@gmail.com",
-        "role": "User",
-    }
-];
-
 const AdminTab = () => {
 
     const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState('');
-    const [users, setUsers] = useState(
-        mockUser.map(users => ({ ...users, isSelected: false }))
-    );
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const token = localStorage.getItem('userToken');
+                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}users`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error fetching users: ${response.status}`);
+                }
+
+                const data = await response.json();
+                setUsers(data.users.map(user => ({ ...user, isSelected: false })));
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
 
 
     const filteredUsers = users.filter(users =>
@@ -38,29 +47,34 @@ const AdminTab = () => {
     const toggleUsersSelection = (id) => {
         setUsers(currentWorkflows =>
             currentWorkflows.map(users =>
-                users.id === id ? { ...users, isSelected: !users.isSelected } : users
+                users.user_id === id ? { ...users, isSelected: !users.isSelected } : users
             )
         );
     };
 
     const isAnyWorkflowSelected = users.some(users => users.isSelected);
 
-    const handleDeleteWorkflows = () => {
-        const delete_workflows = users.filter(workflow => workflow.isSelected).map(users => users.id);
-        console.log('Delete Workflows clicked', delete_workflows);
-        new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve('Workflows deleted successfully');
-            }, 500);
-        })
-            .then(response => {
-                console.log(response);
-                setUsers(currentWorkflows => currentWorkflows.filter(users => !users.isSelected));
-            })
-            .catch(error => {
-                console.error(error);
-            });
+    const handleDeleteUsers = async () => {
+        const selectedUserIds = users.filter(user => user.isSelected).map(user => user.user_id);
+
+        try {
+            await Promise.all(selectedUserIds.map(userId =>
+                fetch(`${import.meta.env.VITE_REACT_APP_API_URL}delete-user/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+            ));
+
+            setUsers(currentUsers => currentUsers.filter(user => !user.isSelected));
+            console.log('Users deleted successfully');
+        } catch (error) {
+            console.error('Error deleting users:', error);
+        }
     };
+
     return (
         <>
             <div className="flex flex-col w-full">
@@ -73,7 +87,7 @@ const AdminTab = () => {
                         <div className="flex space-x-4">
                             <button
                                 className={`py-2 px-3 rounded-md shadow-md transition duration-300 ease-in-out ${isAnyWorkflowSelected ? 'bg-error-red hover:bg-error-red text-white' : 'bg-contrast-box-color text-black'}`}
-                                onClick={handleDeleteWorkflows}
+                                onClick={handleDeleteUsers}
                                 disabled={!isAnyWorkflowSelected}
                             >
                                 Delete User(s)

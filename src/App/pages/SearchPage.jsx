@@ -4,34 +4,6 @@ import WorkflowTable from "../components/WorkflowTable.jsx";
 import {useNavigate} from "react-router-dom";
 import WorkflowHistoryTable from "../components/WorkflowHistoryTable.jsx";
 
-const mockWorkflows = [
-    {
-        "id": 1,
-        "name": "Create branch on new ticket",
-        "lastTimeStarted": "2022-07-21T08:21:00Z",
-        "averageRuntime": "5min01s",
-        "totalUse": 2,
-        "state": "Active"
-    },
-    {
-        "id": 2,
-        "name": "Notify team on PR",
-        "lastTimeStarted": "2022-07-28T14:02:00Z",
-        "averageRuntime": "1min02s",
-        "totalUse": 9,
-        "state": "Disabled"
-    },
-    {
-        "id": 3,
-        "name": "Send email on job success",
-        "lastTimeStarted": "2022-07-22T09:15:00Z",
-        "averageRuntime": "2min15s",
-        "totalUse": 5,
-        "state": "Active"
-    }
-]
-
-
 const mockHistory = [
     {
         "id": 101,
