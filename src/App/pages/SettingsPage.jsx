@@ -6,6 +6,7 @@ import azureIcon from '../../assets/icons/azureIcon.svg';
 import githubIcon from '../../assets/icons/githubIcon.svg';
 import jenkinsIcon from '../../assets/icons/jenkinsIcon.svg';
 import jiraIcon from '../../assets/icons/jiraIcon.svg';
+import Modal from "../components/Modal.jsx";
 
 const AdminTab = () => {
 
@@ -115,12 +116,45 @@ const logos = {
 const GlobalTab = () => {
     const [jiraUsername, setJiraUsername] = useState('');
     const [jiraToken, setJiraToken] = useState('');
+    const [azureAuthUrl, setAzureAuthUrl] = useState('');
+    const [isAzureModalOpen, setIsAzureModalOpen] = useState(false);
 
     const handleSubmitJira = (e) => {
         e.preventDefault();
         // Handle Jira submission logic here
         console.log('Jira Username:', jiraUsername, 'Jira Token:', jiraToken);
     };
+
+    useEffect(() => {
+        const fetchAzureAuthUrl = async () => {
+            try {
+                const token = localStorage.getItem('userToken');
+                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}microsoft-login`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setAzureAuthUrl(data.authorization_url);
+                } else {
+                    console.error('Failed to fetch Azure auth URL');
+                }
+            } catch (error) {
+                console.error('Error fetching Azure auth URL:', error);
+            }
+        };
+
+        fetchAzureAuthUrl();
+    }, []);
+
+    const handleAzureConnect = () => {
+        setIsAzureModalOpen(true);
+    };
+
 
     return (
         <div className="flex flex-col w-full p-10 bg-background">
@@ -130,16 +164,26 @@ const GlobalTab = () => {
                 {/* Azure OAuth */}
                 <div>
                     <h3 className="mb-3 text-xl text-custom-grey font-outfit">Azure</h3>
-                    <button className="flex items-center bg-[#0078D4] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#005A9E] transition duration-300 ease-in-out text-lg">
-                        <img src={azureIcon} alt="Azure" className="mr-3 h-8" />
+                    <button
+                        className="flex items-center bg-[#0078D4] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#005A9E] transition duration-300 ease-in-out text-lg"
+                        onClick={handleAzureConnect}
+                    >
+                        <img src={azureIcon} alt="Azure" className="mr-3 h-8"/>
                         Connect to Azure
                     </button>
                 </div>
 
+                {isAzureModalOpen && (
+                    <Modal onClose={() => setIsAzureModalOpen(false)}>
+                        <iframe src={azureAuthUrl} className="w-full h-96"></iframe> {/* Hauteur fixe pour l'iframe */}
+                    </Modal>
+                )}
+
                 {/* GitHub OAuth */}
                 <div>
                     <h3 className="mb-3 text-xl text-custom-grey font-outfit">GitHub</h3>
-                    <button className="flex items-center bg-[#24292E] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#1B1E23] transition duration-300 ease-in-out text-lg">
+                    <button
+                        className="flex items-center bg-[#24292E] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#1B1E23] transition duration-300 ease-in-out text-lg">
                         <img src={githubIcon} alt="GitHub" className="mr-3 h-8" />
                         Connect to GitHub
                     </button>
