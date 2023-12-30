@@ -53,6 +53,7 @@ export const WorkflowContextProvider = ({children }) => {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}create-workflow`, {
             method: 'POST',
             headers: {
+                'ngrok-skip-browser-warning': true,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
             },
@@ -79,6 +80,7 @@ export const WorkflowContextProvider = ({children }) => {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}edit-workflow/${workflowId}`, {
             method: 'PUT',
             headers: {
+                'ngrok-skip-browser-warning': true,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
             },
@@ -104,6 +106,7 @@ export const WorkflowContextProvider = ({children }) => {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-workflow/${workflowId}`, {
             method: 'GET',
             headers: {
+                'ngrok-skip-browser-warning': true,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
             },

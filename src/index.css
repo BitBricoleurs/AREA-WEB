@@ -17,3 +17,10 @@
     -webkit-background-clip: text;
     background: linear-gradient(270deg, #570CD5, #C67EFF);
 }
+
+/* Add this to your CSS file */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}

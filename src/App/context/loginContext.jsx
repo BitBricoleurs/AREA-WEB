@@ -24,7 +24,7 @@ export const LoginContextProvider = ({ children }) => {
     };
 
     const getMe = async () => {
-        setIsLoading(true); // Commence le chargement
+        setIsLoading(true);
         try {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}me`, {
                 method: 'GET',
