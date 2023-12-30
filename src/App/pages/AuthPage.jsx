@@ -159,6 +159,7 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}login`, {
                 method: 'POST',
                 headers: {
+                    'ngrok-skip-browser-warning': '45687',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ email, password })
@@ -166,15 +167,14 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
             console.log(response)
 
             const data = await response.json();
-
             if (response.status === 200) {
                 login(data.user, data.token);
-                navigate('/dashboard');
 
                 setNotification({
                     notificationState: 'Success',
                     message: 'Successfully logged in!'
                 });
+                navigate('/dashboard');
             } else {
                 setNotification({
                     notificationState: 'Error',
@@ -331,23 +331,21 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}register`, {
                 method: 'POST',
                 headers: {
+                    'ngrok-skip-browser-warning': true,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ email, password, name })
             });
 
-            console.log(response)
             const data = await response.json();
-            console.log(data)
 
-            if (response.status === 201) {
+            if (data.status === 201) {
                 setNotification({
                     notificationState: 'Success',
                     message: 'Successfully registered!'
                 });
 
                 switchToLogin();
-                console.log("data: ", data)
             } else {
                 setNotification({
                     notificationState: 'Error',
