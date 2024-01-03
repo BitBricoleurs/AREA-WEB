@@ -7,8 +7,8 @@ import "../index.css";
 
 const App = () => {
     return (
-            <>
-                <Routes>
+        <div className="App bg-background min-h-screen w-full">
+            <Routes>
                 <Route path="/auth" element={<AuthPage />} />
                 {/* Route Protected */}
                 <Route
@@ -55,7 +55,7 @@ const App = () => {
                     />
                 <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
-            </>
+            </div>
     );
 };
 

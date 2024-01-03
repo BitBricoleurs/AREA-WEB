@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {Link} from "react-router-dom";
 
 const initialSortState = {
     key: 'id',
@@ -213,7 +214,11 @@ const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
                             />
                         </td>
                         <td className="py-4 px-6 font-light">{workflow.id}</td>
-                        <td className="py-4 px-6 text-light-purple font-normal">{workflow.name}</td>
+                        <td className="py-4 px-6 text-light-purple font-normal">
+                            <Link to={'/automate'} state={ {workflowID: workflow.id}}>
+                                {workflow.name}
+                            </Link>
+                        </td>
                         <td className="py-4 px-6">{workflow.lastTimeStarted}</td>
                         <td className="py-4 px-6">{workflow.averageRuntime}</td>
                         <td className="py-4 px-6">{workflow.totalUse}</td>

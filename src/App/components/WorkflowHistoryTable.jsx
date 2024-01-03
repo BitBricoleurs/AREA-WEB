@@ -71,13 +71,13 @@ const WorkflowHistoryTable = ({ workflows, maxColumns = 0 }) => {
     };
 
     return (
-        <div className="overflow-x-auto relative w-full">
+        <div className="overflow-x-auto overflow-y-scroll relative w-full">
             <table className="w-full text-sm text-center text-custom-grey bg-contrast-box-color border border-contrast-box-color">
                 <thead className="text-xs uppercase bg-box-color border-b border-contrast-box-color text-custom-grey">
                 <tr >
                     <th
                         onClick={() => requestSort('id')}
-                        className="py-3 px-6 cursor-pointer flex-row justify-center items-center"
+                        className="py-2 px-6 cursor-pointer flex-row justify-center items-center"
                     >
                         <div className="flex flex-row justify-center items-center">
                             <span className="mr-2">ID</span>
@@ -87,7 +87,7 @@ const WorkflowHistoryTable = ({ workflows, maxColumns = 0 }) => {
 
                     <th
                         onClick={() => requestSort('name')}
-                        className="py-3 px-6 cursor-pointer flex-row justify-center items-center"
+                        className="py-2 px-6 cursor-pointer flex-row justify-center items-center"
                     >
                         <div className="flex flex-row justify-center items-center">
                             <span className="mr-2">Name</span>
@@ -96,7 +96,7 @@ const WorkflowHistoryTable = ({ workflows, maxColumns = 0 }) => {
                     </th>
                     <th
                         onClick={() => requestSort('startTime')}
-                        className="py-3 px-6 cursor-pointer flex-row justify-center items-center"
+                        className="py-2 px-6 cursor-pointer flex-row justify-center items-center"
                     >
                         <div className="flex flex-row justify-center items-center">
                             <span className="mr-2">Start Time</span>
@@ -105,7 +105,7 @@ const WorkflowHistoryTable = ({ workflows, maxColumns = 0 }) => {
                     </th>
                     <th
                         onClick={() => requestSort('endTime')}
-                        className="py-3 px-6 cursor-pointer flex-row justify-center items-center"
+                        className="py-2 px-6 cursor-pointer flex-row justify-center items-center"
                     >
                         <div className="flex flex-row justify-center items-center">
                             <span className="mr-2">End Time</span>
@@ -114,7 +114,7 @@ const WorkflowHistoryTable = ({ workflows, maxColumns = 0 }) => {
                     </th>
                     <th
                         onClick={() => requestSort('duration')}
-                        className="py-3 px-6 cursor-pointer flex-row justify-center items-center"
+                        className="py-2 px-6 cursor-pointer flex-row justify-center items-center"
                     >
                         <div className="flex flex-row justify-center items-center">
                             <span className="mr-2">Duration</span>
@@ -123,7 +123,7 @@ const WorkflowHistoryTable = ({ workflows, maxColumns = 0 }) => {
                     </th>
                     <th
                         onClick={() => requestSort('status')}
-                        className="py-3 px-6 cursor-pointer flex-row justify-center items-center"
+                        className="py-2 px-6 cursor-pointer flex-row justify-center items-center"
                     >
                         <div className="flex flex-row justify-center items-center">
                             <span className="mr-2">Status</span>
@@ -135,12 +135,12 @@ const WorkflowHistoryTable = ({ workflows, maxColumns = 0 }) => {
                 <tbody>
                 {sortedWorkflows.map((workflow, index) => (
                     <tr key={workflow.id} className={`border-b border-contrast-box-color bg-box-color ${index === sortedWorkflows.length - 1 ? 'rounded-b-lg' : ''}`}>
-                        <td className="py-4 px-6">{workflow.id}</td>
-                        <td className="py-4 px-6 text-light-purple">{workflow.name}</td>
-                        <td className="py-4 px-6">{workflow.startTime}</td>
-                        <td className="py-4 px-6">{workflow.endTime}</td>
-                        <td className="py-4 px-6">{workflow.duration}</td>
-                        <td className="py-4 px-6">
+                        <td className="py-1.5 px-6">{workflow.id}</td>
+                        <td className="py-1.5 px-6 text-light-purple">{workflow.name}</td>
+                        <td className="py-1.5 px-6">{workflow.startTime}</td>
+                        <td className="py-1.5 px-6">{workflow.endTime}</td>
+                        <td className="py-1.5 px-6">{workflow.duration}</td>
+                        <td className="py-1.5 px-6">
                             <div className={`inline-block w-3 h-3 rounded-full ${getStateColor(workflow.status)}`}></div>
                             <span className="ml-2">{workflow.status}</span>
                         </td>

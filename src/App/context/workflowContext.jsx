@@ -13,7 +13,8 @@ export const WorkflowContextProvider = ({children }) => {
     const [isSidebarSettingsOpen, setSidebarSettingsOpen] = useState(false);
     const [workflowName, setWorkflowName] = useState('');
     const [workflowDescription, setWorkflowDescription] = useState('');
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [loadingState, setLoadingState] = useState("none");
+
 
     const toggleAddModal = () => {
         setAddModalOpen(!isAddModalOpen);
@@ -36,13 +37,12 @@ export const WorkflowContextProvider = ({children }) => {
         const triggerNodeDataForWorkflow = {
             id: 0,
             type: 'trigger',
-            type_trigger: selectedTrigger.description,
+            type_action: selectedTrigger.description,
             service: selectedTrigger.serviceName,
             next_id: null,
             conditions: [],
             params: [],
         };
-
 
         setWorkflow(prevWorkflow => {
                 return [...prevWorkflow, triggerNodeDataForWorkflow];
@@ -66,6 +66,7 @@ export const WorkflowContextProvider = ({children }) => {
                 'variables': []
             }),
         });
+        console.log("Sent workflow: ", tmpWorkflow)
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -76,7 +77,23 @@ export const WorkflowContextProvider = ({children }) => {
         return data;
     }
 
+    const createSendableWorkflow = () => {
+        const modifiedWorkflow = workflow.map(node => {
+            if (node.type === 'trigger' && node.type_trigger) {
+                return {
+                    ...node,
+                    type_action: node.type_trigger,
+                    type_trigger: undefined
+                };
+            }
+            return node;
+        });
+
+        return modifiedWorkflow;
+    };
+
     const editWorkflow = async () => {
+        const sendableWorkflow = createSendableWorkflow();
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}edit-workflow/${workflowId}`, {
             method: 'PUT',
             headers: {
@@ -85,13 +102,13 @@ export const WorkflowContextProvider = ({children }) => {
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
             },
             body: JSON.stringify({
-                'name_workflow': '',
-                'description': '',
-                'workflow': workflow,
+                'name_workflow': workflowName,
+                'description': workflowDescription,
+                'workflow': sendableWorkflow,
                 'variables': variables
             }),
         });
-
+        console.warn("Sent workflow: ", workflow)
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -113,7 +130,6 @@ export const WorkflowContextProvider = ({children }) => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const data = await response.json();
 
 
@@ -121,8 +137,8 @@ export const WorkflowContextProvider = ({children }) => {
         setWorkflowDescription(data.description);
         setWorkflow(data.workflow);
         setVariables(data.variables);
-        setIsLoaded(true)
         setWorkflowId(workflowId)
+        console.log("When fetching: ", data)
         return data;
     }
 
@@ -170,7 +186,9 @@ export const WorkflowContextProvider = ({children }) => {
                 addWorkflowNode,
                 createWorkflow,
                 editWorkflow,
-                isLoaded
+                loadWorkflow,
+                loadingState,
+                setLoadingState,
             }}
         >
             {children}

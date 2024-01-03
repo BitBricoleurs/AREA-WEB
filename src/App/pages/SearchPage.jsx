@@ -73,7 +73,7 @@ const WorkflowTab = () => {
 
             const data = await response.json();
 
-            const workflowIds = data.workflow_ids;
+            const workflowIds = data.workflow.map(workflow => workflow.id);
 
             const workflowDetailsPromises = workflowIds.map(id => fetchWorkflowDetails(id));
             const workflowsData = await Promise.all(workflowDetailsPromises);
@@ -81,7 +81,6 @@ const WorkflowTab = () => {
                 const { workflow, ...rest } = data;
                 return { ...workflow, ...rest, isSelected: false };
             });
-            console.log(" dsds", workflowsFormatted);
             setWorkflows(workflowsFormatted);
         } catch (error) {
             console.error('Error fetching workflows:', error);
@@ -129,7 +128,7 @@ const WorkflowTab = () => {
             return response.json();
         } catch (error) {
             console.error('Error deleting workflow:', error);
-            throw error; // Propager l'erreur pour la gérer dans handleDeleteWorkflows
+            throw error;
         }
     };
 

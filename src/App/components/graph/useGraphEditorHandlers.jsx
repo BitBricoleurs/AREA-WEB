@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import {useCallback, useEffect} from 'react';
 import { applyNodeChanges } from 'reactflow';
 import { useGraphEditorContext } from '/src/App/context/graphEditorContext';
 import {useWorkflowContext} from "/src/App/context/workflowContext.jsx";
@@ -7,6 +7,8 @@ const useGraphEditorHandlers = () => {
     const { nodes, setNodes, edges, setEdges } = useGraphEditorContext();
     const { workflow, setWorkflow } = useWorkflowContext();
     const { variables, setVariables } = useWorkflowContext();
+    const { workflowId} = useWorkflowContext();
+    const { isLoaded, loadWorkflow } = useWorkflowContext();
     console.log("variables: ", variables)
     console.log("workflow: ", workflow)
 
@@ -36,15 +38,15 @@ const useGraphEditorHandlers = () => {
         return workflow.map(node => {
             if (node.type === 'condition') {
                 console.log("Find condition node: ", node)
-                const trueEdge = edges.find(edge => edge.source === node.id && edge.sourceHandle === 'true');
-                const falseEdge = edges.find(edge => edge.source === node.id && edge.sourceHandle === 'false');
+                const trueEdge = edges.find(edge => edge.source == node.id && edge.sourceHandle === 'true');
+                const falseEdge = edges.find(edge => edge.source == node.id && edge.sourceHandle === 'false');
                 return {
                     ...node,
                     next_id_src_success: (trueEdge && parseInt(trueEdge.target) >= 0) ? trueEdge.target : null,
                     next_id_src_fail: (falseEdge && parseInt(falseEdge.target) >= 0) ? falseEdge.target : null,
                 };
             } else {
-                const connectedEdge = edges.find(edge => edge.source === node.id);
+                const connectedEdge = edges.find(edge => edge.source == node.id);
                 return {
                     ...node,
                     next_id: (connectedEdge && parseInt(connectedEdge.target) >= 0) ? connectedEdge.target : null,
@@ -52,6 +54,20 @@ const useGraphEditorHandlers = () => {
             }
         });
     };
+
+    useEffect(() => {
+        if (isLoaded) {
+            setIsLoading(true);
+            loadWorkflow(workflowId)
+                .then(() => {
+                    setIsLoading(false);
+                })
+                .catch((error) => {
+                    console.error("Erreur lors du chargement du workflow:", error);
+                    setIsLoading(false);
+                });
+        }
+    }, [isLoaded]);
 
 
     return { modifiedOnNodesChange, handleEdges };
