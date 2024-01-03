@@ -150,7 +150,11 @@ const AppNavBar = ({isSidebarExpanded, onToggleSidebar, currentPage}) => {
                                 <span className={`ml-3 transition-all duration-200 ${isSidebarExpanded ? 'visible' : 'invisible'}`}>Search</span>
                             </li>
                         </Link>
-                        <Link to="/automate" className={`flex items-center p-2 rounded-md ${isCurrentPage('automate') ? 'bg-dark-purple text-white' : 'text-custom-grey hover:bg-dark-purple hover:bg-opacity-60 hover:text-white group'}`}>
+                            <Link  to={{
+                                    pathname: "/automate",
+                                }}
+                               state={{ workflowID: "new" }}
+                               className={`flex items-center p-2 rounded-md ${isCurrentPage('automate') ? 'bg-dark-purple text-white' : 'text-custom-grey hover:bg-dark-purple hover:bg-opacity-60 hover:text-white group'}`}>
                             <li className="flex items-center">
                             <svg className={`${isCurrentPage('automate') ? "fill-white" : 'fill-custom-grey group-hover:fill-white'}`} width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path fillRule="evenodd" clipRule="evenodd" d="M2 7C2 4.23858 4.23858 2 7 2H17C19.7614 2 22 4.23858 22 7V17C22 19.7614 19.7614 22 17 22H7C4.23858 22 2 19.7614 2 17V7ZM7 4C5.34315 4 4 5.34315 4 7V17C4 18.6569 5.34315 20 7 20H17C18.6569 20 20 18.6569 20 17V7C20 5.34315 18.6569 4 17 4H7Z" />

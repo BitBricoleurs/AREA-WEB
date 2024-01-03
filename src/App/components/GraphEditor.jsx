@@ -38,7 +38,7 @@ const proOptions = { hideAttribution: true };
 
 const GraphEditor = ({startingTrigger, workflowId}) => {
 
-    const { nodes, setNodes, edges, setEdges, addNode, addEdge, onNodesChange, onEdgesChange, getNodeTriggerFromData, handleSetSelectedTrigger, handleNewAction, handleNewCondition, setClickedNode, clickedNode} = useGraphEditorContext();
+    const { nodes, setNodes, edges, setEdges, addEdge, onEdgesChange, handleNewAction, handleNewCondition, setClickedNode, clickedNode} = useGraphEditorContext();
 
 
     const onConnect = (params) => {
@@ -52,9 +52,32 @@ const GraphEditor = ({startingTrigger, workflowId}) => {
     const [startClosing, setStartClosing] = useState(false);
 
     const { modifiedOnNodesChange, handleEdges } = useGraphEditorHandlers();
+    const { loadWorkflow, setLoadingState, loadingState } = useWorkflowContext();
+    const { convertWorkflowToNodes, convertWorkflowToEdges, addAddNodeToWorkflow } = useGraphEditorContext();
+
 
     useEffect(() => {
-        if (workflow.length === 0) {
+        setLoadingState("fetching");
+        loadWorkflow(workflowId).then(() => {
+            setLoadingState("done");
+        }).catch(error => {
+            console.error("Erreur lors du chargement:", error);
+            setLoadingState("none");
+        });
+    }, [workflowId]);
+
+    useEffect(() => {
+        if (loadingState === "done") {
+            const newNodes = convertWorkflowToNodes(workflow);
+            setNodes(newNodes);
+            setEdges(convertWorkflowToEdges(workflow));
+            addAddNodeToWorkflow(newNodes);
+        }
+    }, [loadingState]);
+
+    useEffect(() => {
+        console.log("edges: ", edges)
+        if (workflow.length === 0 || edges === 0) {
             return;
         }
         const updatedWorkflow = handleEdges(workflow, edges)
@@ -79,7 +102,6 @@ const GraphEditor = ({startingTrigger, workflowId}) => {
     };
 
     useEffect(() => {
-        console.log("useEffect selectedNodeId:", selectedNodeId);
         if (selectedNodeId) {
             const updatedNode = nodes.find((n) => n.id === selectedNodeId);
             setSelectedNode(updatedNode);
@@ -91,7 +113,6 @@ const GraphEditor = ({startingTrigger, workflowId}) => {
             setStartClosing(true);
         }
     };
-
 
     const nodeTypes = useMemo(() => ({
         trigger: TriggerNode,

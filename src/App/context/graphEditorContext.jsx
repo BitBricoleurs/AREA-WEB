@@ -11,27 +11,13 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
 
     const {addWorkflowNode, toggleAddModal, isLoaded, workflow} = useWorkflowContext()
 
-    function getNodeTriggerFromData(serviceName, serviceTrigger) {
-        const bgColor = cardServicesStyles[serviceName].backgroundColor || cardServicesStyles["default"].backgroundColor;
-        const logo = cardServicesStyles[serviceName].iconPath || cardServicesStyles["default"].iconPath;
-
-        return {
-            id: '0',
-            type: 'trigger',
-            data: { serviceName: serviceName, serviceTrigger: serviceTrigger, color: bgColor, logo: logo, id: '0' },
-            position: { x: 0, y: 50 },
-        }
-    }
-
     const convertWorkflowToNodes = (workflowData) => {
 
         let nodes = [];
 
-
         workflowData.forEach((node) => {
             let nodeData;
             if (node.type === 'trigger') {
-                console.warn("node: ", node)
                 nodeData = { serviceTrigger: node.type_trigger };
             } else if (node.type === 'action') {
                 nodeData = { serviceAction: node.type_action };
@@ -51,6 +37,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
             };
             nodes.push(newNode);
         });
+        console.log("nodes toNodes: ", nodes)
         return nodes;
     };
 
@@ -58,32 +45,67 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
         let edges = [];
 
         workflowData.forEach((node) => {
-            const nextId = node.next_id === -1 ? null : node.next_id;
-
-            if (nextId !== null && nextId !== undefined) {
-                const edge = {
-                    id: `e${node.id}-${nextId}`,
-                    source: node.id.toString(),
-                    target: nextId.toString(),
-                };
-                edges.push(edge);
+            if (node.type === 'condition') {
+                if (node.next_id_src_success !== null && node.next_id_src_success !== undefined && node.next_id_src_success !== -1) {
+                    edges.push({
+                        id: `e-${node.id}-true-${node.next_id_src_success}`,
+                        source: node.id.toString(),
+                        sourceHandle: 'true',
+                        target: node.next_id_src_success.toString(),
+                        type : 'true'
+                    });
+                }
+                if (node.next_id_src_fail !== null && node.next_id_src_fail !== undefined && node.next_id_src_fail !== -1) {
+                    edges.push({
+                        id: `e-${node.id}-false-${node.next_id_src_fail}`,
+                        source: node.id.toString(),
+                        sourceHandle: 'false',
+                        target: node.next_id_src_fail.toString(),
+                        type : 'false'
+                    });
+                }
+            } else {
+                if (node.next_id !== null && node.next_id !== undefined && node.next_id !== -1) {
+                    edges.push({
+                        id: `e-${node.id}-default-${node.next_id}`,
+                        source: node.id.toString(),
+                        sourceHandle: null,
+                        target: node.next_id.toString(),
+                    });
+                }
             }
         });
+
         return edges;
     };
 
-    const initialTriggerNode = [getNodeTriggerFromData(startingTrigger.serviceName, startingTrigger.description)];
-    let initialNodes = [...initialTriggerNode, ...initNodes];
-    let initialEdges = [...initEdges];
-    if (isLoaded) {
-        initialNodes = convertWorkflowToNodes(workflow);
-        initialEdges = convertWorkflowToEdges(workflow);
-        console.log("initialNodes: ", initialNodes)
-        console.log("initialEdges: ", initialEdges)
-    }
+
+
+
+
+    let initialNodes = [];
+    let initialEdges = [];
+
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     const [clickedNode, setClickedNode] = useState(null);
+
+    console.log("nodes: ", nodes)
+    console.log("edges: ", edges)
+    const addAddNodeToWorkflow = (nodes) => {
+            workflow.forEach(node => {
+            if (node.next_id == -1) {
+                const sourceNode = nodes.find(n => n.id == node.id);
+                console.log("sourceNode: ", sourceNode)
+                console.log("nodes: ", nodes)
+                console.log("node id: ", node.id)
+                if (sourceNode) {
+                    console.log("sourceNode: ", sourceNode)
+                    addNodeAddAtHandle(sourceNode, null);
+                }
+            }
+        });
+    };
 
     const addNode = (newNode) => {
         setNodes((prevNodes) => [...prevNodes, newNode]);
@@ -168,7 +190,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
         const newPosition = {x : clickedNode.xPos, y: clickedNode.yPos}
 
 
-        const newNodeId = `${nodes.length}`;
+        const newNodeId = `${workflow.length}`;
         const newNode = {
             id: newNodeId,
             type: 'action',
@@ -202,7 +224,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
     const handleNewCondition = (service, clickedNode) => {
 
         const newPosition = {x : clickedNode.xPos, y: clickedNode.yPos}
-        const newNodeId = `${nodes.length}`;
+        const newNodeId = `${workflow.length}`;
 
         const newNode = {
             id: newNodeId,
@@ -235,7 +257,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
 
 
     return (
-        <GraphEditorContext.Provider value={{ nodes, setNodes, edges, setEdges, addNode, addEdge, onNodesChange, onEdgesChange, getNodeTriggerFromData, replaceNode, clickedNode, setClickedNode, handleNewAction, handleNewCondition, convertWorkflowToNodes}}>
+        <GraphEditorContext.Provider value={{ nodes, setNodes, edges, setEdges, addNode, addEdge, onNodesChange, onEdgesChange, replaceNode, clickedNode, setClickedNode, handleNewAction, handleNewCondition, convertWorkflowToNodes, convertWorkflowToEdges, addAddNodeToWorkflow}}>
             {children}
         </GraphEditorContext.Provider>
     );

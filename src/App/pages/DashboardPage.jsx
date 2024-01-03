@@ -92,10 +92,10 @@ export default function DashboardPage() {
                                 </p>
                             </div>
                         </div>
-                        <div className="flex-grow items-center justify-center p-4">
+                        <div className="flex-grow items-center justify-center pb-4">
                             <div className="bg-box-color border border-contrast-box-color rounded-lg pt-5 pb-5 px-5">
                                 <h2 className="text-2xl font-light text-custom-grey font-outfit mb-4">Workflows History</h2>
-                            <WorkflowHistoryTable workflows={workflows} maxColumns={1} />
+                            <WorkflowHistoryTable workflows={workflows} maxColumns={3} />
                             </div>
                         </div>
                     </div>
