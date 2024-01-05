@@ -11,6 +11,10 @@ import TextEntry from "./graph/Text Entry.jsx";
 import TextArrayEntry from "./graph/Text Array Entry.jsx";
 import CustomCard from "./CustomCard.jsx";
 import TimePicker from "./graph/TimePicker.jsx";
+import DashboardCardStats from "./DashboardCardStats.jsx";
+import DashboardPreviewCarrousel from "./DashboardPreviewCarrousel.jsx";
+import DashboardGraphTriggeredWorkflow from "./DashboardGraphTriggeredWorkflow.jsx";
+import SucessSpinner from "./SucessSpinner.jsx";
 
 export {
     PrivateRoute,
@@ -25,5 +29,9 @@ export {
     TextEntry,
     TextArrayEntry,
     CustomCard,
-    TimePicker
+    TimePicker,
+    DashboardCardStats,
+    DashboardPreviewCarrousel,
+    DashboardGraphTriggeredWorkflow,
+    SucessSpinner,
 };

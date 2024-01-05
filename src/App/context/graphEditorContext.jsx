@@ -93,16 +93,18 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
     console.log("nodes: ", nodes)
     console.log("edges: ", edges)
     const addAddNodeToWorkflow = (nodes) => {
+            let nbrAddedNodes = 1;
             workflow.forEach(node => {
-            if (node.next_id == -1) {
-                const sourceNode = nodes.find(n => n.id == node.id);
-                console.log("sourceNode: ", sourceNode)
-                console.log("nodes: ", nodes)
-                console.log("node id: ", node.id)
-                if (sourceNode) {
+                if (node.type !== 'condition' && node.next_id == null) {
+                    const sourceNode = nodes.find(n => n.id == node.id);
                     console.log("sourceNode: ", sourceNode)
-                    addNodeAddAtHandle(sourceNode, null);
-                }
+                    console.log("nodes: ", nodes)
+                    console.log("node id: ", node.id)
+                    if (sourceNode) {
+                        console.log("sourceNode: ", sourceNode)
+                        addNodeAddAtHandle(sourceNode, null, nbrAddedNodes);
+                        nbrAddedNodes++;
+                    }
             }
         });
     };

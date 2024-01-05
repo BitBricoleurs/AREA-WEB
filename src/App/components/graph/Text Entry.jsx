@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import AutocompleteInput from "./AutocompleteInput.jsx";
 
 const TextEntry = ({ data, object, setObject }) => {
     const [inputValue, setInputValue] = useState("");
@@ -38,11 +39,9 @@ const TextEntry = ({ data, object, setObject }) => {
 
     return (
         <div className="bg-background rounded-lg h-8">
-            <input
-                type="text"
+            <AutocompleteInput
                 className="font-outfit text-[12px] font-medium text-white bg-transparent h-full w-full outline-none"
-                onChange={(e) => handleChange(e.target.value)}
-                value={inputValue}
+                onChange={(text) => handleChange(text)}
                 placeholder={data.placeholder}
             />
         </div>

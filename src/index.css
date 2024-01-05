@@ -18,9 +18,35 @@
     background: linear-gradient(270deg, #570CD5, #C67EFF);
 }
 
-/* Add this to your CSS file */
 @keyframes fadeIn {
     to {
         opacity: 1;
+    }
+}
+
+@layer components {
+    .stroke-green {
+        stroke: green;
+    }
+
+    .rotating {
+        @apply transition-all duration-1000 ease-linear;
+        transform-origin: center center;
+        animation: rotating 1.4s linear infinite;
+    }
+
+    .success circle,
+    .success path {
+        @apply stroke-green;
+        stroke-dashoffset: 0;
+    }
+
+    @keyframes rotating {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
     }
 }
