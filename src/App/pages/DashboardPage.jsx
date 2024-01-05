@@ -1,38 +1,10 @@
 import { AppNavBar, DashboardCardStats, DashboardPreviewCarrousel, DashboardGraphTriggeredWorkflow}  from '/src/App/components'
-import React ,{useState} from "react";
+import React ,{useState, useEffect} from "react";
 import WorkflowHistoryTable from "../components/WorkflowHistoryTable.jsx";
 import totalWorkflowSvg from '/src/assets/icons/totalworkflow.svg';
 import averageTimeSvg from '/src/assets/icons/averagetime.svg';
 import successRateSvg from '/src/assets/icons/successrate.svg';
 import triggeredWorkflowSvg from '/src/assets/icons/triggeredworkflow.svg';
-
-
-const mockHistory = [
-    {
-        "id": 101,
-        "name": "Daily Data Backup",
-        "startTime": "2022-08-01T09:30:00Z",
-        "endTime": "2022-08-01T09:45:30Z",
-        "duration": "15min30s",
-        "status": "Success"
-    },
-    {
-        "id": 102,
-        "name": "Weekly Data Backup",
-        "startTime": "2022-08-01T09:30:00Z",
-        "endTime": "2022-08-01T09:45:30Z",
-        "duration": "30min30s",
-        "status": "Failed"
-    },
-    {
-        "id": 103,
-        "name": "Monthly Data Backup",
-        "startTime": "2022-08-01T09:30:00Z",
-        "endTime": "2022-08-01T09:45:30Z",
-        "duration": "45min30s",
-        "status": "Running"
-    }
-];
 
 export default function DashboardPage() {
 
@@ -42,7 +14,38 @@ export default function DashboardPage() {
     }
     const [sidebarExpanded, setSidebarExpanded] = useState(isWindowLarge());
 
-    const [workflows, setWorkflows] = useState(mockHistory);
+    const [workflows, setWorkflows] = useState([]);
+
+    useEffect(() => {
+        const fetchWorkflowExecutions = async () => {
+            try {
+                console.log('Fetching workflow executions');
+                const token = localStorage.getItem('userToken');
+                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}workflow-executions`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                console.log(response);
+
+                if (!response.ok) {
+                    console.error('Failed to fetch workflow executions');
+                    throw new Error(`Network response was not ok, status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data);
+                const workflowExecutions = data.workflow;
+                setWorkflows(workflowExecutions);
+            } catch (error) {
+                console.error('Error fetching workflow executions:', error);
+            }
+        };
+
+        fetchWorkflowExecutions();
+    }, []);
 
     return (
         <>

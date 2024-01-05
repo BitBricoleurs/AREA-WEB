@@ -2,7 +2,7 @@ import {AppNavBar, PageNavigator, SearchBar} from '../../Static/components';
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import UserTable from "../components/UserTable.jsx";
-import azureIcon from '../../assets/icons/azureIcon.svg';
+import microsoftIcon from '../../assets/icons/MicrosoftIcon.svg';
 import githubIcon from '../../assets/icons/githubIcon.svg';
 import jenkinsIcon from '../../assets/icons/jenkinsIcon.svg';
 import jiraIcon from '../../assets/icons/jiraIcon.svg';
@@ -105,28 +105,30 @@ const AdminTab = () => {
     )
 }
 
-const logos = {
-    microsoft: 'assets/icons/MicrosoftIcon.svg',
-    github: 'path/to/github-logo.png',
-    jenkins: 'path/to/jenkins-logo.png',
-};
-
-
-
 const GlobalTab = () => {
     const [jiraUsername, setJiraUsername] = useState('');
     const [jiraToken, setJiraToken] = useState('');
-    const [azureAuthUrl, setAzureAuthUrl] = useState('');
-    const [isAzureModalOpen, setIsAzureModalOpen] = useState(false);
+    const [microsoftAuthUrl, setMicrosoftAuthUrl] = useState('');
+    const [jenkinsApiKey, setJenkinsApiKey] = useState('');
+    const [openAiApiKey, setOpenAiApiKey] = useState('');
 
     const handleSubmitJira = (e) => {
         e.preventDefault();
-        // Handle Jira submission logic here
         console.log('Jira Username:', jiraUsername, 'Jira Token:', jiraToken);
     };
 
+    const handleSubmitJenkins = (e) => {
+        e.preventDefault();
+        console.log('Jenkins API Key:', jenkinsApiKey);
+    };
+
+    const handleSubmitOpenAI = (e) => {
+        e.preventDefault();
+        console.log('OpenAI API Key:', openAiApiKey);
+    };
+
     useEffect(() => {
-        const fetchAzureAuthUrl = async () => {
+        const fetchMicrosoftAuthUrl = async () => {
             try {
                 const token = localStorage.getItem('userToken');
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}microsoft-login`, {
@@ -139,45 +141,47 @@ const GlobalTab = () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    setAzureAuthUrl(data.authorization_url);
+                    setMicrosoftAuthUrl(data.authorization_url);
                 } else {
-                    console.error('Failed to fetch Azure auth URL');
+                    console.error('Failed to fetch Microsoft auth URL');
                 }
             } catch (error) {
-                console.error('Error fetching Azure auth URL:', error);
+                console.error('Error fetching Microsoft auth URL:', error);
             }
         };
 
-        fetchAzureAuthUrl();
+        fetchMicrosoftAuthUrl();
     }, []);
 
-    const handleAzureConnect = () => {
-        setIsAzureModalOpen(true);
+    const handleMicrosoftConnect = () => {
+        const width = 600, height = 600;
+        const left = (window.innerWidth - width) / 2;
+        const top = (window.innerHeight - height) / 2;
+
+        const url = microsoftAuthUrl;
+        const windowFeatures = `width=${width},height=${height},top=${top},left=${left},status=yes,toolbar=no,menubar=no,location=no`;
+
+        window.open(url, 'MicrosoftLogin', windowFeatures);
     };
 
+    
 
     return (
         <div className="flex flex-col w-full p-10 bg-background">
             <h2 className="text-3xl font-light text-custom-grey font-outfit mb-10">Integration Settings</h2>
             <div className="space-y-8">
 
-                {/* Azure OAuth */}
+                {/* Microsoft OAuth */}
                 <div>
-                    <h3 className="mb-3 text-xl text-custom-grey font-outfit">Azure</h3>
+                    <h3 className="mb-3 text-xl text-custom-grey font-outfit">Microsoft</h3>
                     <button
                         className="flex items-center bg-[#0078D4] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#005A9E] transition duration-300 ease-in-out text-lg"
-                        onClick={handleAzureConnect}
+                        onClick={handleMicrosoftConnect}
                     >
-                        <img src={azureIcon} alt="Azure" className="mr-3 h-8"/>
-                        Connect to Azure
+                        <img src={microsoftIcon} alt="Microsoft" className="mr-3 h-8"/>
+                        Connect to Microsoft
                     </button>
                 </div>
-
-                {isAzureModalOpen && (
-                    <Modal onClose={() => setIsAzureModalOpen(false)}>
-                        <iframe src={azureAuthUrl} className="w-full h-96"></iframe> {/* Hauteur fixe pour l'iframe */}
-                    </Modal>
-                )}
 
                 {/* GitHub OAuth */}
                 <div>
@@ -189,38 +193,36 @@ const GlobalTab = () => {
                     </button>
                 </div>
 
-                {/* Jenkins OAuth */}
+                {/* Jenkins API Key Input */}
                 <div>
                     <h3 className="mb-3 text-xl text-custom-grey font-outfit">Jenkins</h3>
-                    <button className="flex items-center bg-[#D33833] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#C13030] transition duration-300 ease-in-out text-lg">
-                        <img src={jenkinsIcon} alt="Jenkins" className="mr-3 h-8" />
-                        Connect to Jenkins
-                    </button>
+                    <form onSubmit={handleSubmitJenkins} className="flex flex-col space-y-4">
+                        <input
+                            type="text"
+                            placeholder="Jenkins API Key"
+                            value={jenkinsApiKey}
+                            onChange={(e) => setJenkinsApiKey(e.target.value)}
+                            className="bg-box-color text-white py-3 px-6 rounded-md border border-contrast-box-color w-full"
+                        />
+                        <button type="submit" className="flex items-center justify-center bg-[#D24939] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#C13030] transition duration-300 ease-in-out text-lg">
+                            Submit Jenkins API Key
+                        </button>
+                    </form>
                 </div>
 
-                {/* Jira Inputs */}
+                {/* OpenAI API Key Input */}
                 <div>
-                    <h3 className="mb-3 text-xl text-custom-grey font-outfit">Jira</h3>
-                    <form onSubmit={handleSubmitJira} className="flex flex-col space-y-4">
-                        <div className="flex items-center space-x-4">
-                            <input
-                                type="text"
-                                placeholder="Jira Username"
-                                value={jiraUsername}
-                                onChange={(e) => setJiraUsername(e.target.value)}
-                                className="bg-box-color text-white py-3 px-6 rounded-md border border-contrast-box-color w-full"
-                            />
-                            <input
-                                type="password"
-                                placeholder="Jira Token"
-                                value={jiraToken}
-                                onChange={(e) => setJiraToken(e.target.value)}
-                                className="bg-box-color text-white py-3 px-6 rounded-md border border-contrast-box-color w-full"
-                            />
-                        </div>
-                        <button type="submit" className="flex items-center justify-center bg-[#0052CC] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#003C8A] transition duration-300 ease-in-out text-lg">
-                            <img src={jiraIcon} alt="Jira" className="mr-3 h-8" />
-                            Connect to Jira
+                    <h3 className="mb-3 text-xl text-custom-grey font-outfit">OpenAI</h3>
+                    <form onSubmit={handleSubmitOpenAI} className="flex flex-col space-y-4">
+                        <input
+                            type="text"
+                            placeholder="OpenAI API Key"
+                            value={openAiApiKey}
+                            onChange={(e) => setOpenAiApiKey(e.target.value)}
+                            className="bg-box-color text-white py-3 px-6 rounded-md border border-contrast-box-color w-full"
+                        />
+                        <button type="submit" className="flex items-center justify-center bg-[#412991] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#311B6B] transition duration-300 ease-in-out text-lg">
+                            Submit OpenAI API Key
                         </button>
                     </form>
                 </div>

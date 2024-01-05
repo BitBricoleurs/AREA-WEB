@@ -3,39 +3,14 @@ import React, {useEffect, useState} from "react";
 import WorkflowTable from "../components/WorkflowTable.jsx";
 import {useNavigate} from "react-router-dom";
 import WorkflowHistoryTable from "../components/WorkflowHistoryTable.jsx";
-
-const mockHistory = [
-    {
-        "id": 101,
-        "name": "Daily Data Backup",
-        "startTime": "2022-08-01T09:30:00Z",
-        "endTime": "2022-08-01T09:45:30Z",
-        "duration": "15min30s",
-        "status": "Success"
-    },
-    {
-        "id": 102,
-        "name": "Weekly Data Backup",
-        "startTime": "2022-08-01T09:30:00Z",
-        "endTime": "2022-08-01T09:45:30Z",
-        "duration": "30min30s",
-        "status": "Failed"
-    },
-    {
-        "id": 103,
-        "name": "Monthly Data Backup",
-        "startTime": "2022-08-01T09:30:00Z",
-        "endTime": "2022-08-01T09:45:30Z",
-        "duration": "45min30s",
-        "status": "Running"
-    }
-];
+import Spinner from "../components/Spinner.jsx";
 
 const WorkflowTab = () => {
 
     const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState('');
     const [workflows, setWorkflows] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchWorkflowDetails = async (workflowId) => {
         try {
@@ -51,6 +26,7 @@ const WorkflowTab = () => {
             if (!response.ok) {
                 throw new Error(`Network response was not ok, status: ${response.status}`);
             }
+            setIsLoading(false);
             return await response.json();
         } catch (error) {
             console.error('Error fetching workflow details:', error);
@@ -173,7 +149,11 @@ const WorkflowTab = () => {
                 </div>
 
                 <div className="flex flex-col flex-grow w-full pt-4">
+                {isLoading ? (
+                    <Spinner />
+                ) : (
                     <WorkflowTable workflows={filteredWorkflows} toggleWorkflowSelection={toggleWorkflowSelection} />
+                )}
                 </div>
             </div>
             </div>
@@ -183,7 +163,41 @@ const WorkflowTab = () => {
 
 const HistoryTab = () => {
     const [searchInput, setSearchInput] = useState('');
-    const [workflows, setWorkflows] = useState(mockHistory);
+    const [workflows, setWorkflows] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchWorkflowExecutions = async () => {
+            try {
+                console.log('Fetching workflow executions');
+                const token = localStorage.getItem('userToken');
+                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}workflow-executions`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                console.log(response);
+
+                if (!response.ok) {
+                    console.error('Failed to fetch workflow executions');
+                    throw new Error(`Network response was not ok, status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data);
+                const workflowExecutions = data.workflow;
+                setWorkflows(workflowExecutions);
+                setIsLoading(false);
+            } catch (error) {
+                console.error('Error fetching workflow executions:', error);
+            }
+        };
+
+        fetchWorkflowExecutions();
+    }, []);
+    
 
     const filteredWorkflows = workflows.filter(workflow =>
         workflow.name.toLowerCase().includes(searchInput.toLowerCase())
@@ -197,12 +211,15 @@ const HistoryTab = () => {
                 </div>
                 <div className="bg-box-color border border-contrast-box-color rounded-lg pt-5 pb-5 px-5">
                     <h2 className="text-2xl font-light text-custom-grey font-outfit mb-4">Workflows History</h2>
+                    {isLoading ? (
+                    <Spinner />
+                ) : (
                     <WorkflowHistoryTable workflows={filteredWorkflows} />
+                )}
                 </div>
-
             </div>
         </>
-    )
+    );
 }
 
 export default function SearchPage() {
