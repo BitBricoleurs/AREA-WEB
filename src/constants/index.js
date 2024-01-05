@@ -4,6 +4,7 @@ export const cardServicesStyles = {
         borderColor: 'border-red-600',
         textColor: 'text-red-600',
         hoverBackColor: 'hover:bg-red-600',
+        strokeColor: 'stroke-red-600',
         iconPath: '/src/assets/icons/jenkinsIcon.svg'
     },
     'Github': {
@@ -11,6 +12,7 @@ export const cardServicesStyles = {
         borderColor: 'border-white',
         textColor: 'text-white',
         hoverBackColor: 'hover:bg-white',
+        strokeColor: 'stroke-white',
         iconPath: '/src/assets/icons/githubIcon.svg'
     },
     'Jira': {
@@ -18,6 +20,7 @@ export const cardServicesStyles = {
         borderColor: 'border-blue-800',
         textColor: 'text-blue-800',
         hoverBackColor: 'hover:bg-blue-800',
+        strokeColor: 'stroke-blue-800',
         iconPath: '/src/assets/icons/jiraIcon.svg'
     },
     'Teams': {
@@ -25,6 +28,7 @@ export const cardServicesStyles = {
         borderColor: 'border-blue-600',
         textColor: 'text-blue-600',
         hoverBackColor: 'hover:bg-blue-600',
+        strokeColor: 'stroke-blue-600',
         iconPath: '/src/assets/icons/teamsIcon.svg'
     },
     'Outlook': {
@@ -32,6 +36,7 @@ export const cardServicesStyles = {
         borderColor: 'border-blue-300',
         textColor: 'text-blue-300',
         hoverBackColor: 'hover:bg-blue-300',
+        strokeColor: 'stroke-blue-300',
         iconPath: '/src/assets/icons/outlookIcon.svg'
     },
     'OpenAi' : {
@@ -39,6 +44,7 @@ export const cardServicesStyles = {
         borderColor: 'border-green-700',
         textColor: 'text-green-700',
         hoverBackColor: 'hover:bg-green-700',
+        strokeColor: 'stroke-green-700',
         iconPath: '/src/assets/icons/openAiIcon.svg'
     },
     'Azure' : {
@@ -46,6 +52,7 @@ export const cardServicesStyles = {
         borderColor: 'border-blue-700',
         textColor: 'text-blue-700',
         hoverBackColor: 'hover:bg-blue-700',
+        strokeColor: 'stroke-blue-700',
         iconPath: '/src/assets/icons/azureIcon.svg'
     },
     'System': {
@@ -53,6 +60,7 @@ export const cardServicesStyles = {
         borderColor: 'border-light-purple',
         textColor: 'text-light-purple',
         hoverBackColor: 'hover:bg-light-purple',
+        strokeColor: 'stroke-light-purple',
         iconPath: '/src/assets/icons/purpleLogo.svg'
     },
     'default': {

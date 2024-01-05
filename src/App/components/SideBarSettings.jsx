@@ -6,8 +6,9 @@ import { useWorkflowContext } from '../context/workflowContext.jsx';
 const SideBarSettings = ({ onClose, startClosing, node, updateNodePosition }) => {
 
     const truncateToTwoDecimals = (num) => Math.floor(num * 100) / 100;
-    const {workflow } = useWorkflowContext();
+    const {workflow} = useWorkflowContext();
     const currentNodeWorkflow = workflow.find((n) => n.id == node.id);
+    const [closeButton, setCloseButton] = useState(false);
 
     const [position, setPosition] = useState({
         x: truncateToTwoDecimals(node.position.x),
@@ -33,7 +34,7 @@ const SideBarSettings = ({ onClose, startClosing, node, updateNodePosition }) =>
     const [isAnimating, setIsAnimating] = useState(false);
 
     useEffect(() => {
-        if (startClosing) {
+        if (startClosing || closeButton) {
             setIsAnimating(false);
             setTimeout(() => {
                 onClose();
@@ -41,7 +42,7 @@ const SideBarSettings = ({ onClose, startClosing, node, updateNodePosition }) =>
         } else {
             setIsAnimating(true);
         }
-    }, [startClosing, onClose]);
+    }, [startClosing, onClose, closeButton]);
 
     return (
         <div
@@ -52,7 +53,7 @@ const SideBarSettings = ({ onClose, startClosing, node, updateNodePosition }) =>
         >
             <div className="flex flex-col h-full w-full">
                 <div className="flex flex-row w-full ">
-                    <button onClick={() => {console.log('damn')}} type="button" className="text-custom-grey bg-transparent rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:text-light-purple dark:hover:bg-background" data-modal-hide="default-modal">
+                    <button onClick={() => {setCloseButton(true)}} type="button" className="text-custom-grey bg-transparent rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:text-light-purple dark:hover:bg-background" data-modal-hide="default-modal">
                         <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                         </svg>

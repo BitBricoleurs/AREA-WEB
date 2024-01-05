@@ -46,7 +46,7 @@ const GraphEditor = ({startingTrigger, workflowId}) => {
     };
 
 
-    const { isAddModalOpen, toggleAddModal, isSidebarSettingsOpen, toggleSidebarSettings, workflow, setWorkflow, updateWorkflowNode} = useWorkflowContext();
+    const { isAddModalOpen, toggleAddModal, isSidebarSettingsOpen, toggleSidebarSettings, workflow, setWorkflow, updateWorkflowNode, isBurgerOpen, setBurgerOpen} = useWorkflowContext();
     const [selectedNode, setSelectedNode] = useState(null);
     const [selectedNodeId, setSelectedNodeId] = useState(null);
     const [startClosing, setStartClosing] = useState(false);
@@ -111,6 +111,9 @@ const GraphEditor = ({startingTrigger, workflowId}) => {
     const onCanvasClick = () => {
         if (isSidebarSettingsOpen) {
             setStartClosing(true);
+        }
+        if (isBurgerOpen) {
+            setBurgerOpen(false);
         }
     };
 

@@ -1,8 +1,12 @@
 /** @type {import('tailwindcss').Config} */
+
+import 'flowbite';
+
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,jsx}",
+    './src/**/*.{js,jsx,ts,tsx}',
+    "node_modules/flowbite-react/lib/esm/**/*.js"
   ],
   theme: {
     extend: {
@@ -24,6 +28,7 @@ export default {
         'horizontal-purple-gradient': 'linear-gradient(270deg, #570CD5, #C67EFF)',
         'light-purple-gradient': 'linear-gradient(180deg, #9A77EC, #C67EFF)',
         'background-gradient-landing': 'linear-gradient(245.97deg, #060B25 34.58%, #0E0E2B 51.72%, #823F7D 173.3%)',
+        'vertical-card-purple-gradient' : 'linear-gradient(180deg, #570CD5 -35.79%, #C67EFF 138.42%)',
       },
       fontFamily: {
         outfit: ['Outfit', 'sans-serif'],
@@ -41,7 +46,6 @@ export default {
       },
     },
   },
-  plugins: [],
   variants: {
     extend: {
       rotate: ['group-hover'],
@@ -51,4 +55,6 @@ export default {
       brightness: ['group-hover'],
     },
   },
+  plugins : [
+  ],
 }

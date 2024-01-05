@@ -11,6 +11,7 @@ export const WorkflowContextProvider = ({children }) => {
     const [workflowId, setWorkflowId] = useState('');
     const [isAddModalOpen, setAddModalOpen] = useState(false);
     const [isSidebarSettingsOpen, setSidebarSettingsOpen] = useState(false);
+    const [isBurgerOpen, setBurgerOpen] = useState(false);
     const [workflowName, setWorkflowName] = useState('');
     const [workflowDescription, setWorkflowDescription] = useState('');
     const [loadingState, setLoadingState] = useState("none");
@@ -189,6 +190,8 @@ export const WorkflowContextProvider = ({children }) => {
                 loadWorkflow,
                 loadingState,
                 setLoadingState,
+                isBurgerOpen,
+                setBurgerOpen,
             }}
         >
             {children}
