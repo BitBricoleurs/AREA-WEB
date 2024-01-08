@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const Calendar = () => {
-    const [currentMonth, setCurrentMonth] = useState(new Date(2023, 11)); // Start from December 2023
+    const [currentMonth, setCurrentMonth] = useState(new Date(2023, 11));
 
     const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
     const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
