@@ -2,10 +2,10 @@ import React from 'react';
 
 const Spinner = ({ status, contrast }) => {
     const textColor = contrast === 'white' ? 'text-white' : (contrast === 'black' ? 'text-black' : 'text-white');
-    const crossColor = contrast === 'white' ? 'text-black' : (contrast === 'black' ? 'text-white' : 'stroke-error-red');
+    const crossColor = contrast === 'white' ? 'stroke-black' : (contrast === 'black' ? 'stroke-white' : 'stroke-error-red');
     const checkMarkColor = contrast === 'white' ? 'fill-black' : (contrast === 'black' ? 'fill-white' : 'fill-success-green');
 
-
+    console.log("crossColor: ", crossColor)
     return (
         <div className={`flex justify-center items-center ${textColor}`}>
             {status === 'loading' && (
@@ -29,13 +29,11 @@ const Spinner = ({ status, contrast }) => {
             )}
             {status === 'failed' && (
                 <div className={`flex p-1 flex-row space-x-1 justify-center items-center ${textColor}`}>
-                    <svg className={`${crossColor}  w-5 h-5 `} viewBox="0 0 14 14" fill="none"
+                    <svg className={`${crossColor}  w-4 h-4 `} viewBox="0 0 14 14" fill="none"
                          xmlns="http://www.w3.org/2000/svg">
                         <path d="M11.0837 2.91669L2.91699 11.0834M2.91701 2.91669L11.0837 11.0834"
-                              strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-
-                    <p className={`${textColor}`}>Failed</p>
                 </div>
             )}
         </div>

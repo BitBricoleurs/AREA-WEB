@@ -22,6 +22,9 @@ export default {
         'success-green': '#4CAF50',
         'warning-yellow': '#FFC107',
         'error-red': '#F44336',
+        'custom-light-blue': '#383C4A',
+        'custom-dark-blue' : '#2A2D38',
+        'custom-darker-blue' : '#191C20',
       },
       backgroundImage: {
         'vertical-purple-gradient': 'linear-gradient(180deg, #570CD5, #C67EFF)',

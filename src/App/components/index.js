@@ -15,6 +15,9 @@ import DashboardCardStats from "./DashboardCardStats.jsx";
 import DashboardPreviewCarrousel from "./DashboardPreviewCarrousel.jsx";
 import DashboardGraphTriggeredWorkflow from "./DashboardGraphTriggeredWorkflow.jsx";
 import SucessSpinner from "./SucessSpinner.jsx";
+import AnalyticsWorkflowFilterSection from "./AnalyticsWorkflowSelect.jsx";
+import AnalyticsWorkflowStatus from "./AnalyticsWorkflowStatus.jsx";
+
 
 export {
     PrivateRoute,
@@ -34,4 +37,6 @@ export {
     DashboardPreviewCarrousel,
     DashboardGraphTriggeredWorkflow,
     SucessSpinner,
+    AnalyticsWorkflowFilterSection,
+    AnalyticsWorkflowStatus,
 };

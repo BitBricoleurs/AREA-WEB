@@ -4,6 +4,7 @@ import WorkflowTable from "../components/WorkflowTable.jsx";
 import {useNavigate} from "react-router-dom";
 import WorkflowHistoryTable from "../components/WorkflowHistoryTable.jsx";
 import Spinner from "../components/Spinner.jsx";
+import {SucessSpinner} from "../components/index.js";
 
 const WorkflowTab = () => {
 
@@ -11,6 +12,8 @@ const WorkflowTab = () => {
     const [searchInput, setSearchInput] = useState('');
     const [workflows, setWorkflows] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [deleteStatus, setDeleteStatus] = useState('idle');
+
 
     const fetchWorkflowDetails = async (workflowId) => {
         try {
@@ -81,7 +84,7 @@ const WorkflowTab = () => {
         );
     };
 
-    const isAnyWorkflowSelected = workflows.some(workflow => workflow.isSelected);
+    const isAnyWorkflowSelected = deleteStatus !== 'idle' || workflows.some(workflow => workflow.isSelected);
 
     const handleNewWorkflow = () => {
         navigate('/automate');
@@ -109,6 +112,7 @@ const WorkflowTab = () => {
     };
 
     const handleDeleteWorkflows = async () => {
+        setDeleteStatus('loading');
         try {
             const deleteWorkflowsIds = workflows.filter(workflow => workflow.isSelected).map(workflow => workflow.id);
             console.log('Delete Workflows clicked', deleteWorkflowsIds);
@@ -116,10 +120,17 @@ const WorkflowTab = () => {
             await Promise.all(deleteWorkflowsIds.map(id => deleteWorkflow(id)));
 
             setWorkflows(currentWorkflows => currentWorkflows.filter(workflow => !workflow.isSelected));
+            setDeleteStatus('success');
         } catch (error) {
             console.error('Error handling delete workflows:', error);
+            setDeleteStatus('failed');
+        } finally {
+            setTimeout(() => {
+                setDeleteStatus('idle');
+            }, 1000);
         }
     };
+
 
 
     return (
@@ -139,11 +150,15 @@ const WorkflowTab = () => {
                             New Workflow
                         </button>
                         <button
-                            className={`py-2 px-3 rounded-md shadow-md transition duration-300 ease-in-out ${isAnyWorkflowSelected ? 'bg-error-red hover:bg-error-red text-white' : 'bg-contrast-box-color text-black'}`}
+                            className={`py-2 px-3 rounded-md shadow-md transition-all w-40 duration-300 ease-in-out ${isAnyWorkflowSelected ? 'bg-error-red hover:bg-error-red text-white' : 'bg-contrast-box-color text-black'}`}
                             onClick={handleDeleteWorkflows}
                             disabled={!isAnyWorkflowSelected}
                         >
-                            Delete Workflows
+                            {deleteStatus !== 'idle' ? (
+                                <SucessSpinner contrast="black" status={deleteStatus} />
+                            ) : (
+                                'Delete Workflows'
+                            )}
                         </button>
                     </div>
                 </div>
