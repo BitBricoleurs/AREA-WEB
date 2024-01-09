@@ -20,7 +20,6 @@ const WorkflowTab = () => {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}specific-workflow/${workflowId}`, {
                 method: 'GET',
                 headers: {
-                    'ngrok-skip-browser-warning': true,
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                     'Content-Type': 'application/json'
                 }
@@ -41,7 +40,6 @@ const WorkflowTab = () => {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-user-workflows-ids`, {
                 method: 'GET',
                 headers: {
-                    'ngrok-skip-browser-warning': true,
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                 },

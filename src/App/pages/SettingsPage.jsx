@@ -250,7 +250,6 @@ export default function SettingsPage() {
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}me`, {
                     method: 'GET',
                     headers: {
-                        'ngrok-skip-browser-warning': true,
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     }
