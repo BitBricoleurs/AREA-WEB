@@ -12,10 +12,15 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
     const {addWorkflowNode, toggleAddModal, isLoaded, workflow} = useWorkflowContext()
 
     const convertWorkflowToNodes = (workflowData) => {
-
         let nodes = [];
+        let yPosition = 50;
+        const yIncrement = 550;
+        const xIncrement = 250;
 
-        workflowData.forEach((node) => {
+        const layoutNodes = (node, xPosition = 0, yPosition) => {
+            if (node.visited) return;
+            node.visited = true;
+
             let nodeData;
             if (node.type === 'trigger') {
                 nodeData = { serviceTrigger: node.type_trigger };
@@ -33,11 +38,25 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
                     logo: cardServicesStyles[node.service]?.iconPath || cardServicesStyles["default"].iconPath,
                     id: node.id.toString(),
                 },
-                position: { x: 0, y: 50 },
+                position: { x: xPosition, y: yPosition },
             };
             nodes.push(newNode);
-        });
-        console.log("nodes toNodes: ", nodes)
+
+            if (node.type === 'condition') {
+                const trueBranchNode = workflowData.find(n => n.id === node.next_id_src_success);
+                const falseBranchNode = workflowData.find(n => n.id === node.next_id_src_fail);
+
+                if (trueBranchNode) layoutNodes(trueBranchNode, xPosition - xIncrement, yPosition + yIncrement);
+                if (falseBranchNode) layoutNodes(falseBranchNode, xPosition + xIncrement, yPosition + yIncrement);
+            } else {
+                const nextNode = workflowData.find(n => n.id === node.next_id);
+                if (nextNode) layoutNodes(nextNode, xPosition, yPosition + yIncrement);
+            }
+        };
+
+        const startNode = workflowData.find(n => n.type === 'trigger');
+        if (startNode) layoutNodes(startNode, 0, yPosition);
+
         return nodes;
     };
 
