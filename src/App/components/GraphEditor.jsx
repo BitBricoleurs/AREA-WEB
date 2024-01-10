@@ -10,6 +10,7 @@ import ReactFlow, {
     BackgroundVariant,
     updateEdge
 } from 'reactflow';
+
 import { Handle, Position } from 'reactflow';
 import { cardServicesStyles } from '../../constants/index';
 import TriggerNode from "./graph/TriggerNode.jsx";
@@ -20,6 +21,7 @@ import AddModal from "./graph/AddModal.jsx";
 import ConditionNode from "./graph/ConditionNode.jsx";
 import SideBarSettings from "./SideBarSettings.jsx";
 import InteractBurger from "./graph/InteractBurger.jsx";
+import GenerateGraph from "./graph/GenerateGraph.jsx";
 
 import useGraphEditorHandlers from './graph/useGraphEditorHandlers';
 
@@ -165,6 +167,7 @@ const GraphEditor = ({startingTrigger, workflowId}) => {
                     />
                     <Controls className="bg-white fill-dark-purple"/>
                     <InteractBurger/>
+                    <GenerateGraph/>
                     </ReactFlow>
                 </div>
                 {isAddModalOpen && (

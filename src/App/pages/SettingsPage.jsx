@@ -175,7 +175,7 @@ const GlobalTab = () => {
                 <div>
                     <h3 className="mb-3 text-xl text-custom-grey font-outfit">Microsoft</h3>
                     <button
-                        className="flex items-center bg-[#0078D4] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#005A9E] transition duration-300 ease-in-out text-lg"
+                        className="flex items-center justify-center bg-[#0078D4] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#005A9E] transition duration-300 ease-in-out text-lg w-80"
                         onClick={handleMicrosoftConnect}
                     >
                         <img src={microsoftIcon} alt="Microsoft" className="mr-3 h-8"/>
@@ -187,7 +187,7 @@ const GlobalTab = () => {
                 <div>
                     <h3 className="mb-3 text-xl text-custom-grey font-outfit">GitHub</h3>
                     <button
-                        className="flex items-center bg-[#24292E] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#1B1E23] transition duration-300 ease-in-out text-lg">
+                        className="flex items-center justify-center bg-[#24292E] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#1B1E23] transition duration-300 ease-in-out text-lg w-80">
                         <img src={githubIcon} alt="GitHub" className="mr-3 h-8" />
                         Connect to GitHub
                     </button>

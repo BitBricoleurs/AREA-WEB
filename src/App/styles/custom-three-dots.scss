@@ -1,0 +1,8 @@
+// custom-three-dots.scss
+@use 'three-dots' with (
+  $dot-width: 5px,
+  $dot-height: 5px,
+  $dot-radius: 5px,
+  $dot-color: white,
+  $dot-spacing: 10px
+);
