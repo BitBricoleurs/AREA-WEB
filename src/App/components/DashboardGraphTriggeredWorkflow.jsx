@@ -57,7 +57,11 @@ const DashboardGraphTriggeredWorkflow = () => {
     }, []);
 
     if (isLoading) {
-        return <Spinner />;
+        return (
+            <div className="flex justify-center items-center justify-self-center">
+                <Spinner />
+            </div>
+        );
     }
 
     return (
