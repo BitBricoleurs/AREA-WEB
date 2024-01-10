@@ -17,6 +17,9 @@ import DashboardGraphTriggeredWorkflow from "./DashboardGraphTriggeredWorkflow.j
 import SucessSpinner from "./SucessSpinner.jsx";
 import AnalyticsWorkflowFilterSection from "./AnalyticsWorkflowSelect.jsx";
 import AnalyticsWorkflowStatus from "./AnalyticsWorkflowStatus.jsx";
+import AnalyticsAverageRunTime from "./AnalyticsAverageRunTime.jsx";
+import AnalyticsTriggeredWorkflow from "./AnalyticsTriggeredWorkflow.jsx";
+import AnalyticsLifeTime from "./AnalyticsLifeTime.jsx";
 
 
 export {
@@ -39,4 +42,7 @@ export {
     SucessSpinner,
     AnalyticsWorkflowFilterSection,
     AnalyticsWorkflowStatus,
+    AnalyticsAverageRunTime,
+    AnalyticsTriggeredWorkflow,
+    AnalyticsLifeTime,
 };
