@@ -5,6 +5,7 @@ import totalWorkflowSvg from '/src/assets/icons/totalworkflow.svg';
 import averageTimeSvg from '/src/assets/icons/averagetime.svg';
 import successRateSvg from '/src/assets/icons/successrate.svg';
 import triggeredWorkflowSvg from '/src/assets/icons/triggeredworkflow.svg';
+import Spinner from "../components/Spinner.jsx";
 
 export default function DashboardPage() {
 
@@ -13,8 +14,9 @@ export default function DashboardPage() {
         return window.innerWidth > 640;
     }
     const [sidebarExpanded, setSidebarExpanded] = useState(isWindowLarge());
-
+    const [globalStats, setGlobalStats] = useState({});
     const [workflows, setWorkflows] = useState([]);
+    const [isLoadingStats, setIsLoadingStats] = useState(true)
 
     useEffect(() => {
         const fetchWorkflowExecutions = async () => {
@@ -44,7 +46,34 @@ export default function DashboardPage() {
             }
         };
 
+        const fetchGlobalStats = async () => {
+            try {
+                console.log('Fetching global workflow statistics');
+                const token = localStorage.getItem('userToken');
+                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}global-workflows-statistics`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json',
+                }
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to fetch global workflow statistics');
+                    return;
+                }
+
+                const data = await response.json();
+                setGlobalStats(data);
+                console.log("SATA ",data);
+            } catch (error) {
+                console.error('Error fetching global workflow statistics:', error);
+            } finally {
+                setIsLoadingStats(false);
+            }
+        };
+
         fetchWorkflowExecutions();
+        fetchGlobalStats();
     }, []);
 
     return (
@@ -55,20 +84,44 @@ export default function DashboardPage() {
                     <div className="p-4 mt-14 h-full">
                         <div className="grid grid-cols-4 gap-6 mb-6 h-full">
                             <div className="flex items-center justify-center rounded bg-gray-50 dark:bg-box-color">
-                                <DashboardCardStats title={"Total Workflows"} value={6} percentageLastWeek={1.5} icon={
-                                    <img className="stroke-light-purple" src={totalWorkflowSvg} alt="total workflow icon"/>}/>
+                                {isLoadingStats ? <Spinner /> :
+                                    <DashboardCardStats
+                                    title={"Total Workflows"}
+                                    value={globalStats.total_workflows || 0}
+                                    percentageLastWeek={globalStats.trend_total_workflows?.percentage_diff || 0}
+                                    icon={<img src={totalWorkflowSvg} alt="total workflow icon"/>}
+                                    />
+                                }
                             </div>
                             <div className="flex items-center justify-center  rounded bg-gray-50 dark:bg-box-color">
-                                <DashboardCardStats title={"Triggered Workflows"} value={"32"} percentageLastWeek={-1.5} icon={
-                                    <img className="stroke-light-purple" src={triggeredWorkflowSvg} alt="average time icon"/>}/>
+                            {isLoadingStats ? <Spinner /> :
+                                <DashboardCardStats
+                                    title={"Triggered Workflows"}
+                                    value={globalStats.total_triggered || 0}
+                                    percentageLastWeek={globalStats.trend_total_triggered?.percentage_diff || 0}
+                                    icon={<img src={triggeredWorkflowSvg} alt="triggered workflow icon"/>}
+                                />
+                            }
                             </div>
                             <div className="flex items-center justify-center  rounded bg-gray-50 dark:bg-box-color">
-                                <DashboardCardStats title={"Success Rate"} value={"78%"} percentageLastWeek={2} icon={
-                                    <img className="stroke-light-purple" src={successRateSvg} alt="success rate icon"/>}/>
+                            {isLoadingStats ? <Spinner /> :
+                                <DashboardCardStats
+                                    title={"Success Rate"}
+                                    value={`${globalStats.success_rate || 0}%`}
+                                    percentageLastWeek={globalStats.trend_success_rate?.percentage_diff || 0}
+                                    icon={<img src={successRateSvg} alt="success rate icon"/>}
+                                />
+                        }
                             </div>
                             <div className="flex items-center justify-center  rounded bg-gray-50 dark:bg-box-color">
-                                <DashboardCardStats title={"Average Time"} value={"2min3s"} percentageLastWeek={0} icon={
-                                    <img className="stroke-light-purple" src={averageTimeSvg} alt="average time icon"/>}/>
+                            {isLoadingStats ? <Spinner /> :
+                                <DashboardCardStats
+                                    title={"Average Time"}
+                                    value={globalStats.average_execution_time || 'N/A'}
+                                    percentageLastWeek={globalStats.trend_average_execution_time?.percentage_diff || 0}
+                                    icon={<img src={averageTimeSvg} alt="average time icon"/>}
+                                />
+                            }
                             </div>
                         </div>
                         <div className="grid grid-cols-11 gap-6 mb-6">
