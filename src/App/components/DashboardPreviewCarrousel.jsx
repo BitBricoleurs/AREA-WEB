@@ -2,14 +2,8 @@ import YourWorkflowIcon from  "/src/assets/icons/yourworkflow.svg";
 import { cardServicesStyles } from '../../constants/index';
 import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
+import Spinner from "./Spinner";
 
-const Spinner = () => {
-    return (
-        <div className="flex justify-center items-center w-full h-28 self-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-300"></div>
-        </div>
-    );
-};
 const PreviewCard = ({ workflowDescription, serviceName, workflowId, isLoading }) => {
     const borderColor = isLoading ? "border-box-color" : (cardServicesStyles[serviceName]?.borderColor || cardServicesStyles["default"].borderColor);
 
@@ -56,40 +50,33 @@ const DashboardPreviewCarrousel = ({}) => {
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchWorkflows = async () => {
+        setIsLoading(true);
         try {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-user-workflows-ids`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
-                },
+                    'Content-Type': 'application/json'
+                }
             });
             if (!response.ok) {
                 throw new Error(`Network response was not ok, status: ${response.status}`);
             }
-
             const data = await response.json();
-            if (!data.workflow) {
-                throw new Error(`No workflows found`);
+            if (data.workflow.length === 0) {
+                setWorkflows(mockWorkflows);
             }
-            return data.workflow;
+            setWorkflows(data.workflow);
+            setIsLoading(false);
         } catch (error) {
             console.error('Error fetching workflows:', error);
+            setIsLoading(false);
         }
     };
 
 
     useEffect(() => {
-        fetchWorkflows().then(data => {
-            if (!data) {
-                data = [];
-            }
-            if (data.length < 3) {
-                data.push(...mockWorkflows.slice(0, 3 - data.length));
-            }
-            setWorkflows(data || mockWorkflows);
-            setIsLoading(false);
-        });
+        fetchWorkflows();
     }, []);
 
 
