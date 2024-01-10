@@ -109,8 +109,81 @@ const GlobalTab = () => {
     const [jiraUsername, setJiraUsername] = useState('');
     const [jiraToken, setJiraToken] = useState('');
     const [microsoftAuthUrl, setMicrosoftAuthUrl] = useState('');
+    const [githubAuthUrl, setGithubAuthUrl] = useState('');
+    const [jenkinsUsername, setJenkinsUsername] = useState('');
     const [jenkinsApiKey, setJenkinsApiKey] = useState('');
     const [openAiApiKey, setOpenAiApiKey] = useState('');
+    const [servicesStatus, setServicesStatus] = useState({});
+
+    const placeholderToken =
+    {
+        "dark_mode": null,
+        "github_token": null,
+        "jenkins_token": null,
+        "jira_token": null,
+        "jira_username": null,
+        "microsoft_token": "eyJ******ksA",
+        "openai_token": null
+    }
+
+    const defaultServices = {
+        'microsoft' : false,
+        'github' : false,
+        'jira' : false,
+        'jenkins' : false,
+        'openai' : false
+    }
+
+    useEffect(() => {
+        fetchServicesStatus();
+    } ,[])
+
+    const fetchServicesStatus = async () => {
+        try {
+            const token = localStorage.getItem('userToken');
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}check-settings`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log(response);
+            if (response.ok) {
+                const data = await response.json();
+                setServicesStatus(data.status || defaultServices);
+                setJiraUsername(data.settings.jira_username || '');
+                setJiraToken(data.settings.jira_token || '');
+                setJenkinsUsername(data.settings.jenkins_username || '');
+                setJenkinsApiKey(data.settings.jenkins_token || '');
+                setOpenAiApiKey(data.settings.openai_token || '');
+
+            } else {
+                console.error('Failed to fetch services status');
+            }
+        } catch (error) {
+            console.error('Error fetching services status:', error);
+        }
+    }
+
+    const renderStatusIcon = (serviceName) => {
+        if (servicesStatus[serviceName]) {
+            return (
+                <svg  viewBox="0 0 1024 1024" className="icon w-6 h-6" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                     fill="#000000">
+                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                        <path
+                            d="M866.133333 258.133333L362.666667 761.6l-204.8-204.8L98.133333 618.666667 362.666667 881.066667l563.2-563.2z"
+                            fill="#43A047"></path>
+                    </g>
+                </svg>
+            );
+        } else {
+            return null;
+        }
+    };
 
     const handleSubmitJira = (e) => {
         e.preventDefault();
@@ -150,8 +223,33 @@ const GlobalTab = () => {
             }
         };
 
+        const fetchGithubAuthUrl = async () => {
+            try {
+                const token = localStorage.getItem('userToken');
+                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}github-login`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setGithubAuthUrl(data.authorization_url);
+                } else {
+                    console.error('Failed to fetch Github auth URL');
+                }
+            } catch (error) {
+                console.error('Error fetching Github auth URL:', error);
+            }
+        }
+
         fetchMicrosoftAuthUrl();
+        fetchGithubAuthUrl();
     }, []);
+
+
 
     const handleMicrosoftConnect = () => {
         const width = 600, height = 600;
@@ -164,6 +262,18 @@ const GlobalTab = () => {
         window.open(url, 'MicrosoftLogin', windowFeatures);
     };
 
+    const handleGithubConnect = () => {
+        console.error(githubAuthUrl)
+        const width = 600, height = 600;
+        const left = (window.innerWidth - width) / 2;
+        const top = (window.innerHeight - height) / 2;
+
+        const url = githubAuthUrl;
+        console.log(url)
+        const windowFeatures = `width=${width},height=${height},top=${top},left=${left},status=yes,toolbar=no,menubar=no,location=no`;
+
+        window.open(url, 'MicrosoftLogin', windowFeatures);
+    }
     
 
     return (
@@ -173,7 +283,10 @@ const GlobalTab = () => {
 
                 {/* Microsoft OAuth */}
                 <div>
-                    <h3 className="mb-3 text-xl text-custom-grey font-outfit">Microsoft</h3>
+                    <div className="flex flex-row space-x-2">
+                        <h3 className="mb-3 text-xl text-custom-grey font-outfit">Microsoft</h3>
+                        {renderStatusIcon('microsoft')}
+                    </div>
                     <button
                         className="flex items-center justify-center bg-[#0078D4] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#005A9E] transition duration-300 ease-in-out text-lg w-80"
                         onClick={handleMicrosoftConnect}
@@ -185,44 +298,94 @@ const GlobalTab = () => {
 
                 {/* GitHub OAuth */}
                 <div>
-                    <h3 className="mb-3 text-xl text-custom-grey font-outfit">GitHub</h3>
+                    <div className="flex flex-row space-x-2">
+                        <h3 className="mb-3 text-xl text-custom-grey font-outfit">GitHub</h3>
+                        {renderStatusIcon('github')}
+                    </div>
                     <button
+                        onClick={handleGithubConnect}
                         className="flex items-center justify-center bg-[#24292E] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#1B1E23] transition duration-300 ease-in-out text-lg w-80">
-                        <img src={githubIcon} alt="GitHub" className="mr-3 h-8" />
+                        <img src={githubIcon} alt="GitHub" className="mr-3 h-8"
+                        />
                         Connect to GitHub
                     </button>
                 </div>
 
                 {/* Jenkins API Key Input */}
                 <div>
+                    <div className="flex flex-row space-x-2">
                     <h3 className="mb-3 text-xl text-custom-grey font-outfit">Jenkins</h3>
+                    {renderStatusIcon('jenkins')}
+                    </div>
                     <form onSubmit={handleSubmitJenkins} className="flex flex-col space-y-4">
-                        <input
-                            type="text"
-                            placeholder="Jenkins API Key"
-                            value={jenkinsApiKey}
-                            onChange={(e) => setJenkinsApiKey(e.target.value)}
-                            className="bg-box-color text-white py-3 px-6 rounded-md border border-contrast-box-color w-full"
-                        />
-                        <button type="submit" className="flex items-center justify-center bg-[#D24939] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#C13030] transition duration-300 ease-in-out text-lg">
-                            Submit Jenkins API Key
+                        <div className="flex flex-row space-x-4">
+                            <input
+                                type="text"
+                                placeholder="Jenkins Username"
+                                value={jenkinsUsername}
+                                onChange={(e) => setJenkinsUsername(e.target.value)}
+                                className="bg-box-color text-white py-3 px-6 rounded-md border border-contrast-box-color w-full outline-none focus:ring-1 focus:ring-[#D24939]"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Jenkins API Key"
+                                value={jenkinsApiKey}
+                                onChange={(e) => setJenkinsApiKey(e.target.value)}
+                                className="bg-box-color text-white py-3 px-6 rounded-md border border-contrast-box-color w-full outline-none focus:ring-1 focus:ring-[#D24939]"
+                            />
+                        </div>
+                        <button type="submit"
+                                className="flex items-center justify-center bg-[#D24939] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#C13030] transition duration-300 ease-in-out text-lg">
+                            Submit Jenkins Credentials
                         </button>
                     </form>
                 </div>
 
                 {/* OpenAI API Key Input */}
                 <div>
+                    <div className="flex flex-row space-x-2">
                     <h3 className="mb-3 text-xl text-custom-grey font-outfit">OpenAI</h3>
+                    {renderStatusIcon('openai')}
+                    </div>
                     <form onSubmit={handleSubmitOpenAI} className="flex flex-col space-y-4">
                         <input
                             type="text"
                             placeholder="OpenAI API Key"
                             value={openAiApiKey}
                             onChange={(e) => setOpenAiApiKey(e.target.value)}
-                            className="bg-box-color text-white py-3 px-6 rounded-md border border-contrast-box-color w-full"
+                            className="bg-box-color text-white py-3 px-6 rounded-md border border-contrast-box-color w-full outline-none focus:ring-1 focus:ring-magic-color"
                         />
-                        <button type="submit" className="flex items-center justify-center bg-[#412991] text-white py-3 px-6 rounded-md shadow-md hover:bg-[#311B6B] transition duration-300 ease-in-out text-lg">
+                        <button type="submit" className="flex items-center justify-center bg-magic-color text-white py-3 px-6 rounded-md shadow-md   hover:bg-opacity-80 transition duration-300 ease-in-out text-lg">
                             Submit OpenAI API Key
+                        </button>
+                    </form>
+                </div>
+                {/* Jira OAuth */}
+                <div>
+                    <div className="flex flex-row space-x-2">
+                    <h3 className="mb-3 text-xl text-custom-grey font-outfit">Jira</h3>
+                    {renderStatusIcon('jira')}
+                    </div>
+                    <form onSubmit={handleSubmitOpenAI} className="flex flex-col space-y-4">
+                        <div className="flex flex-row space-x-4">
+                        <input
+                            type="text"
+                            placeholder="Jira Username"
+                            value={jiraUsername}
+                            onChange={(e) => setJiraUsername(e.target.value)}
+                            className="bg-box-color text-white py-3 px-6 rounded-md border border-contrast-box-color w-full outline-none focus:ring-1 focus:ring-[#0052cc]"
+                        />
+                        <input
+                            type="text"
+                            placeholder="Jira Token"
+                            value={jiraToken}
+                            onChange={(e) => setJiraToken(e.target.value)}
+                            className="bg-box-color text-white py-3 px-6 rounded-md border border-contrast-box-color w-full outline-none focus:ring-1 focus:ring-[#0052cc]"
+                        />
+                        </div>
+                        <button type="submit"
+                                className="flex items-center justify-center bg-[#0052cc] text-white py-3 px-6 rounded-md shadow-md   hover:bg-opacity-80 transition duration-300 ease-in-out text-lg">
+                            Submit Jira Credentials
                         </button>
                     </form>
                 </div>
