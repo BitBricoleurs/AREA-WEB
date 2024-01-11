@@ -92,7 +92,7 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
         return variables.length + 1;
     };
 
-    const { variables, setVariables } = useWorkflowContext();
+    const { variables, setVariables, actions, triggers } = useWorkflowContext();
 
     const [rows, setRows] = useState(variables.filter(v => v.refers === nodeId));
 
@@ -102,7 +102,39 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
         return ["None", ...conditionKeys, ...paramKeys];
     };
 
-    const availableVariables = getNodeKeys();
+    const getOutputKeys = (currentAvailable) => {
+        const serviceName = currentWorkflow?.service;
+        const type = currentWorkflow?.type;
+        if (type === 'trigger') {
+            const typeTrigger = currentWorkflow.type_trigger;
+            const triggerService = triggers.find(t => t.name === serviceName);
+            const trigger = triggerService?.triggers?.find(t => t.name === typeTrigger);
+            const outputVariableNames = trigger?.outputs?.map(output => output.variableName) || [];
+            return [...currentAvailable, ...outputVariableNames];
+        }
+        else if (type === 'action') {
+            const typeAction = currentWorkflow.type_action;
+            const actionService = actions.find(a => a.name === serviceName);
+            const action = actionService?.actions?.find(a => a.name === typeAction);
+            let outputVariableNames = [];
+            if (action?.options?.length > 0) {
+                console.log("Current Workflow: ", currentWorkflow)
+                const option = action.options.find(option => option.name === currentWorkflow.params.options);
+                outputVariableNames = option?.outputs?.map(output => output.variableName) || [];
+            } else {
+                outputVariableNames = action?.outputs?.map(output => output.variableName) || [];
+            }
+            return [...currentAvailable, ...outputVariableNames];
+        }
+        console.log("Current Workflow: ", currentWorkflow)
+        return [...currentAvailable];
+    }
+
+    console.log("Current Workflow: ", currentWorkflow)
+
+    let availableVariables = getNodeKeys();
+    availableVariables = getOutputKeys(availableVariables);
+
     console.log("VariableTable.jsx availableVariables: ", availableVariables);
 
     useEffect(() => {

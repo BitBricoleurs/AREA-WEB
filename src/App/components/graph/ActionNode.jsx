@@ -3,7 +3,6 @@ import {Handle, Position} from "reactflow";
 import NodeHeader from "./NodeHeader.jsx";
 import renderSections from "./RenderForm.jsx";
 import SelectBox from "./SelectBox.jsx";
-import ActionsServices from "../../../constants/Actions.json";
 import {useWorkflowContext} from "../../context/workflowContext.jsx";
 const findService = (serviceName, services) => {
     const service = services.find((s) => s.name === serviceName);
@@ -25,7 +24,8 @@ const isActionHasOptions = (action) => {
 
 function actionNode({ data }) {
 
-    const { updateWorkflowNode } = useWorkflowContext();
+    console.log("data showing",data)
+    const { updateWorkflowNode, actions } = useWorkflowContext();
 
     const [selectedAction, setSelectedAction] = useState(null);
     const [hasOptions, setHasOptions] = useState(false);
@@ -33,7 +33,8 @@ function actionNode({ data }) {
     const [currentSections, setCurrentSections] = useState([]);
 
     useEffect(() => {
-        const selectAction = findAction(data.serviceName, data.serviceAction, ActionsServices);
+        const selectAction = findAction(data.serviceName, data.serviceAction, actions);
+        console.error("selectAction: ", selectAction, data, actions);
         setSelectedAction(selectAction);
         setHasOptions(isActionHasOptions(selectAction));
         if (!hasOptions) {

@@ -1,6 +1,6 @@
 import {AppNavBar, SearchBar, LittleInputBox, LargeInputBox, GraphEditor, CustomCard} from '/src/App/components';
 import React, {useEffect, useState} from "react";
-import {cardServicesStyles, triggers} from '/src/constants';
+import {cardServicesStyles} from '/src/constants';
 import {useLocation} from 'react-router-dom';
 import {useWorkflowContext} from "../context/workflowContext.jsx";
 import Draggable from 'react-draggable';
@@ -10,24 +10,60 @@ import Spinner from "../components/SucessSpinner.jsx";
 
 const SelectTrigger = ({onTriggerSelect, isModalOpen}) => {
 
+    const {fetchTriggers, fetchActions, triggers} = useWorkflowContext();
+    const [isLoading, setIsLoading] = useState(true);
+    const [displayedTriggers, setDisplayedTriggers] = useState([]);
+    const [nonDisplayedTriggers, setNonDisplayedTriggers] = useState([]);
+
+    useEffect(() => {
+        fetchTriggers().then(fetchedTriggers => {
+            const usedTriggers = transformTriggers(fetchedTriggers);
+            setDisplayedTriggers(getMatchingTriggers(usedTriggers));
+            setNonDisplayedTriggers(getNonMatchingTriggers(usedTriggers));
+            setIsLoading(false);
+        });
+        fetchActions();
+    }, []);
+
+    console.log("Triggers fetched", triggers);
+
+    const transformTriggers = (services) => {
+        let transformedTriggers = [];
+
+        services.forEach(service => {
+            service.triggers.forEach(trigger => {
+                transformedTriggers.push({
+                    name: service.name,
+                    description: trigger.name
+                });
+            });
+        });
+        console.log("Transformed triggers", transformedTriggers)
+        return transformedTriggers;
+    };
+
     const [searchInput, setSearchInput] = useState('');
-    const getMatchingTriggers = () => {
-        return triggers
-            .filter(service => service.serviceName.toLowerCase().includes(searchInput.toLowerCase()) || service.description.toLowerCase().includes(searchInput.toLowerCase()))
+    const getMatchingTriggers = (usedTriggers) => {
+        return usedTriggers
+            .filter(trigger =>
+                trigger.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+                trigger.description.toLowerCase().includes(searchInput.toLowerCase())
+            )
             .sort((a, b) => {
-                let aMatch = a.serviceName.toLowerCase().indexOf(searchInput.toLowerCase());
-                let bMatch = b.serviceName.toLowerCase().indexOf(searchInput.toLowerCase());
+                let aMatch = a.name.toLowerCase().indexOf(searchInput.toLowerCase());
+                let bMatch = b.name.toLowerCase().indexOf(searchInput.toLowerCase());
                 return aMatch - bMatch;
             });
     };
 
-    const getNonMatchingTriggers = () => {
-        return triggers
-            .filter(service => !service.serviceName.toLowerCase().includes(searchInput.toLowerCase()) && !service.description.toLowerCase().includes(searchInput.toLowerCase()));
+    const getNonMatchingTriggers = (usedTriggers) => {
+        return usedTriggers
+            .filter(trigger =>
+                !trigger.name.toLowerCase().includes(searchInput.toLowerCase()) &&
+                !trigger.description.toLowerCase().includes(searchInput.toLowerCase())
+            );
     };
 
-    const displayedTriggers = getMatchingTriggers();
-    const nonDisplayedTriggers = getNonMatchingTriggers();
 
     const containerClasses = isModalOpen
         ? "flex flex-col w-full blur-sm brightness-50"
@@ -42,17 +78,19 @@ const SelectTrigger = ({onTriggerSelect, isModalOpen}) => {
             <div className="flex flex-col flex-grow w-full mt-10">
             </div>
             <div className={"grid lg:grid-cols-5 gap-6 grid-cols-2 sm:grid-cols-3"}>
-                {displayedTriggers.map((service, index) => (
+                {!isLoading &&
+                displayedTriggers.map((service, index) => (
                     <div key={index}
                          className="flex items-center justify-center h-60 rounded bg-gray-50 dark:bg-box-color border border-contrast-box-color w-full hover:border-light-purple hover:scale-105 transition-all duration-300">
-                        <CustomCard serviceName={service.serviceName} description={service.description}
+                        <CustomCard serviceName={service.name} description={service.description}
                                     onSelect={() => onTriggerSelect(service)}/>
                     </div>
                 ))}
-                {nonDisplayedTriggers.map((service, index) => (
+                {!isLoading &&
+                    nonDisplayedTriggers.map((service, index) => (
                     <div key={index}
                          className="flex items-center justify-center h-60 rounded bg-black text-white dark:bg-box-color border border-contrast-box-color w-full opacity-50">
-                        <CustomCard serviceName={service.serviceName} description={service.description}
+                        <CustomCard serviceName={service.name} description={service.description}
                                     onSelect={() => onTriggerSelect(service)}/>
                     </div>
                 ))}

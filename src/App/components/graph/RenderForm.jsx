@@ -33,6 +33,7 @@ const Section = ({ section, nodeId }) => {
                 return <ChoiceTextEntry data={blockItem} key={index} object={currentNode} setObject={setObject} />;
             case "textArrayEntry":
                 return <TextArrayEntry data={blockItem} key={index} object={currentNode} setObject={setObject} />;
+            case "basicTextEntry":
             case "textEntry":
                 return <TextEntry data={blockItem} key={index} object={currentNode} setObject={setObject} />;
             default:
