@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import AutocompleteInput from "./AutocompleteInput.jsx";
 
 import { useWorkflowContext } from '../../context/workflowContext.jsx';
@@ -6,6 +6,17 @@ import { useWorkflowContext } from '../../context/workflowContext.jsx';
 const TextArrayEntry = ({ data, object, setObject }) => {
     const [selected, setSelected] = useState(false);
     const [emailEntries, setEmailEntries] = useState([""]);
+
+    useEffect(() => {
+        if (object?.params?.[data.variableName]) {
+            setEmailEntries(object.params[data.variableName]);
+        }
+        if (object?.conditions?.find(cond => cond.key === data.variableName)) {
+            setSelected(true);
+            const emailEntriesInCondition = object?.conditions.map(cond => cond.key === data.variableName ? cond.value : "");
+            setEmailEntries([...emailEntriesInCondition, ""]);
+        }
+    }, []);
 
     const updateObject = (newEntries) => {
         if (data.type === 'condition') {
@@ -70,7 +81,7 @@ const TextArrayEntry = ({ data, object, setObject }) => {
         }
     };
 
-
+    console.log("emailEntries: ", emailEntries)
 
     return (
         <div className="flex flex-col rounded-xl">
@@ -97,6 +108,7 @@ const TextArrayEntry = ({ data, object, setObject }) => {
                                 className="text-custom-grey w-full placeholder:text-custom-grey bg-background text-[10px] pl-2 outline-none"
                                 onChange={(text) => handleChange(text, index)}
                                 placeholder={data.placeholder}
+                                value={entry}
                             />
                             {index < emailEntries.length - 1 && (
                                 <button className="self-center" onClick={() => handleRemoveEntry(index)}>

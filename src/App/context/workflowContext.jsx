@@ -5,7 +5,9 @@ import {useGraphEditorContext} from "./graphEditorContext.jsx";
 const WorkflowContext = createContext();
 
 export const WorkflowContextProvider = ({children }) => {
-    const [trigger, setTrigger] = useState({});
+
+    const [triggers, setTriggers] = useState([]);
+    const [actions, setActions] = useState([]);
     const [workflow, setWorkflow] = useState([]);
     const [variables, setVariables] = useState([]);
     const [workflowId, setWorkflowId] = useState('');
@@ -39,7 +41,7 @@ export const WorkflowContextProvider = ({children }) => {
             id: 0,
             type: 'trigger',
             type_action: selectedTrigger.description,
-            service: selectedTrigger.serviceName,
+            service: selectedTrigger.name,
             next_id: null,
             conditions: [],
             params: [],
@@ -75,6 +77,46 @@ export const WorkflowContextProvider = ({children }) => {
         const data = await response.json();
         setWorkflowId(data.workflow_id);
         setWorkflow(tmpWorkflow);
+        return data;
+    }
+
+    const fetchTriggers = async () => {
+        const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-triggers`, {
+            method: 'GET',
+            headers: {
+                "ngrok-skip-browser-warning": true,
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+            },
+        });
+        console.log("Fetching triggers", response)
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Fetched Triggers: ", data)
+        setTriggers(data);
+        return data;
+    }
+
+    const fetchActions = async () => {
+        const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-actions`, {
+            method: 'GET',
+            headers: {
+                "ngrok-skip-browser-warning": true,
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+            },
+        });
+
+        console.log("Fetching actions", response)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Fetched Actions: ", data)
+        setActions(data);
         return data;
     }
 
@@ -166,8 +208,10 @@ export const WorkflowContextProvider = ({children }) => {
     return (
         <WorkflowContext.Provider
             value={{
-                trigger,
-                setTrigger,
+                triggers,
+                actions,
+                fetchActions,
+                fetchTriggers,
                 workflow,
                 setWorkflow,
                 variables,

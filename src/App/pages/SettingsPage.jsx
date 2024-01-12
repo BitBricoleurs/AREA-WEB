@@ -447,15 +447,15 @@ export default function SettingsPage() {
 
 
     const tabs = [
-        { name: 'admin', label: 'Admin', component: <AdminTab />, barWidth: 75, barOffset: 144, disabled: !isAdmin},
-        { name: 'global', label: 'Global', component: <GlobalTab />, barWidth: 80, barOffset: 255, disabled: false},
+        { name: 'admin', label: 'Admin', component: <AdminTab />, barWidth: 75, barOffset: 155, disabled: !isAdmin},
+        { name: 'global', label: 'Global', component: <GlobalTab />, barWidth: 80, barOffset: 270, disabled: false},
     ];
 
     return (
         <>
             <div className="bg-background h-full w-full">
                 <AppNavBar isSidebarExpanded={sidebarExpanded} onToggleSidebar={setSidebarExpanded} currentPage={"settings"}/>
-                <div className={`flex flex-col transition-all transition-700 h-full ease-in-out ${sidebarExpanded ? 'ml-40' : 'ml-14'}`}>
+                <div className={`flex flex-col transition-all transition-700 h-full ease-in-out ${sidebarExpanded ? 'ml-40' : 'ml-16'}`}>
                     <div className="flex p-4 mt-14 w-full h-full">
                         <PageNavigator TitlePageNavigator={"SETTINGS"} tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
                     </div>

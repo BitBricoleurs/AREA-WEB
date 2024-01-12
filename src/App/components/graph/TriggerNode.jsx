@@ -3,7 +3,7 @@ import {Handle, Position} from "reactflow";
 import NodeHeader from "./NodeHeader.jsx";
 import renderSections from "./RenderForm.jsx";
 import SelectBox from "./SelectBox.jsx";
-import TriggerServices from "../../../constants/Triggers.json";
+import {useWorkflowContext} from "../../context/workflowContext.jsx";
 const findService = (serviceName, services) => {
     const service = services.find((s) => s.name === serviceName);
     if (!service) return null;
@@ -26,14 +26,18 @@ const isTriggerHasOptions = (trigger) => {
 
 function TriggerNode({ data }) {
 
-     const [selectedTrigger, setSelectedTrigger] = useState(null);
+    const [selectedTrigger, setSelectedTrigger] = useState(null);
     const [hasOptions, setHasOptions] = useState(false);
     const [selectedOption, setSelectedOption] = useState([]);
     const [currentSections, setCurrentSections] = useState([]);
 
+    const {triggers} = useWorkflowContext();
+
 
     useEffect(() => {
-        const selectTrigger = findTrigger(data.serviceName, data.serviceTrigger, TriggerServices);
+        console.log("data showing",data)
+        console.log("triggers showing",triggers)
+        const selectTrigger = findTrigger(data.serviceName, data.serviceTrigger, triggers);
         console.log("selectTrigger: ", selectTrigger);
         setSelectedTrigger(selectTrigger);
         setHasOptions(isTriggerHasOptions(selectTrigger));

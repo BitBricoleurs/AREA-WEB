@@ -5,6 +5,7 @@ import { useWorkflowContext } from '../../context/workflowContext.jsx';
 
 const ChoiceTextEntry = ({ data, object, setObject }) => {
     const [selected, setSelected] = useState(false);
+    const [inputValue, setInputValue] = useState("");
     const inputHeight = useRef(0);
 
     if (!object) {
@@ -48,10 +49,22 @@ const ChoiceTextEntry = ({ data, object, setObject }) => {
                 object.conditions.push({ key: data.variableName, value: text, type: data.conditionType });
             }
         }
-
         setObject({ ...object });
     };
 
+
+    useEffect(() => {
+        const paramValue = object?.params?.[data.variableName];
+        const conditionValue = object?.conditions?.find(cond => cond.key === data.variableName)?.value;
+
+        if (paramValue !== undefined) {
+            setInputValue(paramValue);
+            setSelected(true);
+        } else if (conditionValue !== undefined) {
+            setInputValue(conditionValue);
+            setSelected(true);
+        }
+    },[]);
 
     useEffect(() => {
         if (selected && data.type === "parameter") {
@@ -94,6 +107,7 @@ const ChoiceTextEntry = ({ data, object, setObject }) => {
                         className="text-custom-grey w-full placeholder:text-custom-grey bg-background text-[10px] pl-2 outline-none"
                         onChange={handleChange}
                         placeholder={data.placeholder}
+                        value={inputValue}
                     />
                 )}
             </div>

@@ -20,6 +20,8 @@ import AnalyticsWorkflowStatus from "./AnalyticsWorkflowStatus.jsx";
 import AnalyticsAverageRunTime from "./AnalyticsAverageRunTime.jsx";
 import AnalyticsTriggeredWorkflow from "./AnalyticsTriggeredWorkflow.jsx";
 import AnalyticsLifeTime from "./AnalyticsLifeTime.jsx";
+import DateSelector from "./graph/DateSelector.jsx";
+import Picker from "./graph/Picker.jsx";
 
 
 export {
@@ -45,4 +47,6 @@ export {
     AnalyticsAverageRunTime,
     AnalyticsTriggeredWorkflow,
     AnalyticsLifeTime,
+    DateSelector,
+    Picker
 };

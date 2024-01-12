@@ -3,7 +3,6 @@ import {Handle, Position} from "reactflow";
 import NodeHeader from "./NodeHeader.jsx";
 import renderSections from "./RenderForm.jsx";
 import SelectBox from "./SelectBox.jsx";
-import ActionsServices from "../../../constants/Actions.json";
 import {useWorkflowContext} from "../../context/workflowContext.jsx";
 const findService = (serviceName, services) => {
     const service = services.find((s) => s.name === serviceName);
@@ -25,22 +24,35 @@ const isActionHasOptions = (action) => {
 
 function actionNode({ data }) {
 
-    const { updateWorkflowNode } = useWorkflowContext();
+    console.log("data showing",data)
+    const { updateWorkflowNode, actions, workflow } = useWorkflowContext();
 
     const [selectedAction, setSelectedAction] = useState(null);
     const [hasOptions, setHasOptions] = useState(false);
     const [selectedOption, setSelectedOption] = useState([]);
     const [currentSections, setCurrentSections] = useState([]);
 
+    const getWorkflowNodeByDataId = (dataId) => {
+        return workflow.find(node => node.id == dataId);
+    }
+
     useEffect(() => {
-        const selectAction = findAction(data.serviceName, data.serviceAction, ActionsServices);
+        const selectAction = findAction(data.serviceName, data.serviceAction, actions);
         setSelectedAction(selectAction);
         setHasOptions(isActionHasOptions(selectAction));
+        const node = getWorkflowNodeByDataId(data.id);
+        if (node.params?.options) {
+            const option = selectAction?.options.find((option) => option.name == node.params.options);
+            setSelectedOption(option);
+            setCurrentSections(option?.sections);
+            return;
+        }
         if (!hasOptions) {
             setCurrentSections(selectAction?.sections);
         }
     }, []);
 
+    console.log("currentSections: ", currentSections);
     const handleOptionsChange = (e) => {
         const option = selectedAction?.options.find((option) => option.name === e.target.value);
         setSelectedOption(option);
@@ -62,7 +74,7 @@ function actionNode({ data }) {
                     <NodeHeader triggerName={data.serviceAction} logo={data.logo} color={data.color}/>
                     {(hasOptions &&
                         <div className={"w-full h-full justify-center items-center flex flex-col"}>
-                            <SelectBox placeholder={"Select a action"} onChange={handleOptionsChange} options={selectedAction?.options} />
+                            <SelectBox placeholder={"Select a action"} onChange={handleOptionsChange} options={selectedAction?.options} value={selectedOption?.name} />
                         </div>
                     )}
                 </div>

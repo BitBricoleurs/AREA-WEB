@@ -1,14 +1,18 @@
-import { cardServicesStyles } from '../../constants/index';
 import React from "react";
+import { cardServicesStyles } from '../../constants/index';
 
-const CustomCard = ({serviceName, description, onSelect}) => {
+const CustomCard = ({ serviceName, description, onSelect, pulse = false }) => {
+    if (pulse) {
+        serviceName = "default";
+    }
 
     const styles = cardServicesStyles[serviceName] || cardServicesStyles['default'];
+    const pulseClass = pulse ? "animate-pulse" : "";
 
     return (
-        <div className="h-full w-full flex">
+        <div className={`h-full w-full flex ${pulseClass}`}>
             <div className="flex flex-row w-full h-full pl-4 pt-4">
-                <div className={`w-1 h-2/4 rounded-md ${styles.backgroundColor}`}></div>
+                <div className={`w-1 h-2/4 rounded-md ${pulseClass} ${styles.backgroundColor}`}></div>
                 <div className="flex flex-col w-full h-full pl-4 items-center">
                     <div className="flex flex-row w-full h-full space-x-5 items-center">
                         <img className={"w-10 h-10"} src={styles.iconPath} alt={serviceName}/>
@@ -31,7 +35,7 @@ const CustomCard = ({serviceName, description, onSelect}) => {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default CustomCard;
