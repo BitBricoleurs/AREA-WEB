@@ -31,7 +31,9 @@ const DashboardGraphTriggeredWorkflow = () => {
                 const token = localStorage.getItem('userToken');
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/weekly-trigger-count`, {
                     method: 'GET',
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: {
+                        "ngrok-skip-browser-warning": true, 
+                        'Authorization': `Bearer ${token}` }
                 });
 
                 if (!response.ok) {

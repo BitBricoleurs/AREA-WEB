@@ -83,15 +83,15 @@ const AnalyticsAverageRunTime = ({ workflowId, selectedStartDate, selectedEndDat
     useEffect(() => {
         const fetchExecutionTimeData = async () => {
             try {
-                const workflowExecutionTimeAnalyticsUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/workflow-execution-time-analytics/${workflowId}`;
-                const params = new URLSearchParams({
-                    start: selectedStartDate,
-                    end: selectedEndDate
-                });
+                const encodedStartDate = btoa(selectedStartDate);
+                const encodedEndDate = btoa(selectedEndDate);
+
+                const workflowExecutionTimeAnalyticsUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/workflow-execution-time-analytics/${workflowId}/${encodedStartDate}/${encodedEndDate}`;
                 
-                const response = await fetch(`${workflowExecutionTimeAnalyticsUrl}?${params.toString()}`, {
+                const response = await fetch(`${workflowExecutionTimeAnalyticsUrl}`, {
                     method: 'GET',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                         'Content-Type': 'application/json'
                     }

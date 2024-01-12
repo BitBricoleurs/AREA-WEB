@@ -40,6 +40,7 @@ const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/toggle-workflow/${id}`, {
                 method: 'POST',
                 headers: {
+                    "ngrok-skip-browser-warning": true,
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                     'Content-Type': 'application/json'
                 }

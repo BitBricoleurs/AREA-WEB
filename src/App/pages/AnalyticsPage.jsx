@@ -10,7 +10,7 @@ const AnalyticsContent = () => {
     const minDate = "19/12/2023";
     const maxDate = "07/01/2024";
     const [selectedStartDate, setSelectedStartDate] = useState("19/12/2023");
-    const [selectedEndDate, setSelectedEndDate] = useState("07/01/2024");
+    const [selectedEndDate, setSelectedEndDate] = useState("30/01/2024");
 
     useEffect(() => {
         const fetchWorkflows = async () => {
@@ -18,6 +18,7 @@ const AnalyticsContent = () => {
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/get-user-workflows-ids`, {
                     method: 'GET',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                         'Content-Type': 'application/json'
                     }
@@ -157,7 +158,7 @@ const AnalyticsContent = () => {
                         <p className="text-white font-outfit text-2xl font-light text-md pl-4 ">{"Lifetime"}</p>
                         <p className="text-white font-outfit text-sm font-thin pl-4 ">{"per Workflow"}</p>
                     </div>
-                    <AnalyticsLifeTime/>
+                    <AnalyticsLifeTime workflowId={selectedWorkflow}/>
                 </div>
             </div>
         </div>

@@ -159,6 +159,7 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}login`, {
                 method: 'POST',
                 headers: {
+                    "ngrok-skip-browser-warning": true,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ email, password })
@@ -330,6 +331,7 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}register`, {
                 method: 'POST',
                 headers: {
+                    "ngrok-skip-browser-warning": true,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ email, password, name })

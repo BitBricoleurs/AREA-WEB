@@ -78,19 +78,20 @@ const AnalyticsTriggeredWorkflow = ({ workflowId, selectedStartDate, selectedEnd
     });
     const [isLoading, setIsLoading] = useState(true);
 
+    console.log("chartData",chartData);
     useEffect(() => {
         const fetchWorkflowDetails = async () => {
             try {
                 
-                const workflowTriggerCountAnalyticsUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/workflow-trigger-count-analytics/${workflowId}`;
-                const params = new URLSearchParams({
-                    start: selectedStartDate,
-                    end: selectedEndDate
-                });
+                const encodedStartDate = btoa(selectedStartDate);
+                const encodedEndDate = btoa(selectedEndDate);
+
+                const workflowTriggerCountAnalyticsUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/workflow-trigger-count-analytics/${workflowId}/${encodedStartDate}/${encodedEndDate}`;
                 
-                const response = await fetch(`${workflowTriggerCountAnalyticsUrl}?${params.toString()}`, {
+                const response = await fetch(`${workflowTriggerCountAnalyticsUrl}`, {
                     method: 'GET',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                         'Content-Type': 'application/json'
                     }
@@ -102,10 +103,9 @@ const AnalyticsTriggeredWorkflow = ({ workflowId, selectedStartDate, selectedEnd
                 }
                 const data = await response.json();
                 setChartData({
-                    ...chartData,
                     datasets: [{
                         ...chartData.datasets[0],
-                        data: data.map(d => d.triggerCount)
+                        data: data.map(d => d.trigger_count)
                     }],
                     labels: data.map(d => d.date)
                 });

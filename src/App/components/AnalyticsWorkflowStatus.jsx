@@ -30,15 +30,15 @@ const AnalyticsWorkflowStatus = ({ workflowId, selectedStartDate, selectedEndDat
         const fetchWorkflowStatus = async () => {
             try {
 
-                const workflowExecutionStatusUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/workflow-execution-status/${workflowId}`;
-                const params = new URLSearchParams({
-                    start: selectedStartDate,
-                    end: selectedEndDate
-                });
+                const encodedStartDate = btoa(selectedStartDate);
+                const encodedEndDate = btoa(selectedEndDate);
+
+                const workflowExecutionStatusUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/workflow-execution-status/${workflowId}/${encodedStartDate}/${encodedEndDate}`;
                 
-                const response = await fetch(`${workflowExecutionStatusUrl}?${params.toString()}`, {
+                const response = await fetch(`${workflowExecutionStatusUrl}`, {
                     method: 'GET',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                         'Content-Type': 'application/json'
                     }
@@ -53,7 +53,7 @@ const AnalyticsWorkflowStatus = ({ workflowId, selectedStartDate, selectedEndDat
                    ...chartData,   
                     datasets: [{
                         ...chartData.datasets[0],
-                        data: [data.failed, data.success, data.running]
+                        data: [data[0].percentage, data[1].percentage, data[2].percentage]
                     }],
                     labels: ['Failed', 'Success', 'Running']
 
