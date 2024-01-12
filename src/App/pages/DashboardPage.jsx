@@ -145,7 +145,7 @@ export default function DashboardPage() {
                                     :
                                     <DashboardCardStats
                                         title={"Average Time"}
-                                        value={globalStats.average_execution_time || 'N/A'}
+                                        value={globalStats.average_execution_time + ' m/s' || 'N/A'}
                                         percentageLastWeek={globalStats.trend_average_execution_time?.percentage_diff || 0}
                                         icon={<img src={averageTimeSvg} alt="average time icon" />}
                                     />

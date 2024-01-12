@@ -9,6 +9,8 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { useEffect, useState } from 'react';
+import Spinner from './Spinner';
 
 ChartJS.register(
     CategoryScale,
@@ -63,27 +65,71 @@ export const options = {
 
 
 
-const labels = [
-    '09/12/2023', '10/12/2023', '11/12/2023', '12/12/2023', '13/12/2023',
-    '14/12/2023', '15/12/2023', '16/12/2023', '17/12/2023', '18/12/2023',
-];
+const AnalyticsAverageRunTime = ({ workflowId, selectedStartDate, selectedEndDate }) => {
+    const [chartData, setChartData] = useState({
+        labels: [],
+        datasets: [
+            {
+                label: 'Runtime',
+                data: [],
+                backgroundColor: 'rgba(57, 240, 186, 0.4)',
+                borderColor: 'rgba(57, 240, 186, 1)',
+                borderWidth: 1,
+            }
+        ],
+    });
+    const [isLoading, setIsLoading] = useState(true);
 
-export const data = {
-    labels,
-    datasets: [
-        {
-            label: 'Runtime',
-            data: labels.map(() => Math.floor(Math.random() * 10)),
-            backgroundColor: 'rgba(57, 240, 186, 0.4)',
-            borderColor: 'rgba(57, 240, 186, 1)',
-            borderWidth: 1,
+    useEffect(() => {
+        const fetchExecutionTimeData = async () => {
+            try {
+                const workflowExecutionTimeAnalyticsUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/workflow-execution-time-analytics/${workflowId}`;
+                const params = new URLSearchParams({
+                    start: selectedStartDate,
+                    end: selectedEndDate
+                });
+                
+                const response = await fetch(`${workflowExecutionTimeAnalyticsUrl}?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });                
+
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok, status: ${response.status}`);
+                }
+                const data = await response.json();
+                setChartData({
+                    labels: data.map(d => d.date),
+                    datasets: [{
+                        ...chartData.datasets[0],
+                        data: data.map(d => d.average_execution_time)
+                    }]
+                });
+            } catch (error) {
+                console.error('Error fetching execution time data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        console.log("workflowId", workflowId);
+        console.log("startDate", selectedStartDate);
+        console.log("endDate", selectedEndDate);
+        if (workflowId && selectedStartDate && selectedEndDate) {
+            fetchExecutionTimeData();
         }
-    ],
+    }, [workflowId, selectedStartDate, selectedEndDate]);
+
+    if (isLoading) {
+        return <div className="flex justify-center items-center h-full w-full">
+            <Spinner />
+        </div>;
+    }
+
+    return <Bar options={options} data={chartData} />;
 };
 
-const AnalyticsAverageRunTime = () => {
-    return (
-        <Bar options={options} data={data} />
-    );
-}
 export default AnalyticsAverageRunTime;
