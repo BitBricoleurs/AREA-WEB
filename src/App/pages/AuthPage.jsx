@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import PurpleLogo from "../../assets/icons/purpleLogo.svg";
 import WhiteLogo from "../../assets/icons/whiteLogo.svg";
 import {useContextLogin} from "../context/loginContext.jsx";
 import "/src/App/styles/blobBackground.css";
+
 
 const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -30,6 +31,40 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
             Already have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign in</span>
         </button>
     );
+
+    const handleMicrosoftLogin = () => {
+        fetch('https://butbutlerapi.azurewebsites.net/microsoft-login', {
+            method: 'GET'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.authorization_url) {
+                window.location.href = data.authorization_url;
+            } else {
+                console.error('Authorization URL not found');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    };
+
+    const handleGithubLogin = () => {
+        fetch('https://butbutlerapi.azurewebsites.net/github-login', {
+            method: 'GET'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.authorization_url) {
+                window.location.href = data.authorization_url;
+            } else {
+                console.error('Authorization URL not found');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    };
 
 
     return (
@@ -64,7 +99,7 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
                     </div>
                     Continue with Google
                 </button>
-                <button className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
+                <button onClick={handleGithubLogin} className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
                     <div className="flex items-center w-8 h-8 ml-4">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clipPath="url(#clip0_291_1590)">
@@ -79,9 +114,9 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
                         </svg>
 
                     </div>
-                    Continue with Apple
+                    Continue with Github
                 </button>
-                <button className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
+                <button onClick={handleMicrosoftLogin} className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
                     <div className="flex items-center w-8 h-8 ml-4">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M20.25 12.75H12.75V20.25H20.25V12.75Z" fill="#FEBA08"/>
@@ -588,6 +623,53 @@ const AuthenticationBox = () => {
         notificationState: 'Hide',
         message: ''
     });
+    const { login } = useContextLogin();
+    const navigate = useNavigate();
+
+
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get('token');
+
+    useEffect(() => {
+        if (token) {
+            validateTokenAndLogin(token);
+        }
+    }, [token]);
+
+    const validateTokenAndLogin = async (token) => {
+        try {
+            const response = await fetch('https://butbutlerapi.azurewebsites.net/validate-token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ token })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log("data: ", data)
+                login(data.user, token);
+
+                setNotification({
+                    notificationState: 'Success',
+                    message: 'Successfully logged in!'
+                });
+                navigate('/dashboard');
+            } else {
+                setNotification({
+                    notificationState: 'Error',
+                    message: 'Invalid or expired token'
+                });
+            }
+        } catch (error) {
+            console.error('Error validating token:', error);
+            setNotification({
+                notificationState: 'Error',
+                message: 'An error occurred while validating the token'
+            });
+        }
+    };
 
     const linkEmailAction = () => {
         if (currentAuthType === 'login') {
