@@ -10,6 +10,8 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { useEffect, useState } from 'react';
+import Spinner from './Spinner';
 
 ChartJS.register(
     CategoryScale,
@@ -62,34 +64,74 @@ export const options = {
     },
 };
 
+const AnalyticsTriggeredWorkflow = ({ workflowId, selectedStartDate, selectedEndDate }) => {
+    const [chartData, setChartData] = useState({
+        labels: [],
+        datasets: [
+            {
+                label: 'Triggered Workflow',
+                data: [],
+                backgroundColor: 'rgba(146, 112, 222, 0.4)',
+                borderColor: 'rgba(146, 112, 222, 1)',
+            },
+        ],
+    });
+    const [isLoading, setIsLoading] = useState(true);
 
+    useEffect(() => {
+        const fetchWorkflowDetails = async () => {
+            try {
+                
+                const workflowTriggerCountAnalyticsUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/workflow-trigger-count-analytics/${workflowId}`;
+                const params = new URLSearchParams({
+                    start: selectedStartDate,
+                    end: selectedEndDate
+                });
+                
+                const response = await fetch(`${workflowTriggerCountAnalyticsUrl}?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
 
-const labels = [
-    '09/12/2023', '10/12/2023', '11/12/2023', '12/12/2023', '13/12/2023',
-    '14/12/2023', '15/12/2023', '16/12/2023', '17/12/2023', '18/12/2023',
-    '19/12/2023', '20/12/2023', '21/12/2023', '22/12/2023', '23/12/2023',
-    '24/12/2023', '25/12/2023', '26/12/2023', '27/12/2023', '28/12/2023',
-    '29/12/2023', '30/12/2023', '31/12/2023', '01/01/2024', '02/01/2024',
-    '03/01/2024', '04/01/2024', '05/01/2024', '06/01/2024', '07/01/2024',
-    '08/01/2024', '09/01/2024', '10/01/2024', '11/01/2024', '12/01/2024',
-    '13/01/2024', '14/01/2024', '15/01/2024', '16/01/2024', '17/01/2024'
-];
-export const data = {
-    labels,
-    datasets: [
-        {
-            label: 'Triggered Workflow',
-            data: labels.map(() => Math.floor(Math.random() * 100)),
-            backgroundColor: 'rgba(146, 112, 222, 0.4)',
-            borderColor: 'rgba(146, 112, 222, 1)',
-        },
-    ],
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok, status: ${response.status}`);
+                }
+                const data = await response.json();
+                setChartData({
+                    ...chartData,
+                    datasets: [{
+                        ...chartData.datasets[0],
+                        data: data.map(d => d.triggerCount)
+                    }],
+                    labels: data.map(d => d.date)
+                });
+            } catch (error) {
+                console.error('Error fetching workflow details:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (workflowId && selectedStartDate && selectedEndDate) {
+            fetchWorkflowDetails();
+        }
+    }, [workflowId, selectedStartDate, selectedEndDate]);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-full w-full">
+        <Spinner />
+        </div>
+        );
+    }
+
+    return (
+        <Line options={options} data={chartData} />
+    );
 };
 
-const AnalyticsTriggeredWorkflow = () => {
-    return (
-        <Line options={options} data={data} />
-    )
-}
-
-export default AnalyticsTriggeredWorkflow
+export default AnalyticsTriggeredWorkflow;

@@ -1,23 +1,47 @@
 import { AppNavBar}  from '../../Static/components';
 import React ,{useState} from "react";
 import { AnalyticsWorkflowFilterSection, AnalyticsWorkflowStatus, AnalyticsAverageRunTime, AnalyticsTriggeredWorkflow, AnalyticsLifeTime  } from "/src/App/components";
+import { useEffect } from "react";
 
 const AnalyticsContent = () => {
 
-    const mockWorkflows = [
-        {value: "1", label: "Workflow 1"},
-        {value: "2", label: "Workflow 2"},
-        {value: "3", label: "Workflow 3"},
-        {value: "4", label: "Workflow 4"},
-        ]
-
-
-    const [selectedWorkflow, setSelectedWorkflow] = useState(null);
-    const [workflows, setWorkflows] = useState(mockWorkflows);
+    const [selectedWorkflow, setSelectedWorkflow] = useState([]);
+    const [workflows, setWorkflows] = useState([]);
     const minDate = "19/12/2023";
     const maxDate = "07/01/2024";
     const [selectedStartDate, setSelectedStartDate] = useState("19/12/2023");
     const [selectedEndDate, setSelectedEndDate] = useState("07/01/2024");
+
+    useEffect(() => {
+        const fetchWorkflows = async () => {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/get-user-workflows-ids`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok, status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const workflowOptions = data.workflow.map(wf => ({
+                    value: wf.id,
+                    label: wf.name
+                }));
+                console.log("workflowOptions",workflowOptions);
+                setWorkflows(workflowOptions);
+                setSelectedWorkflow(workflowOptions[0].value);
+            } catch (error) {
+                console.error('Error fetching workflows:', error);
+            }
+        };
+
+        fetchWorkflows();
+    }, []);
 
     return (
         <div className="flex flex-col w-full">
@@ -61,7 +85,7 @@ const AnalyticsContent = () => {
 
                             </div>
                             <div className="flex flex-col w-full h-64 mt-8 -ml-2 items-center">
-                                <AnalyticsTriggeredWorkflow/>
+                                <AnalyticsTriggeredWorkflow workflowId={selectedWorkflow} selectedStartDate={selectedStartDate} selectedEndDate={selectedEndDate}/>
                             </div>
                         </div>
                     </div>
@@ -94,7 +118,7 @@ const AnalyticsContent = () => {
 
                             </div>
                             <div className="flex flex-col w-full h-64 mt-8 -ml-2 items-center">
-                                <AnalyticsAverageRunTime/>
+                                <AnalyticsAverageRunTime workflowId={selectedWorkflow} selectedStartDate={selectedStartDate} selectedEndDate={selectedEndDate}/>
                             </div>
                         </div>
                     </div>
@@ -122,8 +146,8 @@ const AnalyticsContent = () => {
                                           strokeLinejoin="round"/>
                                 </svg>
                             </div>
-                            <div className="flex flex-col w-full -my-10 h-full items-center">
-                                <AnalyticsWorkflowStatus/>
+                            <div className="flex flex-col w-full h-64 mt-8 -ml-2 items-center">
+                                <AnalyticsWorkflowStatus workflowId={selectedWorkflow} selectedStartDate={selectedStartDate} selectedEndDate={selectedEndDate}/>
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,12 @@
-const AnalyticsWorkflowFilterSection = ({ workflows, selectedWorkflow, onChange, minDate, maxDate, selectedStartDate, selectedEndDate, handleStartDateChange, handleEndDateChange }) => {
 
+import React, {useEffect} from "react";
+
+const AnalyticsWorkflowFilterSection = ({ workflows, selectedWorkflow, onChange, minDate, maxDate, selectedStartDate, selectedEndDate, handleStartDateChange, handleEndDateChange }) => {
+    
+    const handleWorkflowChange = (event) => {
+        onChange(event.target.value);
+    };
+    
     return (
         <div className="flex flex-col w-full h-full">
             <svg className={"ms-auto m-2 w-5 h-5"} width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -25,7 +32,7 @@ const AnalyticsWorkflowFilterSection = ({ workflows, selectedWorkflow, onChange,
                     <select
                         className="flex flex-col w-56 bg-background py-1.5 m-2 px-2 border-contrast-box-color border rounded-md text-custom-grey"
                         value={selectedWorkflow}
-                        onChange={onChange}>
+                        onChange={handleWorkflowChange}>
                         {workflows.map((workflow, index) => (
                             <option key={index} value={workflow.value}>
                                 {workflow.label}
