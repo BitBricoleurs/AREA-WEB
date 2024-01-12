@@ -79,7 +79,7 @@ export const data = {
     datasets: [
         {
             label: 'Triggered Workflow',
-            data: labels.map(() => Math.floor(Math.random() * 100)),
+            data: labels.map(() => Math.floor(Math.random() * 2)),
             backgroundColor: 'rgba(146, 112, 222, 0.4)',
             borderColor: 'rgba(146, 112, 222, 1)',
         },

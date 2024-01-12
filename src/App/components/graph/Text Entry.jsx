@@ -9,9 +9,13 @@ const TextEntry = ({ data, object, setObject }) => {
         if (condition) {
             setInputValue(condition.value);
         } else {
+            console.log("Object:", object);
+            console.log("Variable Name:", data.variableName);
+            console.log("Value:", object.params?.[data.variableName]);
             setInputValue(object.params?.[data.variableName] || "");
         }
     }, [object, data.variableName]);
+
 
     const handleChange = (text) => {
         setInputValue(text);
@@ -43,6 +47,7 @@ const TextEntry = ({ data, object, setObject }) => {
                 className="font-outfit text-[12px] font-medium text-white bg-transparent h-full w-full outline-none"
                 onChange={(text) => handleChange(text)}
                 placeholder={data.placeholder}
+                value={inputValue}
             />
         </div>
     );

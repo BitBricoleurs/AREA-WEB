@@ -25,8 +25,6 @@ const SelectTrigger = ({onTriggerSelect, isModalOpen}) => {
         fetchActions();
     }, []);
 
-    console.log("Triggers fetched", triggers);
-
     const transformTriggers = (services) => {
         let transformedTriggers = [];
 
@@ -250,7 +248,7 @@ export default function AutomatePage() {
             <div className="bg-background h-full w-full">
                 <AppNavBar isSidebarExpanded={sidebarExpanded} onToggleSidebar={setSidebarExpanded}
                            currentPage={"automate"}/>
-                <div className={`flex flex-col transition-all transition-300 ${sidebarExpanded ? 'ml-40' : 'ml-14'}`}>
+                <div className={`flex flex-col transition-all transition-300 ${sidebarExpanded ? 'ml-40' : 'ml-16'}`}>
                     <AutomateContent/>
                 </div>
             </div>

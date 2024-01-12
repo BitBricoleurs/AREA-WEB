@@ -58,6 +58,7 @@ export const WorkflowContextProvider = ({children }) => {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}create-workflow`, {
             method: 'POST',
             headers: {
+                "ngrok-skip-browser-warning": true,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
             },
@@ -83,15 +84,18 @@ export const WorkflowContextProvider = ({children }) => {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-triggers`, {
             method: 'GET',
             headers: {
+                "ngrok-skip-browser-warning": true,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
             },
         });
+        console.log("Fetching triggers", response)
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        console.log("Fetched Triggers: ", data)
         setTriggers(data);
         return data;
     }
@@ -100,11 +104,13 @@ export const WorkflowContextProvider = ({children }) => {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-actions`, {
             method: 'GET',
             headers: {
+                "ngrok-skip-browser-warning": true,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
             },
         });
 
+        console.log("Fetching actions", response)
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -157,6 +163,7 @@ export const WorkflowContextProvider = ({children }) => {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-workflow/${workflowId}`, {
             method: 'GET',
             headers: {
+                "ngrok-skip-browser-warning": true,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
             },

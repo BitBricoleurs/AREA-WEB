@@ -21,6 +21,7 @@ const AdminTab = () => {
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}users`, {
                     method: 'GET',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
@@ -63,6 +64,7 @@ const AdminTab = () => {
                 fetch(`${import.meta.env.VITE_REACT_APP_API_URL}delete-user/${userId}`, {
                     method: 'DELETE',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                         'Content-Type': 'application/json'
                     }
@@ -144,6 +146,7 @@ const GlobalTab = () => {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}check-settings`, {
                 method: 'GET',
                 headers: {
+                    "ngrok-skip-browser-warning": true,
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
@@ -207,6 +210,7 @@ const GlobalTab = () => {
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}microsoft-login`, {
                     method: 'GET',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     },
@@ -229,6 +233,7 @@ const GlobalTab = () => {
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}github-login`, {
                     method: 'GET',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     },
@@ -413,6 +418,7 @@ export default function SettingsPage() {
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}me`, {
                     method: 'GET',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     }
@@ -441,15 +447,15 @@ export default function SettingsPage() {
 
 
     const tabs = [
-        { name: 'admin', label: 'Admin', component: <AdminTab />, barWidth: 75, barOffset: 144, disabled: !isAdmin},
-        { name: 'global', label: 'Global', component: <GlobalTab />, barWidth: 80, barOffset: 255, disabled: false},
+        { name: 'admin', label: 'Admin', component: <AdminTab />, barWidth: 75, barOffset: 155, disabled: !isAdmin},
+        { name: 'global', label: 'Global', component: <GlobalTab />, barWidth: 80, barOffset: 270, disabled: false},
     ];
 
     return (
         <>
             <div className="bg-background h-full w-full">
                 <AppNavBar isSidebarExpanded={sidebarExpanded} onToggleSidebar={setSidebarExpanded} currentPage={"settings"}/>
-                <div className={`flex flex-col transition-all transition-700 h-full ease-in-out ${sidebarExpanded ? 'ml-40' : 'ml-14'}`}>
+                <div className={`flex flex-col transition-all transition-700 h-full ease-in-out ${sidebarExpanded ? 'ml-40' : 'ml-16'}`}>
                     <div className="flex p-4 mt-14 w-full h-full">
                         <PageNavigator TitlePageNavigator={"SETTINGS"} tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
                     </div>

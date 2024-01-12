@@ -27,6 +27,7 @@ export default function DashboardPage() {
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}workflow-executions`, {
                     method: 'GET',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     },
@@ -54,6 +55,7 @@ export default function DashboardPage() {
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}global-workflows-statistics`, {
                     method: 'GET',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     }
