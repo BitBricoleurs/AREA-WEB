@@ -96,7 +96,6 @@ const AnalyticsTriggeredWorkflow = ({ workflowId, selectedStartDate, selectedEnd
                     }
                 });
                 
-
                 if (!response.ok) {
                     throw new Error(`Network response was not ok, status: ${response.status}`);
                 }
@@ -128,7 +127,6 @@ const AnalyticsTriggeredWorkflow = ({ workflowId, selectedStartDate, selectedEnd
         </div>
         );
     }
-
     return (
         <Line options={options} data={chartData} />
     );

@@ -64,15 +64,15 @@ export const cardServicesStyles = {
         iconPath: '/src/assets/icons/purpleLogo.svg'
     },
     'default': {
-        backgroundColor: 'bg-vertical-purple-gradient',
-        borderColor: 'border-light-purple',
-        textColor: 'text-light-purple',
-        hoverBackColor: 'hover:bg-light-purple',
+        backgroundColor: 'bg-contrast-box-color',
+        borderColor: 'border-contrast-box-color',
+        textColor: 'text-contrast-box-color',
+        hoverBackColor: 'hover:bg-contrast-box-color',
         iconPath: '/src/assets/icons/purpleLogo.svg'
     }
 };
 
-export const triggers = [
+export const triggersConstant = [
     {
         serviceName: "System",
         description: "Date & Time",

@@ -20,6 +20,7 @@ const WorkflowTab = () => {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}specific-workflow/${workflowId}`, {
                 method: 'GET',
                 headers: {
+                    "ngrok-skip-browser-warning": true,
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                     'Content-Type': 'application/json'
                 }
@@ -40,6 +41,7 @@ const WorkflowTab = () => {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-user-workflows-ids`, {
                 method: 'GET',
                 headers: {
+                    "ngrok-skip-browser-warning": true,
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                 },
@@ -93,6 +95,7 @@ const WorkflowTab = () => {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/delete-workflow/${workflowId}`, {
                 method: 'DELETE',
                 headers: {
+                    "ngrok-skip-browser-warning": true,
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                     'Content-Type': 'application/json'
                 }
@@ -187,6 +190,7 @@ const HistoryTab = () => {
                 const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}workflow-executions`, {
                     method: 'GET',
                     headers: {
+                        "ngrok-skip-browser-warning": true,
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     },
@@ -243,15 +247,15 @@ export default function SearchPage() {
     const [sidebarExpanded, setSidebarExpanded] = useState(isWindowLarge());
     const [activeTab, setActiveTab] = useState('workflow');
     const tabs = [
-        { name: 'workflow', label: 'Workflow', component: <WorkflowTab />, barWidth: 100, barOffset: 128},
-        { name: 'history', label: 'History', component: <HistoryTab /> , barWidth: 80, barOffset: 268},
+        { name: 'workflow', label: 'Workflow', component: <WorkflowTab />, barWidth: 100, barOffset: 136},
+        { name: 'history', label: 'History', component: <HistoryTab /> , barWidth: 80, barOffset: 286},
     ];
 
     return (
         <>
             <div className="bg-background h-full w-full">
                 <AppNavBar isSidebarExpanded={sidebarExpanded} onToggleSidebar={setSidebarExpanded} currentPage={"search"}/>
-                <div className={`flex flex-col transition-all transition-700 ease-in-out ${sidebarExpanded ? 'ml-40' : 'ml-14'}`}>
+                <div className={`flex flex-col transition-all transition-700 ease-in-out ${sidebarExpanded ? 'ml-40' : 'ml-16'}`}>
                     <div className="flex p-4 mt-14 w-full">
                         <PageNavigator TitlePageNavigator={"SEARCH"} tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
                     </div>

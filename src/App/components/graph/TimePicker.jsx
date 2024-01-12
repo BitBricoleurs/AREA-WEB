@@ -47,7 +47,6 @@ const TimePicker = ({ data, object, setObject }) => {
         }
     };
 
-    // Ensuring the blur event doesn't cause any side effects other than updating the time
     const handleBlur = () => {
         updateTime();
     };

@@ -21,7 +21,7 @@ const PageNavigator = ({ TitlePageNavigator, tabs, activeTab, setActiveTab }) =>
                 </div>
             </div>
             <div className="relative">
-                <div className="absolute bg-light-purple h-1 transition-all duration-500 ease-in-out"
+                <div className="absolute bg-light-purple h-1  rounded-lg transition-all duration-500 ease-in-out"
                      style={{
                          width: `${tabs.find((tab) => tab.name === activeTab).barWidth}px`,
                          left: `${tabs.find((tab) => tab.name === activeTab).barOffset}px`,

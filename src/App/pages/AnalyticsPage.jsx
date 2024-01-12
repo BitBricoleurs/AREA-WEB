@@ -175,7 +175,7 @@ export default function AnalyticsPage() {
             <div className="bg-background h-full w-full">
                 <AppNavBar isSidebarExpanded={sidebarExpanded} onToggleSidebar={setSidebarExpanded}
                            currentPage={"analytics"}/>
-                <div className={`flex flex-col transition-all transition-300 ${sidebarExpanded ? 'ml-40' : 'ml-14'}`}>
+                <div className={`flex flex-col transition-all transition-300 ${sidebarExpanded ? 'ml-40' : 'ml-16'}`}>
                     <div className="p-4 mt-14">
                         <AnalyticsContent/>
                     </div>

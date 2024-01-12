@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-const Calendar = () => {
+const Calendar = ({ data, object, setObject }) => {
+
     const [currentMonth, setCurrentMonth] = useState(new Date(2023, 11));
 
     const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
@@ -9,7 +10,16 @@ const Calendar = () => {
     const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
     const selectDay = (day) => {
-        console.log(`Day selected: ${day}`);
+        const selectedDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+        const isoDate = selectedDate.toISOString().split('T')[0];
+
+        setObject({
+            ...object,
+            params: {
+                ...object.params,
+                day: isoDate
+            }
+        });
     };
 
     const nextMonth = () => {

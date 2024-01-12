@@ -48,7 +48,7 @@ const GraphEditor = ({startingTrigger, workflowId}) => {
     };
 
 
-    const { isAddModalOpen, toggleAddModal, isSidebarSettingsOpen, toggleSidebarSettings, workflow, setWorkflow, updateWorkflowNode, isBurgerOpen, setBurgerOpen} = useWorkflowContext();
+    const { isAddModalOpen, toggleAddModal, isSidebarSettingsOpen, toggleSidebarSettings, workflow, setWorkflow, updateWorkflowNode, isBurgerOpen, setBurgerOpen, triggers, actions, fetchActions, fetchTriggers} = useWorkflowContext();
     const [selectedNode, setSelectedNode] = useState(null);
     const [selectedNodeId, setSelectedNodeId] = useState(null);
     const [startClosing, setStartClosing] = useState(false);
@@ -60,12 +60,31 @@ const GraphEditor = ({startingTrigger, workflowId}) => {
 
     useEffect(() => {
         setLoadingState("fetching");
-        loadWorkflow(workflowId).then(() => {
+        const fetchTriggersIfNeeded = () => {
+            if (triggers === {} || triggers.length === 0) {
+                return fetchTriggers();
+            }
+            return Promise.resolve();
+        };
+
+        const fetchActionsIfNeeded = () => {
+            if (actions === {} || actions.length === 0) {
+                return fetchActions();
+            }
+            return Promise.resolve();
+        };
+
+        Promise.all([
+            loadWorkflow(workflowId),
+            fetchTriggersIfNeeded(),
+            fetchActionsIfNeeded()
+        ]).then(() => {
             setLoadingState("done");
         }).catch(error => {
             console.error("Erreur lors du chargement:", error);
             setLoadingState("none");
         });
+
     }, [workflowId]);
 
     useEffect(() => {

@@ -1,7 +1,8 @@
 import React, {useState} from "react";
 import SearchBar from "../SearchBar.jsx";
-import {actions, cardServicesStyles} from "../../../constants/index.js";
+import {cardServicesStyles} from "../../../constants/index.js";
 import Draggable from 'react-draggable';
+import {useWorkflowContext} from "../../context/workflowContext.jsx";
 
 
 const ActionCard = ({serviceName, description, onSelect}) => {
@@ -41,6 +42,28 @@ const ActionCard = ({serviceName, description, onSelect}) => {
 const ActionModal = ({onClose, onSelectAction, onSelectCondition, clickedNode}) => {
 
     const [searchInput, setSearchInput] = useState("");
+
+    const transformActions = (services) => {
+        let transformedActions = [];
+        services.forEach(service => {
+            if (service.actions && service.actions.length > 0) {
+                service.actions.forEach(action => {
+                    transformedActions.push({
+                        serviceName: service.name,
+                        description: action.name,
+                    });
+                });
+            }
+        });
+
+        return transformedActions;
+    };
+
+
+    const {actions} = useWorkflowContext();
+
+    const transformedActions = transformActions(actions);
+
     return (
         <div className="flex fixed z-50 md:inset-0 w-full h-full">
             <div className="flex justify-center items-center relative p-4 w-full h-full">
@@ -62,7 +85,7 @@ const ActionModal = ({onClose, onSelectAction, onSelectCondition, clickedNode}) 
                                 <SearchBar searchPlaceHolder={"Actions"}  searchInput={searchInput} setSearchInput={setSearchInput} />
                                 <div className="overflow-y-scroll h-full w-full my-4 mb-14 rounded-lg">
                                     <div className={"grid gap-6 grid-cols-3"}>
-                                        {actions.map((service, index) => (
+                                        {transformedActions.map((service, index) => (
                                             <div key={index}
                                                  className="flex items-center justify-center h-full rounded bg-gray-50 dark:bg-box-color border border-contrast-box-color w-full hover:border-light-purple transition-all duration-300">
                                                 <ActionCard serviceName={service.serviceName}

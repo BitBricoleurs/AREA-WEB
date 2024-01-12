@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useWorkflowContext } from '../../context/workflowContext.jsx';
 
-const AutocompleteInput = ({ className, onChange, placeholder }) => {
+const AutocompleteInput = ({ className, onChange, placeholder, value }) => {
     const { variables } = useWorkflowContext();
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState(value || '');
     const [suggestionsVisible, setSuggestionsVisible] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const inputRef = useRef(null);
+
+    useEffect(() => {
+        setInputValue(value || '');
+    }, [value]);
 
     useEffect(() => {
         const lastIndex = inputValue.lastIndexOf('${');

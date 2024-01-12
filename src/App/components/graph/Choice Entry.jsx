@@ -75,7 +75,21 @@ const ChoiceEntry = ({data, object, setObject}) => {
     };
 
     useEffect(() => {
-        handleChoicePress(0);
+        const choice = object.params?.[data.variableName];
+        const choiceCondition = object.conditions?.[data.variableName];
+
+        console.log("choice", choice);
+        if (choice) {
+            const choiceIndex = data.options.findIndex(option => option.label.toLowerCase() === choice);
+            console.log("choiceIndex", choiceIndex);
+            console.log("data.options", data.options);
+            setSelectedChoice(choiceIndex);
+        } else if (choiceCondition) {
+            const choiceIndex = data.options.findIndex(option => option.label.toLowerCase() === choiceCondition.value);
+            setSelectedChoice(choiceIndex);
+        } else {
+            setSelectedChoice(0);
+        }
     }, []);
 
     return (

@@ -29,6 +29,7 @@ export const LoginContextProvider = ({ children }) => {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}me`, {
                 method: 'GET',
                 headers: {
+                    "ngrok-skip-browser-warning": true,
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
                 },

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import PurpleLogo from "../../assets/icons/purpleLogo.svg";
 import WhiteLogo from "../../assets/icons/whiteLogo.svg";
 import {useContextLogin} from "../context/loginContext.jsx";
+import "/src/App/styles/blobBackground.css";
 
 const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -33,7 +34,7 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
 
     return (
         <div className="flex flex-col items-center justify-center h-full w-full">
-            <div className="max-w-sm w-full flex flex-col items-center justify-center">
+            <div className="w-full flex flex-col items-center justify-center">
                 <img src={PurpleLogo} className="h-14 m-[4%] select-none" alt={"PurpleVideo"}/>
                 <span className=" text-xl sm:text-4xl  font-semibold whitespace-nowrap dark:text-white font-outfit select-none">
                     Continue to
@@ -159,6 +160,7 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}login`, {
                 method: 'POST',
                 headers: {
+                    "ngrok-skip-browser-warning": "4545",
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ email, password })
@@ -330,14 +332,16 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}register`, {
                 method: 'POST',
                 headers: {
+                    "ngrok-skip-browser-warning": true,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ email, password, name })
             });
 
             const data = await response.json();
+            console.log("data: ", data)
 
-            if (data.status === 201) {
+            if (response.status === 201) {
                 setNotification({
                     notificationState: 'Success',
                     message: 'Successfully registered!'
@@ -345,6 +349,7 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
 
                 switchToLogin();
             } else {
+                console.log("data: ", data)
                 setNotification({
                     notificationState: 'Error',
                     message: data.message || 'An error occurred during registration'
@@ -474,7 +479,7 @@ const NotificationManager = ({notification, setNotification}) => {
                     notificationState: 'Hide',
                     message: notification.message
                 });
-            }, 1500);
+            }, 2000);
             return () => clearTimeout(timer);
         }
     }, [notification, setNotification]);
@@ -520,9 +525,12 @@ const NotificationManager = ({notification, setNotification}) => {
                 <div id="toast-warning"
                      className="flex self-center items-center w-full max-w-xs p-2 mb-4 bg-white rounded-lg shadow text-custom-grey dark:bg-box-color space-x-3"
                      role={"alert"}>
-                    <div className="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-orange-500 bg-orange-100 rounded-lg dark:bg-orange-700 dark:text-orange-200">
-                        <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z"/>
+                    <div
+                        className="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-orange-500 bg-orange-100 rounded-lg dark:bg-orange-700 dark:text-orange-200">
+                        <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z"/>
                         </svg>
                         <span className="sr-only">Warning icon</span>
                     </div>
@@ -531,9 +539,38 @@ const NotificationManager = ({notification, setNotification}) => {
                             className="ms-auto -my-1.5 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-600 inline-flex items-center justify-center h-6 w-6 text-custom-grey hover:text-light-purple bg-box-color "
                             data-dismiss-target="#toast-warning" aria-label="Close">
                         <span className="sr-only">Close</span>
-                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                             viewBox="0 0 14 14">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                         </svg>
+                    </button>
+                </div>
+            </div>
+            <div
+                className={`fixed top-0 self-center opacity-100 z-52 transition-transform duration-500 ease-in-out ${notification.notificationState === 'Error' ? 'translate-y-0' : '-translate-y-full'}`}>
+                <div id="toast-danger"
+                     className="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800 space-x-3"
+                     role="alert">
+                    <div
+                        className="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
+                        <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                        </svg>
+                        <span className="sr-only">Error icon</span>
+                    </div>
+                    <div className="ms-3 text-sm font-normal">{notification.message}</div>
+                    <button type="button"
+                            className="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                            data-dismiss-target="#toast-danger" aria-label="Close" onClick={closeNotification}>
+                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                             viewBox="0 0 14 14">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                        <span className="sr-only">Close</span>
                     </button>
                 </div>
             </div>
@@ -543,7 +580,7 @@ const NotificationManager = ({notification, setNotification}) => {
 
 const AuthenticationBox = () => {
     const location = useLocation();
-    const { from } = location.state || { from: 'login' };
+    const {from} = location.state || {from: 'login'};
     const [currentView, setCurrentView] = useState('selectMethod');
     const [currentAuthType, setCurrentAuthType] = useState(from);
     const [transitionState, setTransitionState] = useState('enter');
@@ -590,8 +627,9 @@ const AuthenticationBox = () => {
     }
 
     return (
-        <div className="flex flex-col h-screen bg-box-color sm:bg-background transition-all text-white ease-in-out duration-700">
-            <NotificationManager notification={notification} setNotification={setNotification} />
+        <div
+            className="flex flex-col h-screen sm:bg-transparent bg-box-color transition-all text-white ease-in-out duration-700">
+            <NotificationManager notification={notification} setNotification={setNotification}/>
             <div className="p-4">
                 <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse select-none">
                     <img src={WhiteLogo} className="h-6" alt={"PurpleVideo"}/>
@@ -601,7 +639,7 @@ const AuthenticationBox = () => {
                 </a>
             </div>
             <div className="flex-grow flex items-center justify-center">
-                <div className="flex justify-center items-center bg-box-color p-[2%} rounded-lg border sm:border-contrast-box-color transition duration-700 border-box-color  font-outfit w-2/3">
+                <div className="flex justify-center items-center bg-box-color p-[2%} h-2/3 rounded-lg border bg-opacity-95 sm:border-contrast-box-color transition duration-700 border-box-color  font-outfit w-2/3">
                     <div className={`transform transition-all duration-700 ${getTransitionClasses('selectMethod')}`}>
                         {currentView === 'selectMethod' && <SelectMethod onSwitch={linkEmailAction} currentAuthType={currentAuthType} setCurrentAuthType={setCurrentAuthType} />}
                     </div>
@@ -622,10 +660,12 @@ const AuthenticationBox = () => {
 
 export default function AuthPage() {
     return (
-        <>
-            <div className="relative w-full h-screen">
-                <AuthenticationBox/>
+        <div className="h-full w-full relative">
+                <div className="blob"></div>
+            <div className="blob-left"></div>
+            <div className="relative h-full w-full z-10">
+            <AuthenticationBox/>
             </div>
-        </>
+        </div>
     );
 }
