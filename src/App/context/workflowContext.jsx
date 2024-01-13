@@ -121,7 +121,7 @@ export const WorkflowContextProvider = ({children }) => {
     }
 
     const createSendableWorkflow = () => {
-        const modifiedWorkflow = workflow.map(node => {
+        let modifiedWorkflow = workflow.map(node => {
             if (node.type === 'trigger' && node.type_trigger) {
                 return {
                     ...node,
@@ -132,6 +132,14 @@ export const WorkflowContextProvider = ({children }) => {
             return node;
         });
 
+        modifiedWorkflow = modifiedWorkflow.map(node => {
+            if (node.type === 'trigger') {
+                return {
+                    ...node,
+
+                };
+            }
+        });
         return modifiedWorkflow;
     };
 
@@ -205,6 +213,38 @@ export const WorkflowContextProvider = ({children }) => {
         });
     }
 
+    const createVariable = (nameVariable, output, referId) => {
+
+        const size = variables.length + 1;
+
+        const newVariable = {
+            id: size,
+            name: nameVariable,
+            output: output,
+            refer_id: referId,
+        };
+
+        setVariables(prevVariables => {
+            return [...prevVariables, newVariable];
+        });
+    }
+
+    const resolveVariable = (variableId) => {
+        const variable = variables.find(variable => variable.id == variableId);
+        if (variable) {
+            return variable;
+        }
+        return null;
+    }
+
+    const resolveVariableName = (variableId) => {
+        return resolveVariable(variableId)?.name;
+    }
+
+    const resolveVariableOutput = (variableId) => {
+        return resolveVariable(variableId)?.output;
+    }
+
     return (
         <WorkflowContext.Provider
             value={{
@@ -236,6 +276,10 @@ export const WorkflowContextProvider = ({children }) => {
                 setLoadingState,
                 isBurgerOpen,
                 setBurgerOpen,
+                createVariable,
+                resolveVariable,
+                resolveVariableName,
+                resolveVariableOutput
             }}
         >
             {children}

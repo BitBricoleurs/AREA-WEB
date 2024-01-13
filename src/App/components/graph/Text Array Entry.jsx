@@ -8,38 +8,56 @@ const TextArrayEntry = ({ data, object, setObject }) => {
     const [emailEntries, setEmailEntries] = useState([""]);
 
     useEffect(() => {
-        if (object?.params?.[data.variableName]) {
-            setEmailEntries(object.params[data.variableName]);
+        let existingEntries = [];
+        const prefix = `${data.variableName}_`;
+        if (object?.params) {
+            for (const key of Object.keys(object.params)) {
+                console.log("key: ", key)
+                if (key.startsWith(prefix)) {
+                    existingEntries.push(object.params[key]);
+                }
+            }
         }
-        if (object?.conditions?.find(cond => cond.key === data.variableName)) {
+        if (object?.conditions) {
+            object.conditions.forEach((cond) => {
+                console.log("cond: ", cond)
+                if (cond.key.startsWith(prefix)) {
+                    existingEntries.push(cond.value);
+                }
+            });
+        }
+        if (existingEntries.length > 0) {
             setSelected(true);
-            const emailEntriesInCondition = object?.conditions.map(cond => cond.key === data.variableName ? cond.value : "");
-            setEmailEntries([...emailEntriesInCondition, ""]);
+            setEmailEntries([...existingEntries, ""]);
         }
     }, []);
 
     const updateObject = (newEntries) => {
+        let updatedConditions = [];
+        let updatedParams = { ...object.params };
+        newEntries.forEach((entry, index) => {
+            const entryKey = `${data.variableName}_${index}`;
+            if (entry.trim() !== "") {
+                if (data.type === 'condition') {
+                    updatedConditions.push({
+                        key: entryKey,
+                        value: entry,
+                        type: data.conditionType
+                    });
+                } else {
+                    updatedParams[entryKey] = entry;
+                }
+            }
+        });
         if (data.type === 'condition') {
-            const newConditions = newEntries
-                .filter((entry) => entry.trim() !== "")
-                .map((value) => ({
-                    key: data.variableName,
-                    value: value,
-                    type: data.conditionType
-                }));
-
             setObject({
                 ...object,
-                conditions: newConditions,
+                conditions: updatedConditions,
             });
         } else {
-            const emails = newEntries.filter((entry) => entry.trim() !== "");
             setObject({
                 ...object,
-                params: {
-                    ...object.params,
-                    [data.variableName]: emails,
-                },
+                params: updatedParams,
             });
         }
     };

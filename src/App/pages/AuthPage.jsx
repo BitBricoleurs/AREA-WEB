@@ -79,78 +79,70 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
                     Butler
                 </span>
             <div className="max-w-sm w-full">
-                <div className="space-y-4 pt-[6%] pb-[5%]">
-                <button className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
-                    <div className="flex items-center w-8 h-8 ml-4">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clipPath="url(#clip0_291_1581)">
-                                <path d="M23.9878 12.2245C23.9878 11.2413 23.9061 10.5238 23.7294 9.77966H12.2383V14.2176H18.9833C18.8474 15.3205 18.113 16.9815 16.4811 18.0976L16.4583 18.2462L20.0915 20.9964L20.3433 21.0209C22.655 18.9347 23.9878 15.8653 23.9878 12.2245Z" fill="#4285F4"/>
-                                <path d="M12.2383 23.9176C15.5428 23.9176 18.3169 22.8545 20.3433 21.0209L16.4811 18.0976C15.4476 18.8018 14.0605 19.2934 12.2383 19.2934C9.00175 19.2934 6.25478 17.2074 5.27556 14.324L5.13203 14.3359L1.35409 17.1927L1.30469 17.3269C3.31731 21.2334 7.45141 23.9176 12.2383 23.9176Z" fill="#34A853"/>
-                                <path d="M5.27634 14.3239C5.01797 13.5798 4.86844 12.7825 4.86844 11.9587C4.86844 11.1349 5.01797 10.3376 5.26275 9.59354L5.25591 9.43507L1.43063 6.53235L1.30547 6.59052C0.475969 8.21162 0 10.032 0 11.9587C0 13.8854 0.475969 15.7058 1.30547 17.3269L5.27634 14.3239Z" fill="#FBBC05"/>
-                                <path d="M12.2383 4.62403C14.5365 4.62403 16.0867 5.59401 16.9707 6.40461L20.4248 3.10928C18.3034 1.1826 15.5428 0 12.2383 0C7.45141 0 3.31731 2.68406 1.30469 6.59056L5.26197 9.59359C6.25478 6.7102 9.00175 4.62403 12.2383 4.62403Z" fill="#EB4335"/>
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_291_1581">
-                                    <rect width="24" height="24" fill="white"/>
-                                </clipPath>
-                            </defs>
-                        </svg>
-
-                    </div>
-                    Continue with Google
-                </button>
-                <button onClick={handleGithubLogin} className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
-                    <div className="flex items-center w-8 h-8 ml-4">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clipPath="url(#clip0_291_1590)">
-                                <path d="M16.6172 0C16.6731 0 16.729 0 16.788 0C16.925 1.69253 16.279 2.95719 15.4938 3.87301C14.7234 4.78251 13.6685 5.6646 11.9623 5.53076C11.8484 3.86247 12.4955 2.69161 13.2796 1.77789C14.0068 0.92636 15.3399 0.168621 16.6172 0Z" fill="black"/>
-                                <path d="M21.7831 17.6166C21.7831 17.6335 21.7831 17.6482 21.7831 17.6641C21.3036 19.1163 20.6196 20.3609 19.785 21.516C19.023 22.5646 18.0893 23.9757 16.422 23.9757C14.9814 23.9757 14.0245 23.0494 12.548 23.0241C10.9861 22.9988 10.1272 23.7987 8.69921 24C8.53586 24 8.37251 24 8.21232 24C7.16371 23.8482 6.31744 23.0178 5.70092 22.2695C3.88298 20.0585 2.47816 17.2025 2.2168 13.5476C2.2168 13.1893 2.2168 12.832 2.2168 12.4737C2.32745 9.85797 3.59843 7.73124 5.2878 6.70054C6.17938 6.15253 7.40505 5.68566 8.76982 5.89432C9.35472 5.98496 9.95227 6.1852 10.4761 6.38333C10.9724 6.57408 11.5932 6.91237 12.1812 6.89446C12.5796 6.88286 12.9759 6.67525 13.3774 6.52876C14.5535 6.10405 15.7065 5.61715 17.2262 5.84585C19.0525 6.12196 20.3488 6.93345 21.1497 8.18546C19.6048 9.16873 18.3833 10.6505 18.592 13.1808C18.7775 15.4794 20.1138 16.8241 21.7831 17.6166Z" fill="black"/>
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_291_1590">
-                                    <rect width="24" height="24" fill="white"/>
-                                </clipPath>
-                            </defs>
-                        </svg>
-
-                    </div>
-                    Continue with Github
-                </button>
-                <button onClick={handleMicrosoftLogin} className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
-                    <div className="flex items-center w-8 h-8 ml-4">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20.25 12.75H12.75V20.25H20.25V12.75Z" fill="#FEBA08"/>
-                            <path d="M11.25 12.75H3.75V20.25H11.25V12.75Z" fill="#05A6F0"/>
-                            <path d="M20.25 3.75H12.75V11.25H20.25V3.75Z" fill="#80BC06"/>
-                            <path d="M11.25 3.75H3.75V11.25H11.25V3.75Z" fill="#F25325"/>
-                        </svg>
-                    </div>
-                    Continue with Microsoft
-                </button>
-                <button onClick={onSwitch} className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
-                    <div className="flex items-center w-8 h-8 ml-4">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M23.9412 5.17315C23.8415 4.66905 23.6166 4.19262 23.2884 3.79207C23.2218 3.70798 23.1521 3.63316 23.0759 3.55727C22.4921 2.9704 21.68 2.63379 20.8478 2.63379H3.15206C2.31061 2.63379 1.51922 2.96191 0.923672 3.5576C0.848297 3.63279 0.778406 3.70835 0.709219 3.79512C0.3825 4.19398 0.158578 4.66976 0.0612187 5.17455C0.0205313 5.37279 0 5.5782 0 5.78599V18.2143C0 18.6467 0.0878438 19.0677 0.261984 19.468C0.412688 19.8234 0.641344 20.1604 0.923484 20.4424C0.994547 20.5131 1.06514 20.5784 1.14052 20.642C1.70461 21.1091 2.41889 21.3662 3.15206 21.3662H20.8478C21.5858 21.3662 22.2993 21.1082 22.8619 20.6368C22.9371 20.576 23.0068 20.5121 23.0765 20.4424C23.3492 20.17 23.566 19.8569 23.7218 19.5117L23.7423 19.4625C23.9132 19.0699 24 18.6502 24 18.2143V5.78599C24 5.58091 23.9802 5.37415 23.9412 5.17315ZM1.63233 4.64548C1.67691 4.58023 1.73381 4.51324 1.80642 4.44007C2.16684 4.07984 2.64483 3.8816 3.15202 3.8816H20.8478C21.3594 3.8816 21.8376 4.08016 22.194 4.44077C22.2555 4.50298 22.3143 4.57202 22.3656 4.64102L22.5009 4.8229L13.0556 13.0549C12.7644 13.3102 12.3895 13.4507 11.9999 13.4507C11.614 13.4507 11.2395 13.3105 10.9448 13.0552L1.50891 4.82524L1.63233 4.64548ZM1.25414 18.324C1.24903 18.2902 1.24786 18.2526 1.24786 18.2143V6.04334L8.5777 12.4376L1.32183 18.7639L1.25414 18.324ZM21.7921 19.8675C21.5085 20.0312 21.1817 20.118 20.8478 20.118H3.15206C2.81798 20.118 2.49141 20.0312 2.20791 19.8675L1.91128 19.6955L9.40828 13.1621L10.2299 13.8768C10.7228 14.3047 11.3512 14.5406 12 14.5406C12.651 14.5406 13.2806 14.3047 13.7731 13.8768L14.5944 13.1618L22.0888 19.6959L21.7921 19.8675ZM22.7518 18.2143C22.7518 18.2519 22.7511 18.2891 22.7464 18.3223L22.6814 18.7663L15.4224 12.441L22.7518 6.04643V18.2143Z" fill="white"/>
-                        </svg>
-                    </div>
-                    Continue with Email
-                </button>
+                <div className="space-y-5 pt-[16%] pb-[22%]">
+                    <button onClick={handleMicrosoftLogin}
+                            className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
+                        <div className="flex items-center w-8 h-8 ml-4">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20.25 12.75H12.75V20.25H20.25V12.75Z" fill="#FEBA08"/>
+                                <path d="M11.25 12.75H3.75V20.25H11.25V12.75Z" fill="#05A6F0"/>
+                                <path d="M20.25 3.75H12.75V11.25H20.25V3.75Z" fill="#80BC06"/>
+                                <path d="M11.25 3.75H3.75V11.25H11.25V3.75Z" fill="#F25325"/>
+                            </svg>
+                        </div>
+                        Continue with Microsoft
+                    </button>
+                    <button onClick={handleGithubLogin}
+                            className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
+                        <div className="flex items-center w-8 h-8 ml-4">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <g clipPath="url(#clip0_1180_398)">
+                                    <path
+                                        d="M11.9536 0C5.35266 0 0 5.50136 0 12.2878C0 17.717 3.42506 22.323 8.17462 23.9478C8.772 24.0615 8.99137 23.6812 8.99137 23.3566C8.99137 23.0637 8.98022 22.0956 8.97516 21.0689C5.64956 21.8122 4.94784 19.6191 4.94784 19.6191C4.40409 18.1988 3.62062 17.8212 3.62062 17.8212C2.53612 17.0585 3.70237 17.0741 3.70237 17.0741C4.90275 17.1608 5.53481 18.3404 5.53481 18.3404C6.60094 20.219 8.33119 19.6758 9.01331 19.362C9.12056 18.5677 9.43041 18.0257 9.77222 17.7188C7.11722 17.408 4.32609 16.3544 4.32609 11.6461C4.32609 10.3046 4.79306 9.20837 5.55778 8.34787C5.43366 8.03833 5.02453 6.78859 5.67356 5.09602C5.67356 5.09602 6.67734 4.76575 8.96166 6.35559C9.91509 6.08324 10.9377 5.94678 11.9536 5.94216C12.9695 5.94678 13.9928 6.08324 14.9482 6.35559C17.2297 4.76575 18.2321 5.09602 18.2321 5.09602C18.8827 6.78859 18.4734 8.03833 18.3493 8.34787C19.1157 9.20837 19.5795 10.3045 19.5795 11.6461C19.5795 16.3656 16.7831 17.4048 14.1214 17.709C14.5501 18.0903 14.9321 18.8382 14.9321 19.9845C14.9321 21.6286 14.9182 22.9519 14.9182 23.3566C14.9182 23.6836 15.1334 24.0668 15.7394 23.9461C20.4863 22.3195 23.9071 17.7152 23.9071 12.2878C23.9071 5.50136 18.5552 0 11.9536 0Z"
+                                        fill="#161614"/>
+                                    <path
+                                        d="M4.47641 17.5043C4.45016 17.5653 4.3566 17.5836 4.27157 17.5418C4.18485 17.5017 4.1361 17.4184 4.16422 17.3571C4.19 17.2943 4.28357 17.2767 4.3701 17.3189C4.457 17.3589 4.50651 17.443 4.47641 17.5043ZM5.06441 18.0436C5.00741 18.0979 4.89594 18.0727 4.82029 17.9868C4.7421 17.9011 4.72747 17.7866 4.78532 17.7314C4.8441 17.6772 4.95219 17.7025 5.03057 17.7883C5.10876 17.8749 5.12394 17.9887 5.06432 18.0437M5.46782 18.7336C5.39451 18.7859 5.27469 18.7369 5.20072 18.6276C5.1275 18.5184 5.12751 18.3873 5.20232 18.3348C5.27657 18.2823 5.3945 18.3295 5.4695 18.4379C5.54263 18.549 5.54263 18.6801 5.46772 18.7337M6.14994 19.5328C6.08441 19.607 5.94491 19.5871 5.84272 19.4858C5.73829 19.3867 5.70913 19.2461 5.77485 19.1718C5.84113 19.0974 5.98147 19.1183 6.08441 19.2188C6.18819 19.3177 6.21979 19.4594 6.14994 19.5328ZM7.03157 19.8026C7.00279 19.8988 6.86835 19.9426 6.73297 19.9017C6.59779 19.8596 6.50929 19.7468 6.53657 19.6496C6.56469 19.5527 6.69969 19.5072 6.8361 19.5509C6.9711 19.5928 7.05969 19.7047 7.03157 19.8026ZM8.03507 19.917C8.03844 20.0184 7.9236 20.1024 7.78147 20.1043C7.63851 20.1074 7.52291 20.0254 7.52141 19.9258C7.52141 19.8234 7.63363 19.7402 7.77651 19.7378C7.91863 19.7349 8.03507 19.8163 8.03507 19.917ZM9.02075 19.8782C9.03782 19.9771 8.939 20.0786 8.79791 20.1056C8.65916 20.1316 8.53072 20.0706 8.513 19.9726C8.49575 19.8712 8.59644 19.7698 8.73491 19.7435C8.87629 19.7182 9.00275 19.7777 9.02075 19.8782Z"
+                                        fill="#161614"/>
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_1180_398">
+                                        <rect width="24" height="24" fill="white"/>
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
+                        Continue with Github
+                    </button>
+                    <button onClick={onSwitch}
+                            className="flex items-center justify-center w-full px-3 py-1 border border-contrast-box-color rounded-md hover:bg-light-purple hover:text-upside-bar transition duration-700">
+                        <div className="flex items-center w-8 h-8 ml-4">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M23.9412 5.17315C23.8415 4.66905 23.6166 4.19262 23.2884 3.79207C23.2218 3.70798 23.1521 3.63316 23.0759 3.55727C22.4921 2.9704 21.68 2.63379 20.8478 2.63379H3.15206C2.31061 2.63379 1.51922 2.96191 0.923672 3.5576C0.848297 3.63279 0.778406 3.70835 0.709219 3.79512C0.3825 4.19398 0.158578 4.66976 0.0612187 5.17455C0.0205313 5.37279 0 5.5782 0 5.78599V18.2143C0 18.6467 0.0878438 19.0677 0.261984 19.468C0.412688 19.8234 0.641344 20.1604 0.923484 20.4424C0.994547 20.5131 1.06514 20.5784 1.14052 20.642C1.70461 21.1091 2.41889 21.3662 3.15206 21.3662H20.8478C21.5858 21.3662 22.2993 21.1082 22.8619 20.6368C22.9371 20.576 23.0068 20.5121 23.0765 20.4424C23.3492 20.17 23.566 19.8569 23.7218 19.5117L23.7423 19.4625C23.9132 19.0699 24 18.6502 24 18.2143V5.78599C24 5.58091 23.9802 5.37415 23.9412 5.17315ZM1.63233 4.64548C1.67691 4.58023 1.73381 4.51324 1.80642 4.44007C2.16684 4.07984 2.64483 3.8816 3.15202 3.8816H20.8478C21.3594 3.8816 21.8376 4.08016 22.194 4.44077C22.2555 4.50298 22.3143 4.57202 22.3656 4.64102L22.5009 4.8229L13.0556 13.0549C12.7644 13.3102 12.3895 13.4507 11.9999 13.4507C11.614 13.4507 11.2395 13.3105 10.9448 13.0552L1.50891 4.82524L1.63233 4.64548ZM1.25414 18.324C1.24903 18.2902 1.24786 18.2526 1.24786 18.2143V6.04334L8.5777 12.4376L1.32183 18.7639L1.25414 18.324ZM21.7921 19.8675C21.5085 20.0312 21.1817 20.118 20.8478 20.118H3.15206C2.81798 20.118 2.49141 20.0312 2.20791 19.8675L1.91128 19.6955L9.40828 13.1621L10.2299 13.8768C10.7228 14.3047 11.3512 14.5406 12 14.5406C12.651 14.5406 13.2806 14.3047 13.7731 13.8768L14.5944 13.1618L22.0888 19.6959L21.7921 19.8675ZM22.7518 18.2143C22.7518 18.2519 22.7511 18.2891 22.7464 18.3223L22.6814 18.7663L15.4224 12.441L22.7518 6.04643V18.2143Z"
+                                    fill="white"/>
+                            </svg>
+                        </div>
+                        Continue with Email
+                    </button>
                 </div>
                 <div className="text-center text-gray-400">
-                        {linkText}
+                    {linkText}
                 </div>
             </div>
-        </div>
+            </div>
         </div>
     )
 }
 
-const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) => {
+const LoginForm = ({switchToSelectMethod, switchToRegister, setNotification}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPasswordInput, setShowPasswordInput] = useState(false);
     const navigate = useNavigate();
-    const { login } = useContextLogin();
+    const {login} = useContextLogin();
 
     useEffect(() => {
         const handleEscapeKey = (e) => {
@@ -198,7 +190,7 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
                     "ngrok-skip-browser-warning": true,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({email, password})
             });
             console.log(response)
 
@@ -235,10 +227,11 @@ const LoginForm = ({ switchToSelectMethod, switchToRegister, setNotification }) 
                     </span>Butler
                 </span>
 
-                <form className="max-w-sm mx-auto font-outfit flex flex-col items-center pt-[10%]" onSubmit={handleSubmit}>
+                <form className="max-w-sm mx-auto font-outfit flex flex-col items-center pt-[10%]"
+                      onSubmit={handleSubmit}>
                     <div className="relative mb-6 flex">
                         <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-light-purple">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-light-purple">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                             </svg>
 

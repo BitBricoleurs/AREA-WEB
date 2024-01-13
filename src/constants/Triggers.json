@@ -3,58 +3,62 @@
     "name": "System",
     "triggers": [
       {
-        "name": "Date & Time",
         "eg": "Every day at 8:00 AM",
         "icon": "clock",
+        "name": "Date & Time",
         "sections": [
           {
-            "sectionTitle": "",
             "block": [
               {
-                "name": "timeEntry",
-                "type": "parameter",
-                "sectionTitle": "",
-                "variableName": "time",
                 "default": "current",
                 "label": "Time of day",
-                "required": "true"
+                "name": "timeEntry",
+                "required": "true",
+                "sectionTitle": "",
+                "type": "parameter",
+                "variableName": "time"
               }
-            ]
+            ],
+            "sectionTitle": ""
           },
           {
-            "sectionTitle": "Repeat",
             "block": [
               {
-                "name": "choice",
-                "variableName": "repeat",
                 "choiceType": "Single",
-                "type": "parameter",
-                "placeholder": "",
                 "label": "",
-                "required": "true",
+                "name": "choice",
                 "options": [
                   {
                     "label": "Once",
                     "reveal": "Calendar",
+                    "value": "once",
                     "variableName": "date"
                   },
                   {
                     "label": "Daily",
-                    "reveal": ""
+                    "reveal": "",
+                    "variableName": "daily"
                   },
                   {
                     "label": "Weekly",
                     "reveal": "Weekdays",
+                    "value": "weekly",
                     "variableName": "weekdays"
                   },
                   {
                     "label": "Monthly",
                     "reveal": "Calendar",
+                    "value": "monthly",
                     "variableName": "date"
                   }
-                ]
+                ],
+                "placeholder": "",
+                "required": "true",
+                "type": "parameter",
+                "variableName": "repeat"
               }
-            ]
+            ],
+            "sectionTitle": "Repeat"
           }
         ]
       }
@@ -64,117 +68,74 @@
     "name": "Outlook",
     "triggers": [
       {
-        "name": "Email",
         "eg": "When I get an email from Jane",
         "icon": "mail",
-        "sections": [
+        "name": "Email",
+        "outputs": [
           {
-            "sectionTitle": "",
-            "block": [
-              {
-                "name": "textArrayEntry",
-                "type": "condition",
-                "conditionType": "is",
-                "label": "Sender",
-                "placeholder": "Email",
-                "variableName": "sender",
-                "maxEntries": 0,
-                "required": "false"
-              }
-            ]
-          },
-          {
-            "sectionTitle": "",
-            "block": [
-              {
-                "name": "choiceTextEntry",
-                "type": "condition",
-                "conditionType": "contains",
-                "label": "Subject contains",
-                "variableName": "subject",
-                "placeholder": "Anything",
-                "required": "false"
-              }
-            ]
-          },
-          {
-            "sectionTitle": "",
-            "block": [
-              {
-                "name": "choiceTextEntry",
-                "type": "condition",
-                "conditionType": "contains",
-                "label": "Content contains",
-                "variableName": "content",
-                "placeholder": "Anything",
-                "required": "false"
-              }
-            ]
-          }
-        ],
-        "exposes": [
-          {
-            "type": "sender",
+            "type": "output",
             "variableName": "sender"
           },
           {
-            "type": "subject",
+            "type": "output",
             "variableName": "subject"
           },
           {
-            "type": "content",
+            "type": "output",
             "variableName": "content"
+          }
+        ],
+        "sections": [
+          {
+            "block": [
+              {
+                "conditionType": "is",
+                "label": "Sender",
+                "maxEntries": 0,
+                "name": "textArrayEntry",
+                "placeholder": "Email",
+                "required": "false",
+                "type": "condition",
+                "variableName": "sender"
+              }
+            ],
+            "sectionTitle": ""
+          },
+          {
+            "block": [
+              {
+                "conditionType": "contains",
+                "label": "Subject contains",
+                "name": "choiceTextEntry",
+                "placeholder": "Anything",
+                "required": "false",
+                "type": "condition",
+                "variableName": "subject"
+              }
+            ],
+            "sectionTitle": ""
+          },
+          {
+            "block": [
+              {
+                "conditionType": "contains",
+                "label": "Content contains",
+                "name": "choiceTextEntry",
+                "placeholder": "Anything",
+                "required": "false",
+                "type": "condition",
+                "variableName": "content"
+              }
+            ],
+            "sectionTitle": ""
           }
         ]
       },
       {
-        "name": "Calendar",
         "eg": "When a new event is created",
         "icon": "calendar",
-        "sections": [
-          {
-            "sectionTitle": "",
-            "block": [
-              {
-                "name": "choiceTextEntry",
-                "type": "condition",
-                "conditionType": "contains",
-                "variableName": "title",
-                "label": "Title contains",
-                "placeholder": "Anything",
-                "required": "multi"
-              }
-            ]
-          },
-          {
-            "sectionTitle": "Event",
-            "block": [
-              {
-                "name": "choice",
-                "choiceType": "Single",
-                "type": "parameter",
-                "label": "",
-                "variableName": "event",
-                "required": "multi",
-                "options": [
-                  {
-                    "label": "Created",
-                    "reveal": ""
-                  },
-                  {
-                    "label": "Edited",
-                    "reveal": ""
-                  },
-                  {
-                    "label": "Deleted",
-                    "reveal": ""
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        "exposes": [
+        "name": "Calendar",
+        "outputs": [
           {
             "type": "output",
             "variableName": "creator"
@@ -195,6 +156,52 @@
             "type": "output",
             "variableName": "description"
           }
+        ],
+        "sections": [
+          {
+            "block": [
+              {
+                "conditionType": "contains",
+                "label": "Title contains",
+                "name": "choiceTextEntry",
+                "placeholder": "Anything",
+                "required": "multi",
+                "type": "condition",
+                "variableName": "title"
+              }
+            ],
+            "sectionTitle": ""
+          },
+          {
+            "block": [
+              {
+                "choiceType": "Single",
+                "label": "",
+                "name": "choice",
+                "options": [
+                  {
+                    "label": "Created",
+                    "reveal": "",
+                    "value": "created"
+                  },
+                  {
+                    "label": "Edited",
+                    "reveal": "",
+                    "value": "edited"
+                  },
+                  {
+                    "label": "Deleted",
+                    "reveal": "",
+                    "value": "deleted"
+                  }
+                ],
+                "required": "multi",
+                "type": "parameter",
+                "variableName": "event"
+              }
+            ],
+            "sectionTitle": "Event"
+          }
         ]
       }
     ]
@@ -203,88 +210,116 @@
     "name": "Teams",
     "triggers": [
       {
-        "name": "Message",
         "eg": "When I receive a message",
         "icon": "message",
+        "name": "Message",
+        "outputs": [
+          {
+            "type": "output",
+            "variableName": "sender"
+          },
+          {
+            "type": "output",
+            "variableName": "content"
+          },
+          {
+            "type": "output",
+            "variableName": "channel"
+          }
+        ],
         "sections": [
           {
-            "sectionTitle": "",
             "block": [
               {
-                "name": "choiceTextEntry",
-                "type": "parameter",
                 "label": "Channel",
-                "variableName": "channel",
+                "name": "choiceTextEntry",
                 "placeholder": "Channel name",
-                "required": "true"
+                "required": "true",
+                "type": "parameter",
+                "variableName": "channel"
               }
-            ]
+            ],
+            "sectionTitle": ""
           },
           {
-            "sectionTitle": "",
             "block": [
               {
-                "name": "textArrayEntry",
-                "type": "condition",
                 "conditionType": "is",
                 "label": "Sender",
-                "placeholder": "Email",
                 "maxEntries": 0,
-                "variableName": "sender",
-                "required": "false"
+                "name": "textArrayEntry",
+                "placeholder": "Email",
+                "required": "false",
+                "type": "condition",
+                "variableName": "sender"
               }
-            ]
+            ],
+            "sectionTitle": ""
           },
           {
-            "sectionTitle": "",
             "block": [
               {
-                "name": "choiceTextEntry",
-                "type": "condition",
                 "conditionType": "contains",
                 "label": "Content contains",
+                "name": "choiceTextEntry",
                 "placeholder": "Anything",
-                "variableName": "content",
-                "required": "false"
+                "required": "false",
+                "type": "condition",
+                "variableName": "content"
               }
-            ]
+            ],
+            "sectionTitle": ""
           }
         ]
       },
       {
-        "name": "Mention",
         "eg": "When I'm mentioned in group",
         "icon": "bell",
-        "sections": [
+        "name": "Mention",
+        "outputs": [
           {
-            "sectionTitle": "",
-            "block": [
-              {
-                "name": "textArrayEntry",
-                "type": "condition",
-                "conditionType": "contains",
-                "label": "User",
-                "placeholder": "Email",
-                "maxEntries": 0,
-                "variableName": "user",
-                "required": "false"
-              }
-            ]
+            "type": "output",
+            "variableName": "sender"
           },
           {
-            "sectionTitle": "",
+            "type": "output",
+            "variableName": "content"
+          },
+          {
+            "type": "output",
+            "variableName": "channel"
+          }
+        ],
+        "sections": [
+          {
             "block": [
               {
+                "conditionType": "contains",
+                "label": "User",
+                "maxEntries": 0,
                 "name": "textArrayEntry",
+                "placeholder": "Email",
+                "required": "false",
                 "type": "condition",
+                "variableName": "user"
+              }
+            ],
+            "sectionTitle": ""
+          },
+          {
+            "block": [
+              {
                 "conditionType": "is",
                 "label": "Channel",
-                "placeholder": "Channel name",
-                "variableName": "channel",
                 "maxEntries": 0,
-                "required": "false"
+                "name": "textArrayEntry",
+                "placeholder": "Channel name",
+                "required": "false",
+                "type": "condition",
+                "variableName": "channel"
               }
-            ]
+            ],
+            "sectionTitle": ""
           }
         ]
       }
@@ -294,61 +329,82 @@
     "name": "Jira",
     "triggers": [
       {
-        "name": "Ticket",
         "eg": "When a ticket is updated",
         "icon": "file",
+        "name": "Ticket",
+        "outputs": [
+          {
+            "type": "output",
+            "variableName": "title"
+          },
+          {
+            "type": "output",
+            "variableName": "status"
+          },
+          {
+            "type": "output",
+            "variableName": "commented"
+          },
+          {
+            "type": "output",
+            "variableName": "assignee"
+          }
+        ],
         "sections": [
           {
-            "sectionTitle": "",
             "block": [
               {
-                "name": "choice",
-                "type": "parameter",
                 "label": "",
-                "variableName": "ticket",
-                "required": "oneOf",
+                "name": "choice",
                 "options": [
                   {
                     "label": "Created",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "created"
                   },
                   {
                     "label": "Edited",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "edited"
                   },
                   {
                     "label": "Deleted",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "deleted"
                   }
-                ]
+                ],
+                "required": "oneOf",
+                "type": "parameter",
+                "variableName": "ticket"
               }
-            ]
+            ],
+            "sectionTitle": ""
           },
           {
-            "sectionTitle": "Status",
             "block": [
               {
-                "name": "choiceTextEntry",
-                "type": "parameter",
                 "label": "Updated",
+                "name": "choiceTextEntry",
                 "placeholder": "Name",
-                "variableName": "status",
-                "required": "oneOf"
+                "required": "oneOf",
+                "type": "parameter",
+                "variableName": "status"
               }
-            ]
+            ],
+            "sectionTitle": "Status"
           },
           {
-            "sectionTitle": "",
             "block": [
               {
-                "name": "choiceTextEntry",
-                "type": "parameter",
                 "label": "Commented",
+                "name": "choiceTextEntry",
                 "placeholder": "Anything",
-                "variableName": "commented",
-                "required": "oneOf"
+                "required": "oneOf",
+                "type": "parameter",
+                "variableName": "commented"
               }
-            ]
+            ],
+            "sectionTitle": ""
           }
         ]
       }
@@ -358,232 +414,167 @@
     "name": "Github",
     "triggers": [
       {
-        "name": "Commit",
         "eg": "When a new commit is pushed",
         "icon": "commit",
+        "name": "Commit",
+        "outputs": [
+          {
+            "type": "output",
+            "variableName": "author"
+          },
+          {
+            "type": "output",
+            "variableName": "message"
+          },
+          {
+            "type": "output",
+            "variableName": "hash"
+          }
+        ],
         "sections": [
           {
-            "sectionTitle": "Repository",
             "block": [
               {
-                "name": "textEntry",
-                "sectionTitle": "Repository",
-                "type": "parameter",
                 "label": "",
-                "placeholder": "Url",
-                "variableName": "repository",
-                "required": "true"
-              },
-              {
-                "name": "textEntry",
+                "name": "picker",
+                "options": [
+                  {
+                    "name": "Project 1",
+                    "value": "1"
+                  },
+                  {
+                    "name": "Project 2",
+                    "value": "2"
+                  },
+                  {
+                    "name": "Project 3",
+                    "value": "3"
+                  },
+                  {
+                    "name": "Project 4",
+                    "value": "4"
+                  }
+                ],
+                "placeholder": "",
+                "required": "true",
+                "sectionTitle": "",
                 "type": "parameter",
-                "label": "",
-                "placeholder": "Dick",
-                "variableName": "repositorys",
-                "required": "true"
+                "variableName": "repository"
               }
-            ]
-          },
-          {
-            "sectionTitle": "",
-            "block": [
-              {
-                "name": "textArrayEntry",
-                "type": "condition",
-                "conditionType": "contains",
-                "label": "Author",
-                "placeholder": "email",
-                "variableName": "authors",
-                "required": "false"
-              }
-            ]
-          },
-          {
-            "sectionTitle": "",
-            "block": [
-              {
-                "name": "choiceTextEntry",
-                "type": "condition",
-                "conditionType": "contains",
-                "label": "Content contains",
-                "placeholder": "Anything",
-                "variableName": "content",
-                "required": "false"
-              }
-            ]
+            ],
+            "sectionTitle": "Repository"
           }
         ]
       },
       {
-        "name": "Pull Request",
         "eg": "When a new PR is opened",
         "icon": "pull-request",
+        "name": "Pull Request",
+        "outputs": [
+          {
+            "type": "output",
+            "variableName": "author"
+          },
+          {
+            "type": "output",
+            "variableName": "title"
+          },
+          {
+            "type": "output",
+            "variableName": "description"
+          },
+          {
+            "type": "output",
+            "variableName": "assignee"
+          }
+        ],
         "sections": [
           {
-            "sectionTitle": "Repository",
             "block": [
               {
-                "name": "textEntry",
-                "type": "parameter",
                 "label": "",
-                "placeholder": "Url",
-                "variableName": "repository",
-                "required": "true"
-              }
-            ]
-          },
-          {
-            "sectionTitle": "",
-            "block": [
-              {
-                "name": "textArrayEntry",
-                "type": "condition",
-                "conditionType": "contains",
-                "label": "Author",
-                "placeholder": "email",
-                "variableName": "authors",
-                "required": "false"
-              }
-            ]
-          },
-          {
-            "sectionTitle": "",
-            "block": [
-              {
-                "name": "choiceTextEntry",
-                "type": "condition",
-                "conditionType": "contains",
-                "label": "Content contains",
-                "placeholder": "Anything",
-                "variableName": "content",
-                "required": "false"
-              }
-            ]
-          },
-          {
-            "sectionTitle": "",
-            "block": [
-              {
-                "name": "choice",
-                "choiceType": "Single",
-                "type": "condition",
-                "conditionType": "is",
-                "label": "",
-                "variableName": "pr",
-                "required": "true",
+                "name": "picker",
                 "options": [
                   {
-                    "label": "Opened",
-                    "reveal": ""
+                    "name": "Project 1",
+                    "value": "1"
                   },
                   {
-                    "label": "Closed",
-                    "reveal": ""
+                    "name": "Project 2",
+                    "value": "2"
                   },
                   {
-                    "label": "Merged",
-                    "reveal": ""
+                    "name": "Project 3",
+                    "value": "3"
                   },
                   {
-                    "label": "Drafted",
-                    "reveal": ""
-                  },
-                  {
-                    "label": "Assigned",
-                    "reveal": ""
+                    "name": "Project 4",
+                    "value": "4"
                   }
-                ]
+                ],
+                "placeholder": "",
+                "required": "true",
+                "type": "parameter",
+                "variableName": "repository"
               }
-            ]
+            ],
+            "sectionTitle": "Repository"
           }
         ]
       },
       {
-        "name": "Issue",
         "eg": "When a new issue is created",
         "icon": "issue",
+        "name": "Issue",
+        "outputs": [
+          {
+            "type": "output",
+            "variableName": "author"
+          },
+          {
+            "type": "output",
+            "variableName": "title"
+          },
+          {
+            "type": "output",
+            "variableName": "description"
+          },
+          {
+            "type": "output",
+            "variableName": "assignee"
+          }
+        ],
         "sections": [
           {
-            "sectionTitle": "Repository",
             "block": [
               {
-                "name": "textEntry",
-                "type": "parameter",
                 "label": "",
-                "placeholder": "Url",
-                "variableName": "repository",
-                "required": "true"
-              }
-            ]
-          },
-          {
-            "sectionTitle": "Issue",
-            "block": [
-              {
-                "name": "textEntry",
-                "type": "parameter",
-                "label": "",
-                "placeholder": "Url",
-                "variableName": "issue",
-                "required": "true"
-              }
-            ]
-          },
-          {
-            "sectionTitle": "",
-            "block": [
-              {
-                "name": "choice",
-                "choiceType": "Single",
-                "type": "condition",
-                "conditionType": "is",
-                "label": "",
-                "variableName": "issue_action",
-                "required": "true",
+                "name": "picker",
                 "options": [
                   {
-                    "label": "Created",
-                    "reveal": ""
+                    "name": "Project 1",
+                    "value": "1"
                   },
                   {
-                    "label": "Edited",
-                    "reveal": ""
+                    "name": "Project 2",
+                    "value": "2"
                   },
                   {
-                    "label": "Deleted",
-                    "reveal": ""
+                    "name": "Project 3",
+                    "value": "3"
                   },
                   {
-                    "label": "Commented",
-                    "reveal": ""
-                  },
-                  {
-                    "label": "Assigned",
-                    "reveal": ""
+                    "name": "Project 4",
+                    "value": "4"
                   }
-                ]
+                ],
+                "placeholder": "",
+                "required": "true",
+                "type": "parameter",
+                "variableName": "repository"
               }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Star",
-        "eg": "When your repo is starred",
-        "icon": "star",
-        "sections": [
-          {
-            "sectionTitle": "Repository",
-            "block": [
-              {
-                "name": "",
-                "type": "text",
-                "label": "",
-                "placeholder": "Url",
-                "variableName": "repository",
-                "required": "false"
-              }
-            ]
+            ],
+            "sectionTitle": "Repository"
           }
         ]
       }
@@ -593,85 +584,111 @@
     "name": "Jenkins",
     "triggers": [
       {
-        "name": "Build",
         "eg": "When a build is completed",
         "icon": "player",
-        "sections": [
+        "name": "Build",
+        "outputs": [
           {
-            "sectionTitle": "Job path",
-            "block": [
-              {
-                "name": "textEntry",
-                "type": "condition",
-                "conditionType": "is",
-                "label": "",
-                "placeholder": "Url",
-                "variableName": "job_path",
-                "required": "true"
-              }
-            ]
+            "type": "output",
+            "variableName": "build_number"
           },
           {
-            "sectionTitle": "Build result",
+            "type": "output",
+            "variableName": "build_result"
+          },
+          {
+            "type": "output",
+            "variableName": "build_url"
+          }
+        ],
+        "sections": [
+          {
             "block": [
               {
-                "name": "choice",
-                "choiceType": "Single",
-                "type": "parameter",
+                "conditionType": "is",
                 "label": "",
-                "variableName": "build_result",
+                "name": "textEntry",
+                "placeholder": "Url",
                 "required": "true",
+                "type": "condition",
+                "variableName": "job_path"
+              }
+            ],
+            "sectionTitle": "Job path"
+          },
+          {
+            "block": [
+              {
+                "choiceType": "Single",
+                "label": "",
+                "name": "choice",
                 "options": [
                   {
                     "label": "Started",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "started"
                   },
                   {
                     "label": "Completed",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "completed"
                   },
                   {
                     "label": "Succeeded",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "succeeded"
                   },
                   {
                     "label": "Failed",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "failed"
                   }
-                ]
+                ],
+                "required": "true",
+                "type": "parameter",
+                "variableName": "build_result"
               }
-            ]
+            ],
+            "sectionTitle": "Build result"
           }
         ]
       },
       {
-        "name": "Server status",
         "eg": "When the server is down",
         "icon": "globe",
+        "name": "Server status",
+        "outputs": [
+          {
+            "type": "output",
+            "variableName": "status"
+          }
+        ],
         "sections": [
           {
-            "sectionTitle": "",
             "block": [
               {
-                "name": "choice",
                 "choiceType": "Single",
-                "type": "condition",
                 "conditionType": "is",
                 "label": "",
-                "variableName": "status",
-                "required": "true",
+                "name": "choice",
                 "options": [
                   {
                     "label": "Up",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "up"
                   },
                   {
                     "label": "Down",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "down"
                   }
-                ]
+                ],
+                "required": "true",
+                "type": "condition",
+                "variableName": "status"
               }
-            ]
+            ],
+            "sectionTitle": ""
           }
         ]
       }
@@ -681,36 +698,45 @@
     "name": "Azure",
     "triggers": [
       {
-        "name": "Health",
         "eg": "When the server health is poor",
         "icon": "heart",
+        "name": "Health",
+        "outputs": [
+          {
+            "type": "output",
+            "variableName": "status"
+          }
+        ],
         "sections": [
           {
-            "sectionTitle": "Server status",
             "block": [
               {
-                "name": "choice",
                 "choiceType": "Single",
-                "type": "parameter",
                 "label": "",
-                "variableName": "server_health",
-                "required": "true",
+                "name": "choice",
                 "options": [
                   {
                     "label": "Good",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "good"
                   },
                   {
                     "label": "Warning",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "warning"
                   },
                   {
                     "label": "Critical",
-                    "reveal": ""
+                    "reveal": "",
+                    "value": "critical"
                   }
-                ]
+                ],
+                "required": "true",
+                "type": "parameter",
+                "variableName": "server_health"
               }
-            ]
+            ],
+            "sectionTitle": "Server status"
           }
         ]
       }

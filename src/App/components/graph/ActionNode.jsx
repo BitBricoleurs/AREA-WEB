@@ -59,7 +59,7 @@ function actionNode({ data }) {
         setCurrentSections(option?.sections);
         const newParams = {
             ...data.params,
-            options: option.name
+            option: option.name
         };
         updateWorkflowNode(data.id, { params: newParams });
     };
