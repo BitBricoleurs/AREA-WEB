@@ -35,10 +35,7 @@ function TriggerNode({ data }) {
 
 
     useEffect(() => {
-        console.log("data showing",data)
-        console.log("triggers showing",triggers)
         const selectTrigger = findTrigger(data.serviceName, data.serviceTrigger, triggers);
-        console.log("selectTrigger: ", selectTrigger);
         setSelectedTrigger(selectTrigger);
         setHasOptions(isTriggerHasOptions(selectTrigger));
         if (!hasOptions) {

@@ -121,7 +121,22 @@ export const WorkflowContextProvider = ({children }) => {
     }
 
     const createSendableWorkflow = () => {
+
+        let modifiedVariables = variables.map(variable => {
+            return {
+                ...variable
+            };
+        });
+
         let modifiedWorkflow = workflow.map(node => {
+            return {
+                ...node,
+                id: parseInt(node.id, 10),
+                next_id: node.next_id !== null ? parseInt(node.next_id, 10) : null
+            }
+        });
+
+        modifiedWorkflow = workflow.map(node => {
             if (node.type === 'trigger' && node.type_trigger) {
                 return {
                     ...node,
@@ -134,13 +149,19 @@ export const WorkflowContextProvider = ({children }) => {
 
         modifiedWorkflow = modifiedWorkflow.map(node => {
             if (node.type === 'trigger') {
+                const conditions = node.conditions.map(cond => {
+                    console.log("Cond: ", cond)
+                    return {
+                        ...cond
+                    };
+                } );
                 return {
                     ...node,
-
                 };
             }
+            return node;
         });
-        return modifiedWorkflow;
+        return {modifiedVariables, modifiedWorkflow};
     };
 
     const editWorkflow = async () => {
@@ -279,7 +300,8 @@ export const WorkflowContextProvider = ({children }) => {
                 createVariable,
                 resolveVariable,
                 resolveVariableName,
-                resolveVariableOutput
+                resolveVariableOutput,
+                createSendableWorkflow,
             }}
         >
             {children}

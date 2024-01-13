@@ -15,9 +15,12 @@ const InteractBurger = () => {
         setShowBox(!showBox);
     };
 
-    const {workflowName, workflowDescription, setWorkflowName, setWorkflowDescription, workflow, variables, editWorkflow} = useWorkflowContext();
+    const {workflowName, workflowDescription, setWorkflowName, setWorkflowDescription, workflow, variables, editWorkflow, createSendableWorkflow} = useWorkflowContext();
 
     const downloadJson = () => {
+
+        const workflow = createSendableWorkflow();
+
         const data = {
             workflowName,
             workflowDescription,
