@@ -19,13 +19,13 @@ const InteractBurger = () => {
 
     const downloadJson = () => {
 
-        const workflow = createSendableWorkflow();
+        const { modifiedVariables: sendableVariable, modifiedWorkflow: sendableWorkflow } = createSendableWorkflow();
 
         const data = {
             workflowName,
             workflowDescription,
-            workflow,
-            variables,
+            workflow: sendableWorkflow,
+            variables: sendableVariable,
         };
 
         const jsonStr = JSON.stringify(data, null, 2);

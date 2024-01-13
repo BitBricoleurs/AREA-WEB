@@ -147,16 +147,21 @@ export const WorkflowContextProvider = ({children }) => {
             return node;
         });
 
+        return {modifiedVariables, modifiedWorkflow};
         modifiedWorkflow = modifiedWorkflow.map(node => {
             if (node.type === 'trigger') {
                 const conditions = node.conditions.map(cond => {
                     console.log("Cond: ", cond)
+                    const variable = createVariable(cond.key, cond.value, node.id);
+                    modifiedVariables.push(variable);
                     return {
-                        ...cond
+                        ...cond,
+                        key: variable.name
                     };
                 } );
                 return {
                     ...node,
+                    conditions: conditions
                 };
             }
             return node;
@@ -165,7 +170,7 @@ export const WorkflowContextProvider = ({children }) => {
     };
 
     const editWorkflow = async () => {
-        const sendableWorkflow = createSendableWorkflow();
+        const { modifiedVariables: sendableVariable, modifiedWorkflow: sendableWorkflow } = createSendableWorkflow();
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}edit-workflow/${workflowId}`, {
             method: 'PUT',
             headers: {
@@ -177,7 +182,7 @@ export const WorkflowContextProvider = ({children }) => {
                 'name_workflow': workflowName,
                 'description': workflowDescription,
                 'workflow': sendableWorkflow,
-                'variables': variables
+                'variables': sendableVariable
             }),
         });
         console.warn("Sent workflow: ", workflow)
@@ -245,9 +250,7 @@ export const WorkflowContextProvider = ({children }) => {
             refer_id: referId,
         };
 
-        setVariables(prevVariables => {
-            return [...prevVariables, newVariable];
-        });
+        return newVariable;
     }
 
     const resolveVariable = (variableId) => {
