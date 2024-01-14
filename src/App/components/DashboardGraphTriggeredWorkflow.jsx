@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AreaChart, Area, CartesianGrid, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import Spinner from "./Spinner";
+import {useContextLogin} from "../context/loginContext.jsx";
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -23,13 +24,14 @@ const CustomTooltip = ({ active, payload, label }) => {
 const DashboardGraphTriggeredWorkflow = () => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const { ip } = useContextLogin();
 
     useEffect(() => {
         const fetchTriggerCount = async () => {
             setIsLoading(true);
             try {
                 const token = localStorage.getItem('userToken');
-                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/weekly-trigger-count`, {
+                const response = await fetch(`${ip}/weekly-trigger-count`, {
                     method: 'GET',
                     headers: {
                         "ngrok-skip-browser-warning": true, 

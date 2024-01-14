@@ -12,6 +12,7 @@ import {
 } from 'recharts';
 import { useEffect, useState } from 'react';
 import Spinner from './Spinner';
+import {useContextLogin} from "../context/loginContext.jsx";
 
 
 const AnalyticsLifeTime = ({ workflowId }) => {
@@ -58,11 +59,12 @@ const AnalyticsLifeTime = ({ workflowId }) => {
     const [data, setData] = useState([]);
     const [editDates, setEditDates] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const { ip } = useContextLogin();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/workflow-life-time-analytics/${workflowId}`, {
+                const response = await fetch(`${ip}/workflow-life-time-analytics/${workflowId}`, {
                     method: 'GET',
                     headers: {
                         "ngrok-skip-browser-warning": true,

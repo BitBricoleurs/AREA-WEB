@@ -8,6 +8,31 @@ const ChoiceTextEntry = ({ data, object, setObject }) => {
     const [inputValue, setInputValue] = useState("");
     const inputHeight = useRef(0);
 
+    useEffect(() => {
+        const paramValue = object?.params?.[data.variableName];
+        const conditionValue = object?.conditions?.find(cond => cond.key === data.variableName)?.value;
+
+        if (paramValue !== undefined) {
+            setInputValue(paramValue);
+            setSelected(true);
+        } else if (conditionValue !== undefined) {
+            setInputValue(conditionValue);
+            setSelected(true);
+        }
+    },[]);
+
+    useEffect(() => {
+        if (selected && data.type === "parameter") {
+            handleChange("");
+        }
+    }, [selected, data.type]);
+
+
+
+    useEffect(() => {
+        inputHeight.current = selected ? 48 : 0;
+    }, [selected]);
+
     if (!object) {
         console.error("Object is undefined in ChoiceTextEntry");
         return null;
@@ -51,32 +76,6 @@ const ChoiceTextEntry = ({ data, object, setObject }) => {
         }
         setObject({ ...object });
     };
-
-
-    useEffect(() => {
-        const paramValue = object?.params?.[data.variableName];
-        const conditionValue = object?.conditions?.find(cond => cond.key === data.variableName)?.value;
-
-        if (paramValue !== undefined) {
-            setInputValue(paramValue);
-            setSelected(true);
-        } else if (conditionValue !== undefined) {
-            setInputValue(conditionValue);
-            setSelected(true);
-        }
-    },[]);
-
-    useEffect(() => {
-        if (selected && data.type === "parameter") {
-            handleChange("");
-        }
-    }, [selected, data.type]);
-
-
-
-    useEffect(() => {
-        inputHeight.current = selected ? 48 : 0;
-    }, [selected]);
 
 
     return (

@@ -22,7 +22,8 @@ import AnalyticsTriggeredWorkflow from "./AnalyticsTriggeredWorkflow.jsx";
 import AnalyticsLifeTime from "./AnalyticsLifeTime.jsx";
 import DateSelector from "./graph/DateSelector.jsx";
 import Picker from "./graph/Picker.jsx";
-
+import NotificationManager from "./NotificationManager.jsx";
+import ModalEnv from "./ModalEnv.jsx";
 
 export {
     PrivateRoute,
@@ -48,5 +49,7 @@ export {
     AnalyticsTriggeredWorkflow,
     AnalyticsLifeTime,
     DateSelector,
-    Picker
+    Picker,
+    NotificationManager,
+    ModalEnv
 };

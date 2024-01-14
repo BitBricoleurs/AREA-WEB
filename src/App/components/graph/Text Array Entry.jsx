@@ -12,7 +12,6 @@ const TextArrayEntry = ({ data, object, setObject }) => {
         const prefix = `${data.variableName}_`;
         if (object?.params) {
             for (const key of Object.keys(object.params)) {
-                console.log("key: ", key)
                 if (key.startsWith(prefix)) {
                     existingEntries.push(object.params[key]);
                 }
@@ -20,7 +19,6 @@ const TextArrayEntry = ({ data, object, setObject }) => {
         }
         if (object?.conditions) {
             object.conditions.forEach((cond) => {
-                console.log("cond: ", cond)
                 if (cond.key.startsWith(prefix)) {
                     existingEntries.push(cond.value);
                 }

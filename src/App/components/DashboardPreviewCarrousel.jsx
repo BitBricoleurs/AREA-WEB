@@ -3,6 +3,7 @@ import { cardServicesStyles } from '../../constants/index';
 import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import Spinner from "./Spinner";
+import {useContextLogin} from "../context/loginContext.jsx";
 
 const PreviewCard = ({ workflowDescription, serviceName, workflowId, isLoading }) => {
     const borderColor = isLoading ? "border-box-color" : (cardServicesStyles[serviceName]?.borderColor || cardServicesStyles["default"].borderColor);
@@ -26,6 +27,7 @@ const PreviewCard = ({ workflowDescription, serviceName, workflowId, isLoading }
 const DashboardPreviewCarrousel = ({}) => {
 
     let slides = [];
+    const {ip} = useContextLogin()
 
     const mockWorkflows =
     [
@@ -52,7 +54,7 @@ const DashboardPreviewCarrousel = ({}) => {
     const fetchWorkflows = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-user-workflows-ids`, {
+            const response = await fetch(`${ip}get-user-workflows-ids`, {
                 method: 'GET',
                 headers: {
                     "ngrok-skip-browser-warning": true,

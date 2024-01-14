@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import PurpleLogo from "../../assets/icons/purpleLogo.svg";
-import {Routes, Route, useNavigate} from 'react-router-dom';
+import {Routes, Route, useNavigate, Link} from 'react-router-dom';
 
 const LandingNavBar = () => {
     const navigate = useNavigate();
@@ -28,50 +28,36 @@ const LandingNavBar = () => {
 
     return (
         <div>
-            <nav className={`fixed top-0 w-full z-50 p-4 ${hasScrolled ? 'bg-opacity-90 backdrop-blur-md drop-shadow -translate-y-2 pb-2 transition duration-300 ' : ''}`}>
-                <div className="flex justify-between items-center">
-                    <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-                        <img src={PurpleLogo} className="h-10" alt={"PurpleVideo"}/>
-                        <span className="self-center text-3xl font-semibold whitespace-nowrap dark:text-white font-outfit">
-                        <span className="font-light">Bot</span>
-                        <span className="font-medium">Butler</span>
-                    </span>
-                    </a>
-                    <div className="hidden md:flex flex-grow items-center justify-center">
-                        <a href="#" className="text-white hover:text-hover-static px-3 py-2 rounded-md text-sm font-medium">Services</a>
-                        <a href="https://github.com/BitBricoleurs/AREA-WEB" className="text-white hover:text-hover-static px-3 py-2 rounded-md text-sm font-medium">Github</a>
-                        <a href="#" className="text-white hover:text-hover-static px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+            <nav className={`p-20 px-16 flex w-full`}>
+                <div className={`flex flex-row w-full justify-center`}>
+                    <div className="flex flex-row items-center w-full justify-between">
+                        <div className="LogoBotButler space-x-2 flex flex-row">
+                            <div className="w-8 h-8 bg-white"/>
+                            <div className="font-outfit text-2xl font-bold text-gradient-landing ">BotButler</div>
+                        </div>
+                        <div className="flex flex-row items-center space-x-6 ">
+                            <Link className={"text-white font-jakarta text-[14px] hover:text-hover-static transition-all duration-300"} to={"https://github.com"} target="_blank">How it works</Link>
+                            <Link className={"text-white font-jakarta text-[14px] hover:text-hover-static transition-all duration-300"} to={"https://github.com"} target="_blank">Pricing</Link>
+                            <Link className={"text-white font-jakarta text-[14px] hover:text-hover-static transition-all duration-300"} to={"https://github.com"} target="_blank">Github</Link>
+                            <Link className={"text-white font-jakarta text-[14px] hover:text-hover-static transition-all duration-300"} to={"/apk"} target="_blank">APK</Link>
+                        </div>
+                        <div className="flex flex-row items-center space-x-4">
+                            <button className="text-white font-jakarta text-[14px] py-2 rounded-md hover:text-light-purple transition duration-300 flex items-center justify-center"
+                                    onClick={() => navigateToAuth('login')}>
+                                Login
+                            </button>
+                            <button className="bg-[#570CD5] text-white font-jakarta text-[14px] py-2 px-4 rounded-md hover:bg-opacity-80 transition duration-300 flex items-center justify-center"
+                                    onClick={() => navigateToAuth('register')}>
+                                Sign Up
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex items-center">
-                        <button className="text-gradient bg-transparent hover:text-white hover:bg-horizontal-purple-gradient bg-white border border-violet-800 font-medium rounded-md text-sm px-6 py-1.5 mr-4 transition duration-700" onClick={() => navigateToAuth('login')}>
-                            Login
-                        </button>
-                        <button type="button" className="text-white bg-horizontal-purple-gradient hover:bg-light-purple-gradient font-medium rounded-md text-sm px-6 py-1.5" onClick={() => navigateToAuth('register')}>
-                            Register
-                        </button>
-                        <button onClick={toggleMenu} className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 focus:text-white">
-                            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <div className={`${isMenuOpen ? 'flex' : 'hidden'} absolute w-full bg-opacity-90 flex-col items-center md:hidden`} id="mobile-menu">
-                    <ul className="flex flex-col w-full">
-                        <li className="w-full">
-                            <a href="#" className="block text-center text-gray-200 hover:text-purple-500 px-3 py-2 text-sm font-medium">Services</a>
-                        </li>
-                        <li className="w-full">
-                            <a href="https://github.com/BitBricoleurs/AREA-WEB" className="block text-center text-gray-200 hover:text-purple-500 px-3 py-2 text-sm font-medium">Github</a>
-                        </li>
-                        <li className="w-full">
-                            <a href="#" className="block text-center text-gray-200 hover:text-purple-500 px-3 py-2 text-sm font-medium">Contact</a>
-                        </li>
-                    </ul>
                 </div>
             </nav>
         </div>
     );
 }
+
+
 
 export default LandingNavBar;

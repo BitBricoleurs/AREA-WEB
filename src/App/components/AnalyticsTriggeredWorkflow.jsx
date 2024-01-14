@@ -1,4 +1,6 @@
 import React from 'react';
+import {useContextLogin} from "../context/loginContext.jsx";
+
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -65,6 +67,8 @@ export const options = {
 };
 
 const AnalyticsTriggeredWorkflow = ({ workflowId, selectedStartDate, selectedEndDate }) => {
+
+    const {ip} = useContextLogin();
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [
@@ -86,7 +90,7 @@ const AnalyticsTriggeredWorkflow = ({ workflowId, selectedStartDate, selectedEnd
                 const encodedStartDate = btoa(selectedStartDate);
                 const encodedEndDate = btoa(selectedEndDate);
 
-                const workflowTriggerCountAnalyticsUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/workflow-trigger-count-analytics/${workflowId}/${encodedStartDate}/${encodedEndDate}`;
+                const workflowTriggerCountAnalyticsUrl = `${ip}/workflow-trigger-count-analytics/${workflowId}/${encodedStartDate}/${encodedEndDate}`;
                 
                 const response = await fetch(`${workflowTriggerCountAnalyticsUrl}`, {
                     method: 'GET',

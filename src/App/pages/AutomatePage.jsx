@@ -1,4 +1,12 @@
-import {AppNavBar, SearchBar, LittleInputBox, LargeInputBox, GraphEditor, CustomCard} from '/src/App/components';
+import {
+    AppNavBar,
+    SearchBar,
+    LittleInputBox,
+    LargeInputBox,
+    GraphEditor,
+    CustomCard,
+    NotificationManager
+} from '/src/App/components';
 import React, {useEffect, useState} from "react";
 import {cardServicesStyles} from '/src/constants';
 import {useLocation} from 'react-router-dom';
@@ -6,6 +14,7 @@ import {useWorkflowContext} from "../context/workflowContext.jsx";
 import Draggable from 'react-draggable';
 import {GraphEditorContextProvider} from "../context/graphEditorContext.jsx";
 import Spinner from "../components/SucessSpinner.jsx";
+import {useNotification} from "../context/notificationContext.jsx";
 
 
 const SelectTrigger = ({onTriggerSelect, isModalOpen}) => {
@@ -180,6 +189,7 @@ function AutomateContent() {
     const {workflowId, setWorkflowId} = useWorkflowContext();
     const {createWorkflow, setWorkflow} = useWorkflowContext();
     const [spinnerStatus, setSpinnerStatus] = useState('idle');
+    const {setNotification} = useNotification();
 
 
     useEffect(() => {
@@ -205,6 +215,10 @@ function AutomateContent() {
             setSpinnerStatus('success');
         } catch (error) {
             setSpinnerStatus('failed');
+            setNotification({
+                notificationState: 'Error',
+                message: error.message
+            });
             console.error("Erreur lors de la création du workflow:", error);
         }
     };
@@ -249,6 +263,7 @@ export default function AutomatePage() {
                 <AppNavBar isSidebarExpanded={sidebarExpanded} onToggleSidebar={setSidebarExpanded}
                            currentPage={"automate"}/>
                 <div className={`flex flex-col transition-all transition-300 ${sidebarExpanded ? 'ml-40' : 'ml-16'}`}>
+                    <NotificationManager/>
                     <AutomateContent/>
                 </div>
             </div>

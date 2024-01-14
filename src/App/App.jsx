@@ -1,13 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import {DashboardPage, SearchPage, AutomatePage, AnalyticsPage, SettingsPage, AuthPage} from './pages';
-import { PrivateRoute} from '../Static/components';
+import { PrivateRoute} from '../App/components/index.js';
 import {WorkflowContextProvider} from "/src/App/context/workflowContext";
+import {NotificationProvider} from "/src/App/context/notificationContext";
+import {NotificationManager} from "/src/App/components";
 import "../index.css";
 
 const App = () => {
     return (
         <div className="App bg-background min-h-screen w-full">
+            <NotificationProvider>
             <Routes>
                 <Route path="/auth" element={<AuthPage />} />
                 {/* Route Protected */}
@@ -55,6 +58,7 @@ const App = () => {
                     />
                 <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
+            </NotificationProvider>
             </div>
     );
 };

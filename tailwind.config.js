@@ -33,6 +33,7 @@ export default {
       },
       fontFamily: {
         outfit: ['Outfit', 'sans-serif'],
+        jakarta: ['Plus Jakarta Sans', 'sans-serif'],
       },
       transitionProperty: {
         'height': 'height',

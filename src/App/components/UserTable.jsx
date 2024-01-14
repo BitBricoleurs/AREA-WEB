@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {useContextLogin} from "../context/loginContext.jsx";
 
 const initialSortState = {
     key: 'id',
@@ -11,6 +12,7 @@ const UserTable = ({ users, toggleUserSelection }) => {
     );
     const [sortConfig, setSortConfig] = useState(initialSortState);
     const [sortedUsers, setSortedUsers] = useState([...users]);
+    const {ip} = useContextLogin();
 
 
     useEffect(() => {
@@ -38,7 +40,7 @@ const UserTable = ({ users, toggleUserSelection }) => {
 
     const toggleActiveState = async (id) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}toggle-admin/${id}`, {
+            const response = await fetch(`${ip}toggle-admin/${id}`, {
                 method: 'PUT',
                 headers: {
                     "ngrok-skip-browser-warning": true,

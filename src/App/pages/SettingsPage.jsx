@@ -1,9 +1,10 @@
-import {AppNavBar, PageNavigator, SearchBar} from '../../Static/components';
+import {AppNavBar, PageNavigator, SearchBar} from '../../App/components/index.js';
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import UserTable from "../components/UserTable.jsx";
 import microsoftIcon from '../../assets/icons/MicrosoftIcon.svg';
 import githubIcon from '../../assets/icons/githubIcon.svg';
+import {useContextLogin} from "../context/loginContext.jsx";
 import jenkinsIcon from '../../assets/icons/jenkinsIcon.svg';
 import jiraIcon from '../../assets/icons/jiraIcon.svg';
 import Modal from "../components/Modal.jsx";
@@ -13,12 +14,13 @@ const AdminTab = () => {
     const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState('');
     const [users, setUsers] = useState([]);
+    const {ip} = useContextLogin();
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const token = localStorage.getItem('userToken');
-                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}users`, {
+                const response = await fetch(`${ip}users`, {
                     method: 'GET',
                     headers: {
                         "ngrok-skip-browser-warning": true,
@@ -61,7 +63,7 @@ const AdminTab = () => {
 
         try {
             await Promise.all(selectedUserIds.map(userId =>
-                fetch(`${import.meta.env.VITE_REACT_APP_API_URL}delete-user/${userId}`, {
+                fetch(`${ip}delete-user/${userId}`, {
                     method: 'DELETE',
                     headers: {
                         "ngrok-skip-browser-warning": true,
@@ -116,6 +118,7 @@ const GlobalTab = () => {
     const [jenkinsApiKey, setJenkinsApiKey] = useState('');
     const [openAiApiKey, setOpenAiApiKey] = useState('');
     const [servicesStatus, setServicesStatus] = useState({});
+    const {ip} = useContextLogin();
 
     const placeholderToken =
     {
@@ -143,7 +146,7 @@ const GlobalTab = () => {
     const fetchServicesStatus = async () => {
         try {
             const token = localStorage.getItem('userToken');
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}check-settings`, {
+            const response = await fetch(`${ip}check-settings`, {
                 method: 'GET',
                 headers: {
                     "ngrok-skip-browser-warning": true,
@@ -207,7 +210,7 @@ const GlobalTab = () => {
         const fetchMicrosoftAuthUrl = async () => {
             try {
                 const token = localStorage.getItem('userToken');
-                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}microsoft-login`, {
+                const response = await fetch(`${ip}microsoft-login`, {
                     method: 'GET',
                     headers: {
                         "ngrok-skip-browser-warning": true,
@@ -230,7 +233,7 @@ const GlobalTab = () => {
         const fetchGithubAuthUrl = async () => {
             try {
                 const token = localStorage.getItem('userToken');
-                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}github-login`, {
+                const response = await fetch(`${ip}github-login`, {
                     method: 'GET',
                     headers: {
                         "ngrok-skip-browser-warning": true,
@@ -405,6 +408,7 @@ export default function SettingsPage() {
     const [sidebarExpanded, setSidebarExpanded] = useState(isWindowLarge());
     const [activeTab, setActiveTab] = useState('global');
     const [isAdmin, setIsAdmin] = useState(false);
+    const {ip} = useContextLogin();
 
     useEffect(() => {
         const checkAdminRole = async () => {
@@ -415,7 +419,7 @@ export default function SettingsPage() {
                     return;
                 }
 
-                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}me`, {
+                const response = await fetch(`${ip}me`, {
                     method: 'GET',
                     headers: {
                         "ngrok-skip-browser-warning": true,
@@ -447,8 +451,8 @@ export default function SettingsPage() {
 
 
     const tabs = [
-        { name: 'admin', label: 'Admin', component: <AdminTab />, barWidth: 75, barOffset: 155, disabled: !isAdmin},
-        { name: 'global', label: 'Global', component: <GlobalTab />, barWidth: 80, barOffset: 270, disabled: false},
+        { name: 'admin', label: 'Admin', component: <AdminTab />, barWidth: 75, barOffset: 144, disabled: !isAdmin},
+        { name: 'global', label: 'Global', component: <GlobalTab />, barWidth: 80, barOffset: 255, disabled: false},
     ];
 
     return (

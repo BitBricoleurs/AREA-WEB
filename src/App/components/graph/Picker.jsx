@@ -4,7 +4,7 @@ const Picker = ({ data, object, setObject }) => {
     const [selectedValue, setSelectedValue] = useState("");
 
     useEffect(() => {
-        const value = object.params?.[data.variableName] || "";
+        const value = object?.params?.[data.variableName] || "";
         setSelectedValue(value);
     }, [object, data.variableName]);
 

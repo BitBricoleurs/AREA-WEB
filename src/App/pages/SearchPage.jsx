@@ -1,10 +1,11 @@
-import {AppNavBar, PageNavigator, SearchBar} from '../../Static/components';
-import React, {useEffect, useState} from "react";
+import {AppNavBar, PageNavigator, SearchBar} from '../../App/components/index.js';
+import React, {useContext, useEffect, useState} from "react";
 import WorkflowTable from "../components/WorkflowTable.jsx";
 import {useNavigate} from "react-router-dom";
 import WorkflowHistoryTable from "../components/WorkflowHistoryTable.jsx";
 import Spinner from "../components/Spinner.jsx";
 import {SucessSpinner} from "../components/index.js";
+import {useContextLogin} from "../context/loginContext.jsx";
 
 const WorkflowTab = () => {
 
@@ -13,11 +14,12 @@ const WorkflowTab = () => {
     const [workflows, setWorkflows] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [deleteStatus, setDeleteStatus] = useState('idle');
+    const {ip} = useContextLogin();
 
 
     const fetchWorkflowDetails = async (workflowId) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}specific-workflow/${workflowId}`, {
+            const response = await fetch(`${ip}specific-workflow/${workflowId}`, {
                 method: 'GET',
                 headers: {
                     "ngrok-skip-browser-warning": true,
@@ -38,7 +40,7 @@ const WorkflowTab = () => {
 
     const fetchWorkflows = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-user-workflows-ids`, {
+            const response = await fetch(`${ip}get-user-workflows-ids`, {
                 method: 'GET',
                 headers: {
                     "ngrok-skip-browser-warning": true,
@@ -92,7 +94,7 @@ const WorkflowTab = () => {
 
     const deleteWorkflow = async (workflowId) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/delete-workflow/${workflowId}`, {
+            const response = await fetch(`${ip}/delete-workflow/${workflowId}`, {
                 method: 'DELETE',
                 headers: {
                     "ngrok-skip-browser-warning": true,
@@ -181,13 +183,14 @@ const HistoryTab = () => {
     const [searchInput, setSearchInput] = useState('');
     const [workflows, setWorkflows] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const {ip} = useContextLogin();
 
     useEffect(() => {
         const fetchWorkflowExecutions = async () => {
             try {
                 console.log('Fetching workflow executions');
                 const token = localStorage.getItem('userToken');
-                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}workflow-executions`, {
+                const response = await fetch(`${ip}workflow-executions`, {
                     method: 'GET',
                     headers: {
                         "ngrok-skip-browser-warning": true,
@@ -247,8 +250,8 @@ export default function SearchPage() {
     const [sidebarExpanded, setSidebarExpanded] = useState(isWindowLarge());
     const [activeTab, setActiveTab] = useState('workflow');
     const tabs = [
-        { name: 'workflow', label: 'Workflow', component: <WorkflowTab />, barWidth: 100, barOffset: 136},
-        { name: 'history', label: 'History', component: <HistoryTab /> , barWidth: 80, barOffset: 286},
+        { name: 'workflow', label: 'Workflow', component: <WorkflowTab />, barWidth: 100, barOffset: 128},
+        { name: 'history', label: 'History', component: <HistoryTab /> , barWidth: 80, barOffset: 268},
     ];
 
     return (

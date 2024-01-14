@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import Spinner from './Spinner';
+import {useContextLogin} from "../context/loginContext.jsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const AnalyticsWorkflowStatus = ({ workflowId, selectedStartDate, selectedEndDate }) => {
+
+    const {ip} = useContextLogin();
+
     const [chartData, setChartData] = useState({
         labels: ['Failed', 'Success', 'Running'],
         datasets: [{
@@ -33,7 +37,7 @@ const AnalyticsWorkflowStatus = ({ workflowId, selectedStartDate, selectedEndDat
                 const encodedStartDate = btoa(selectedStartDate);
                 const encodedEndDate = btoa(selectedEndDate);
 
-                const workflowExecutionStatusUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/workflow-execution-status/${workflowId}/${encodedStartDate}/${encodedEndDate}`;
+                const workflowExecutionStatusUrl = `${ip}/workflow-execution-status/${workflowId}/${encodedStartDate}/${encodedEndDate}`;
                 
                 const response = await fetch(`${workflowExecutionStatusUrl}`, {
                     method: 'GET',

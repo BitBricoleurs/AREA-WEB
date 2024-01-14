@@ -150,8 +150,13 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
             if (index < rows.length) {
                 newRows[index] = { ...newRows[index], [key]: value };
             } else {
-                newRows.push({ id: getNextId(), [key]: value, refers: nodeId });
-            }
+                newRows.push({
+                    id: getNextId(),
+                    [key]: value,
+                    refers: nodeId,
+                    user_defined: true
+                });
+                }
         }
 
         setRows(newRows);
@@ -161,7 +166,8 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
             id: row.id,
             name: row.name,
             output: row.output,
-            refers: nodeId
+            refers: nodeId,
+            user_defined: row.user_defined || false
         }))];
 
         setVariables(updatedVariables);

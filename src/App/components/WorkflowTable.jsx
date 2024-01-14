@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {Link} from "react-router-dom";
+import {useContextLogin} from "../context/loginContext.jsx";
 
 const initialSortState = {
     key: 'id',
@@ -12,6 +13,7 @@ const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
     );
     const [sortConfig, setSortConfig] = useState(initialSortState);
     const [sortedWorkflows, setSortedWorkflows] = useState([...workflows]);
+    const {ip} = useContextLogin()
 
     useEffect(() => {
         const updatedStatus = workflows.reduce((status, workflow) => {
@@ -37,7 +39,7 @@ const WorkflowTable = ({ workflows, toggleWorkflowSelection }) => {
 
     const toggleActiveState = async (id) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/toggle-workflow/${id}`, {
+            const response = await fetch(`${ip}/toggle-workflow/${id}`, {
                 method: 'POST',
                 headers: {
                     "ngrok-skip-browser-warning": true,

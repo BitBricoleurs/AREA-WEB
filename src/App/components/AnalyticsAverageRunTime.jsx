@@ -11,6 +11,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { useEffect, useState } from 'react';
 import Spinner from './Spinner';
+import {useContextLogin} from "../context/loginContext.jsx";
 
 ChartJS.register(
     CategoryScale,
@@ -79,6 +80,7 @@ const AnalyticsAverageRunTime = ({ workflowId, selectedStartDate, selectedEndDat
         ],
     });
     const [isLoading, setIsLoading] = useState(true);
+    const {ip} = useContextLogin();
 
     useEffect(() => {
         const fetchExecutionTimeData = async () => {
@@ -86,7 +88,7 @@ const AnalyticsAverageRunTime = ({ workflowId, selectedStartDate, selectedEndDat
                 const encodedStartDate = btoa(selectedStartDate);
                 const encodedEndDate = btoa(selectedEndDate);
 
-                const workflowExecutionTimeAnalyticsUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/workflow-execution-time-analytics/${workflowId}/${encodedStartDate}/${encodedEndDate}`;
+                const workflowExecutionTimeAnalyticsUrl = `${ip}/workflow-execution-time-analytics/${workflowId}/${encodedStartDate}/${encodedEndDate}`;
                 
                 const response = await fetch(`${workflowExecutionTimeAnalyticsUrl}`, {
                     method: 'GET',

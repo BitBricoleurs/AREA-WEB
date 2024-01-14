@@ -6,6 +6,9 @@ const LoginContext = createContext();
 export const LoginContextProvider = ({ children }) => {
     const [user, setUser] = useState('Account');
     const [isLoading, setIsLoading] = useState(false);
+    const [ip, setIp] = useState(import.meta.env.VITE_REACT_APP_API_URL);
+
+
     const navigate = useNavigate();
 
     const login = (username, authToken) => {
@@ -26,7 +29,7 @@ export const LoginContextProvider = ({ children }) => {
     const getMe = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}me`, {
+            const response = await fetch(`${ip}me`, {
                 method: 'GET',
                 headers: {
                     "ngrok-skip-browser-warning": true,
@@ -55,7 +58,9 @@ export const LoginContextProvider = ({ children }) => {
                 getMe,
                 login,
                 logout,
-                tokenExists
+                tokenExists,
+                ip,
+                setIp,
             }}
         >
             {children}

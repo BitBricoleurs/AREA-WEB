@@ -4,29 +4,110 @@ import Spinner from "../SucessSpinner.jsx";
 import Draggable from 'react-draggable';
 import 'three-dots/dist/three-dots.css';
 import "/src/App/styles/custom-three-dots.scss";
+import {useGraphEditorContext} from "../../context/graphEditorContext.jsx";
+import {useContextLogin} from "../../context/loginContext.jsx";
 
 const GenerateGraph = () => {
 
     const [showBox, setShowBox] = useState(false);
     const [saveStatus, setSaveStatus] = useState('idle');
     const [prompt, setPrompt] = useState('');
+    const {showSecretFeature} = useGraphEditorContext();
+    const {ip} = useContextLogin();
+    const {setVariables, setWorkflow, setWorkflowDescription, setWorkflowName} = useWorkflowContext();
+    const {convertWorkflowToNodes, convertWorkflowToEdges, addAddNodeToWorkflow, setNodes, setEdges} = useGraphEditorContext();
+    const {workflowName, workflowDescription, workflow, variables} = useWorkflowContext();
+
+    if (!showSecretFeature) {
+        return null;
+    }
 
     const handleToggle = () => {
         setShowBox(!showBox);
     };
 
+    const generateGraph = async () => {
+
+        const response = await fetch(`${ip}ai/generate`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                'Content-Type': 'application/json'
+            },
+            body : JSON.stringify({
+                prompt : prompt
+            })
+        });
+
+        console.log(response)
+        if (!response.ok) {
+            throw new Error('Something went wrong');
+        }
+
+        const responseBody = await response.json()
+
+        console.log("Parsed data:", responseBody);
+        console.log("Direct access to workflow:", responseBody[0]);
+        console.log("Direct access to variables:", responseBody.variables);
+        console.log("Direct access to workflow name:", responseBody.name_workflow);
+        console.log("Direct access to workflow description:", responseBody.description);
+
+
+
+        return data;
+    }
+
     const handleGenerate = async () => {
         setSaveStatus('loading');
-        return;
         try {
+            const newWorkflowData = await generateGraph();
+            /*const newWorkflowData = {
+                "name_workflow": "Notification de nouveau mail",
+                "description": "Envoyer une notification dans Teams lorsque je reçois un mail",
+                "workflow": [
+                    {
+                        "id": 1,
+                        "type": "trigger",
+                        "type_action": "Email",
+                        "service": "Outlook",
+                        "params": {},
+                        "next_id": 2
+                    },
+                    {
+                        "id": 2,
+                        "type": "action",
+                        "type_action": "Message",
+                        "service": "Teams",
+                        "params": {
+                            "option": "Channel",
+                            "team_id": "ID_DE_L_EQUIPE",
+                            "channel_id": "ID_DU_CANAL_GENERAL",
+                            "message": "Mail reçu"
+                        },
+                        "next_id": null
+                    }
+                ],
+                "variables": []
+            }
+
+             */
+            console.log("newWorkflowData:", newWorkflowData);
+            console.log("Accessing workflow:", newWorkflowData.workflow);
+            const newNodes = convertWorkflowToNodes(newWorkflowData.workflow);
+            setNodes(newNodes);
+            const newEdges = convertWorkflowToEdges(newWorkflowData.workflow);
+            console.log("newEdges: ", newEdges)
+            setEdges(newEdges);
+            addAddNodeToWorkflow(newNodes);
             setSaveStatus('success');
+            setWorkflow(newWorkflowData.workflow || []);
+            setWorkflowName(newWorkflowData.name_workflow || '');
+            setWorkflowDescription(newWorkflowData.description || '');
+            setVariables(newWorkflowData.variables || []);
         } catch (error) {
             setSaveStatus('failed');
         }
     };
-
-    const {workflowName, workflowDescription, workflow, variables} = useWorkflowContext();
-
 
     const renderButtonContent = () => {
         switch (saveStatus) {

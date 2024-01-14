@@ -10,8 +10,10 @@ const GraphEditorContext = createContext();
 export const GraphEditorContextProvider = React.memo(({ children, startingTrigger}) => {
 
     const {addWorkflowNode, toggleAddModal, isLoaded, workflow} = useWorkflowContext()
+    const [showSecretFeature, setShowSecretFeature] = useState(false);
 
     const convertWorkflowToNodes = (workflowData) => {
+        console.log("workflowDataConvert: ", workflowData)
         let nodes = [];
         let yPosition = 50;
         const yIncrement = 550;
@@ -61,12 +63,12 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
     };
 
     const convertWorkflowToEdges = (workflowData) => {
-        let edges = [];
+        let newEdges = [];
 
         workflowData.forEach((node) => {
             if (node.type === 'condition') {
                 if (node.next_id_src_success !== null && node.next_id_src_success !== undefined && node.next_id_src_success !== -1) {
-                    edges.push({
+                    newEdges.push({
                         id: `e-${node.id}-true-${node.next_id_src_success}`,
                         source: node.id.toString(),
                         sourceHandle: 'true',
@@ -75,7 +77,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
                     });
                 }
                 if (node.next_id_src_fail !== null && node.next_id_src_fail !== undefined && node.next_id_src_fail !== -1) {
-                    edges.push({
+                    newEdges.push({
                         id: `e-${node.id}-false-${node.next_id_src_fail}`,
                         source: node.id.toString(),
                         sourceHandle: 'false',
@@ -85,7 +87,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
                 }
             } else {
                 if (node.next_id !== null && node.next_id !== undefined && node.next_id !== -1) {
-                    edges.push({
+                    newEdges.push({
                         id: `e-${node.id}-default-${node.next_id}`,
                         source: node.id.toString(),
                         sourceHandle: null,
@@ -95,7 +97,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
             }
         });
 
-        return edges;
+        return newEdges;
     };
 
 
@@ -125,6 +127,20 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
                         nbrAddedNodes++;
                     }
             }
+                if (node.type === 'condition' && node.next_id_src_success == null) {
+                    const sourceNode = nodes.find(n => n.id == node.id);
+                    if (sourceNode) {
+                        addNodeAddAtHandle(sourceNode, "true", nbrAddedNodes);
+                        nbrAddedNodes++;
+                    }
+                }
+                if (node.type === 'condition' && node.next_id_src_fail == null) {
+                    const sourceNode = nodes.find(n => n.id == node.id);
+                    if (sourceNode) {
+                        addNodeAddAtHandle(sourceNode, "false", nbrAddedNodes);
+                        nbrAddedNodes++;
+                    }
+                }
         });
     };
 
@@ -278,7 +294,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
 
 
     return (
-        <GraphEditorContext.Provider value={{ nodes, setNodes, edges, setEdges, addNode, addEdge, onNodesChange, onEdgesChange, replaceNode, clickedNode, setClickedNode, handleNewAction, handleNewCondition, convertWorkflowToNodes, convertWorkflowToEdges, addAddNodeToWorkflow}}>
+        <GraphEditorContext.Provider value={{ nodes, setNodes, edges, setEdges, addNode, addEdge, onNodesChange, onEdgesChange, replaceNode, clickedNode, setClickedNode, handleNewAction, handleNewCondition, convertWorkflowToNodes, convertWorkflowToEdges, addAddNodeToWorkflow, showSecretFeature, setShowSecretFeature}}>
             {children}
         </GraphEditorContext.Provider>
     );

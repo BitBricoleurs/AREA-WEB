@@ -4,6 +4,8 @@ import PurpleLogo from "../../assets/icons/purpleLogo.svg";
 import WhiteLogo from "../../assets/icons/whiteLogo.svg";
 import {useContextLogin} from "../context/loginContext.jsx";
 import "/src/App/styles/blobBackground.css";
+import { useNotification } from '../context/notificationContext.jsx';
+import {NotificationManager, ModalEnv} from "../components/index.js";
 
 
 const validateEmail = (email) => {
@@ -23,11 +25,11 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
 
 
     const linkText = currentAuthType === 'login' ? (
-        <button className="text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group pb-[4%]" onClick={switchToRegisterSelect}>
+        <button className="select-none text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group pb-[4%]" onClick={switchToRegisterSelect}>
             Don't have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign up</span>
         </button>
     ) : (
-        <button className="text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group pb-[4%]" onClick={switchToLoginSelect}>
+        <button className="select-none text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group pb-[4%]" onClick={switchToLoginSelect}>
             Already have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign in</span>
         </button>
     );
@@ -68,7 +70,7 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
 
 
     return (
-        <div className="flex flex-col items-center justify-center h-full w-full">
+        <div className="select-none flex flex-col items-center justify-center h-full w-full">
             <div className="w-full flex flex-col items-center justify-center">
                 <img src={PurpleLogo} className="h-14 m-[4%] select-none" alt={"PurpleVideo"}/>
                 <span className=" text-xl sm:text-4xl  font-semibold whitespace-nowrap dark:text-white font-outfit select-none">
@@ -142,7 +144,7 @@ const LoginForm = ({switchToSelectMethod, switchToRegister, setNotification}) =>
     const [password, setPassword] = useState('');
     const [showPasswordInput, setShowPasswordInput] = useState(false);
     const navigate = useNavigate();
-    const {login} = useContextLogin();
+    const {login, ip} = useContextLogin();
 
     useEffect(() => {
         const handleEscapeKey = (e) => {
@@ -183,8 +185,7 @@ const LoginForm = ({switchToSelectMethod, switchToRegister, setNotification}) =>
             return;
         }
         try {
-            console.log("url: ", `${import.meta.env.VITE_REACT_APP_API_URL}login`)
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}login`, {
+            const response = await fetch(`${ip}login`, {
                 method: 'POST',
                 headers: {
                     "ngrok-skip-browser-warning": true,
@@ -197,22 +198,21 @@ const LoginForm = ({switchToSelectMethod, switchToRegister, setNotification}) =>
             const data = await response.json();
             if (response.status === 200) {
                 login(data.user, data.token);
-
-                setNotification({
-                    notificationState: 'Success',
-                    message: 'Successfully logged in!'
-                });
                 navigate('/dashboard');
             } else {
                 setNotification({
                     notificationState: 'Error',
-                    message: data.message || 'Invalid email or password'
+                    message: data.message || 'Invalid email or password',
+                    positionX: '0',
+                    positionY: '0',
                 });
             }
         } catch (error) {
             setNotification({
                 notificationState: 'Error',
-                message: 'An error occurred. Please try again.'
+                message: 'An error occurred. Please try again.',
+                positionX: '0',
+                positionY: '0',
             });
         }
     };
@@ -240,7 +240,8 @@ const LoginForm = ({switchToSelectMethod, switchToRegister, setNotification}) =>
                                value={email}
                                onChange={handleEmailChange}
                                id="input-group-1"
-                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md" placeholder="name@botbutler.com"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg  block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md outline-none focus:ring-1 focus:ring-light-purple"
+                               placeholder="name@botbutler.com"
                         />
                     </div>
                         <div className={`relative mb-6 transition-opacity duration-500 ${showPasswordInput ? 'opacity-100' : 'opacity-0'}`}>
@@ -254,7 +255,7 @@ const LoginForm = ({switchToSelectMethod, switchToRegister, setNotification}) =>
                                        value={password}
                                        onChange={handlePasswordChange}
                                        id="password"
-                                       className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md" placeholder="password"
+                                       className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md outline-none focus:ring-1 focus:ring-light-purple" placeholder="password"
                                 />
                         </div>
 
@@ -265,9 +266,6 @@ const LoginForm = ({switchToSelectMethod, switchToRegister, setNotification}) =>
                     <input type="submit" hidden />
                 </form>
                 <div className="flex flex-col items-center justify-center w-full pt-[4%] pb-[4%] font-thin">
-                    <button className="text-xs  text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700">
-                        Forgot your password?
-                    </button>
                     <button className="text-xs text-gray-900 dark:text-gray-300 hover:text-light-purple transition duration-700 group" onClick={switchToRegister}>
                         Don't have an account? <span className="text-light-purple group-hover:text-gray-300 transition duration-700">Sign up</span>
                     </button>
@@ -285,6 +283,7 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
     const [name, setName] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPasswordInput, setShowPasswordInput] = useState(false);
+    const {ip} = useContextLogin();
 
     useEffect(() => {
         const handleEscapeKey = (e) => {
@@ -326,7 +325,9 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
         if (!validateEmail(email)) {
             setNotification({
                 notificationState: 'Warning',
-                message: 'Please enter a valid email address'
+                message: 'Please enter a valid email address',
+                positionX: '0',
+                positionY: '0',
             });
             return;
         }
@@ -337,27 +338,33 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
         if (!name) {
             setNotification({
                 notificationState: 'Warning',
-                message: 'Please enter your name'
+                message: 'Please enter your name',
+                positionX: '0',
+                positionY: '0',
             });
             return;
         }
         if (password.length < 8) {
             setNotification({
                 notificationState: 'Warning',
-                message: 'Password must be at least 8 characters long'
+                message: 'Password must be at least 8 characters long',
+                positionX: '0',
+                positionY: '0',
             });
             return;
         }
         if (password !== confirmPassword) {
             setNotification({
                 notificationState: 'Warning',
-                message: 'Passwords do not match'
+                message: 'Passwords do not match',
+                positionX: '0',
+                positionY: '0',
             });
             return;
         }
         try {
-            console.log("url: ", `${import.meta.env.VITE_REACT_APP_API_URL}register`)
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}register`, {
+            console.log("url: ", `${ip}register`)
+            const response = await fetch(`${ip}register`, {
                 method: 'POST',
                 headers: {
                     "ngrok-skip-browser-warning": true,
@@ -372,7 +379,9 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
             if (response.status === 201) {
                 setNotification({
                     notificationState: 'Success',
-                    message: 'Successfully registered!'
+                    message: 'Successfully registered!',
+                    positionX: '0',
+                    positionY: '0',
                 });
 
                 switchToLogin();
@@ -380,13 +389,17 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                 console.log("data: ", data)
                 setNotification({
                     notificationState: 'Error',
-                    message: data.message || 'An error occurred during registration'
+                    message: data.message || 'An error occurred during registration',
+                    positionX: '0',
+                    positionY: '0',
                 });
             }
         } catch (error) {
             setNotification({
                 notificationState: 'Error',
-                message: 'An error occurred. Please try again.'
+                message: 'An error occurred. Please try again.',
+                positionX: '0',
+                positionY: '0',
             });
         }
     };
@@ -394,7 +407,7 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
 
 
     return (
-        <div className="flex flex-col items-center justify-center h-full w-full min-h-full">
+        <div className="select-none flex flex-col items-center justify-center h-full w-full min-h-full">
             <div className="max-w-sm w-full flex flex-col items-center justify-center">
                 <img src={PurpleLogo} className="h-14 m-[4%]" alt="PurpleVideo"/>
                 <span className="text-4xl font-semibold whitespace-nowrap dark:text-white font-outfit select-none">
@@ -417,7 +430,7 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                                value={email}
                                onChange={handleEmailChange}
                                id="input-group-1"
-                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md outline-none focus:ring-1 focus:ring-light-purple"
                                placeholder="name@botbutler.com"
                         />
                     </div>
@@ -435,7 +448,7 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                                value={name}
                                onChange={handleNameChange}
                                id="name"
-                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md outline-none focus:ring-1 focus:ring-light-purple"
                                placeholder="Your name"
                         />
                     </div>
@@ -453,7 +466,7 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                                value={password}
                                onChange={handlePasswordChange}
                                id="password"
-                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md outline-none focus:ring-1 focus:ring-light-purple"
                                placeholder="password"
                         />
                     </div>
@@ -472,7 +485,7 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
                                value={confirmPassword}
                                onChange={handleConfirmPasswordChange}
                                id="confirmPassword"
-                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:ring-blue-500 focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md"
+                               className="bg-contrast-box-color border text-custom-grey text-sm rounded-lg focus:border-light-purple block w-full ps-10 p-2.5 placeholder-custom-grey  border-contrast-box-color placeholder:font-thin placeholder:text-md outline-none focus:ring-1 focus:ring-light-purple"
                                placeholder="confirm password"
                         />
                     </div>
@@ -498,125 +511,15 @@ const RegisterForm = ({ switchToSelectMethod, switchToLogin, setNotification}) =
     )
 }
 
-const NotificationManager = ({notification, setNotification}) => {
-
-    useEffect(() => {
-        if (notification.notificationState !== 'Hide') {
-            const timer = setTimeout(() => {
-                setNotification({
-                    notificationState: 'Hide',
-                    message: notification.message
-                });
-            }, 2000);
-            return () => clearTimeout(timer);
-        }
-    }, [notification, setNotification]);
-
-    const closeNotification = () => {
-        setNotification({
-            notificationState: 'Hide',
-            message: notification.message
-        });
-    };
-
-    return (
-        <div className="flex justify-center">
-            <div
-                className={`fixed top-0 self-center opacity-100 z-50 transition-transform duration-500 ease-in-out ${notification.notificationState === 'Success' ? 'translate-y-0' : '-translate-y-full'}`}>
-                <div id="toast-success"
-                     className="flex self-center items-center w-full max-w-xs p-2 mb-4 bg-white rounded-lg shadow text-custom-grey dark:bg-box-color space-x-3"
-                     role="alert">
-                    <div
-                        className="inline-flex items-center justify-center flex-shrink-0 w-6 h-6 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
-                        <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                             fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-                        </svg>
-                        <span className="sr-only">Check icon</span>
-                    </div>
-                    <div className="ms-3 text-sm font-normal font-outfit">{notification.message}</div>
-                    <button type="button"
-                            className="ms-auto -my-1.5 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-600 inline-flex items-center justify-center h-6 w-6 text-custom-grey hover:text-light-purple bg-box-color "
-                            data-dismiss-target="#toast-success" aria-label="Close" onClick={closeNotification}>
-                        <span className="sr-only">Close</span>
-                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                             viewBox="0 0 14 14">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div
-                className={`fixed top-0 self-center opacity-100 z-51 transition-transform duration-500 ease-in-out ${notification.notificationState === 'Warning' ? 'translate-y-0' : '-translate-y-full'}`}>
-                <div id="toast-warning"
-                     className="flex self-center items-center w-full max-w-xs p-2 mb-4 bg-white rounded-lg shadow text-custom-grey dark:bg-box-color space-x-3"
-                     role={"alert"}>
-                    <div
-                        className="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-orange-500 bg-orange-100 rounded-lg dark:bg-orange-700 dark:text-orange-200">
-                        <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                             fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z"/>
-                        </svg>
-                        <span className="sr-only">Warning icon</span>
-                    </div>
-                    <div className="ms-3 text-sm font-normal font-outfit">{notification.message}</div>
-                    <button type="button"
-                            className="ms-auto -my-1.5 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-600 inline-flex items-center justify-center h-6 w-6 text-custom-grey hover:text-light-purple bg-box-color "
-                            data-dismiss-target="#toast-warning" aria-label="Close">
-                        <span className="sr-only">Close</span>
-                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                             viewBox="0 0 14 14">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div
-                className={`fixed top-0 self-center opacity-100 z-52 transition-transform duration-500 ease-in-out ${notification.notificationState === 'Error' ? 'translate-y-0' : '-translate-y-full'}`}>
-                <div id="toast-danger"
-                     className="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800 space-x-3"
-                     role="alert">
-                    <div
-                        className="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
-                        <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                             fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
-                        </svg>
-                        <span className="sr-only">Error icon</span>
-                    </div>
-                    <div className="ms-3 text-sm font-normal">{notification.message}</div>
-                    <button type="button"
-                            className="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
-                            data-dismiss-target="#toast-danger" aria-label="Close" onClick={closeNotification}>
-                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                             viewBox="0 0 14 14">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                        <span className="sr-only">Close</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-const AuthenticationBox = () => {
+const AuthenticationBox = ({toggleApiModal}) => {
     const location = useLocation();
     const {from} = location.state || {from: 'login'};
     const [currentView, setCurrentView] = useState('selectMethod');
     const [currentAuthType, setCurrentAuthType] = useState(from);
     const [transitionState, setTransitionState] = useState('enter');
-    const [notification, setNotification] = useState({
-        notificationState: 'Hide',
-        message: ''
-    });
-    const { login } = useContextLogin();
+
+    const { notification, setNotification } = useNotification();
+    const { login,ip } = useContextLogin();
     const navigate = useNavigate();
 
 
@@ -631,7 +534,7 @@ const AuthenticationBox = () => {
 
     const validateTokenAndLogin = async (token) => {
         try {
-            const response = await fetch('https://butbutlerapi.azurewebsites.net/validate-token', {
+            const response = await fetch(`${ip}/validate-token`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -646,20 +549,26 @@ const AuthenticationBox = () => {
 
                 setNotification({
                     notificationState: 'Success',
-                    message: 'Successfully logged in!'
+                    message: 'Successfully logged in!',
+                    positionX: '0',
+                    positionY: '0',
                 });
                 navigate('/dashboard');
             } else {
                 setNotification({
                     notificationState: 'Error',
-                    message: 'Invalid or expired token'
+                    message: 'Invalid or expired token',
+                    positionX: '0',
+                    positionY: '0',
                 });
             }
         } catch (error) {
             console.error('Error validating token:', error);
             setNotification({
                 notificationState: 'Error',
-                message: 'An error occurred while validating the token'
+                message: 'An error occurred while validating the token',
+                positionX: '0',
+                positionY: '0',
             });
         }
     };
@@ -704,7 +613,6 @@ const AuthenticationBox = () => {
     return (
         <div
             className="flex flex-col h-screen sm:bg-transparent bg-box-color transition-all text-white ease-in-out duration-700">
-            <NotificationManager notification={notification} setNotification={setNotification}/>
             <div className="p-4">
                 <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse select-none">
                     <img src={WhiteLogo} className="h-6" alt={"PurpleVideo"}/>
@@ -714,15 +622,38 @@ const AuthenticationBox = () => {
                 </a>
             </div>
             <div className="flex-grow flex items-center justify-center">
-                <div className="flex justify-center items-center bg-box-color p-[2%} h-2/3 rounded-lg border bg-opacity-95 sm:border-contrast-box-color transition duration-700 border-box-color  font-outfit w-2/3">
-                    <div className={`transform transition-all duration-700 ${getTransitionClasses('selectMethod')}`}>
-                        {currentView === 'selectMethod' && <SelectMethod onSwitch={linkEmailAction} currentAuthType={currentAuthType} setCurrentAuthType={setCurrentAuthType} />}
-                    </div>
-                    <div className={`transform transition-all duration-300 ${getTransitionClasses('login')}`}>
-                        {currentView === 'login' && <LoginForm switchToRegister={switchToRegisterForm} switchToSelectMethod={switchToSelectMethod} setNotification={setNotification}/>}
-                    </div>
-                    <div className={`transform transition-all duration-300 ${getTransitionClasses('register')}`}>
-                        {currentView === 'register' && <RegisterForm switchToLogin={switchToLoginForm}  switchToSelectMethod={switchToSelectMethod} setNotification={setNotification}/>}
+                <div
+                    className="flex justify-center items-center bg-box-color  h-2/3 rounded-lg border bg-opacity-95 sm:border-contrast-box-color transition duration-700 border-box-color  font-outfit w-2/3">
+                    <div className="h-full w-full flex flex-col ">
+                        <div className=" h-[95%] w-full flex flex-col items-center justify-center">
+                        <div
+                            className={`transform transition-all duration-700 ${getTransitionClasses('selectMethod')}`}>
+                            {currentView === 'selectMethod' &&
+                                <SelectMethod onSwitch={linkEmailAction} currentAuthType={currentAuthType}
+                                              setCurrentAuthType={setCurrentAuthType}/>}
+                        </div>
+                        <div className={`transform transition-all duration-300 ${getTransitionClasses('login')}`}>
+                            {currentView === 'login' && <LoginForm switchToRegister={switchToRegisterForm}
+                                                                   switchToSelectMethod={switchToSelectMethod}
+                                                                   setNotification={setNotification}/>}
+                        </div>
+                        <div className={`transform transition-all duration-300 ${getTransitionClasses('register')}`}>
+                            {currentView === 'register' &&
+                                <RegisterForm switchToLogin={switchToLoginForm}
+                                              switchToSelectMethod={switchToSelectMethod}
+                                              setNotification={setNotification}/>}
+                        </div>
+                        </div>
+                        <div className="h-[5%] w-full">
+
+                        <svg className={"w-6 h-6 mx-4 -mt-2 ms-auto fill-contrast-box-color hover:fill-light-purple"} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54.971 54.971"
+                        onClick={toggleApiModal} >
+                            <path
+                                d="M51.173 3.801c-5.068-5.068-13.315-5.066-18.384 0l-9.192 9.192a2 2 0 1 0 2.828 2.828l9.192-9.192a8.938 8.938 0 0 1 6.363-2.622c2.413 0 4.673.932 6.364 2.623s2.623 3.951 2.623 6.364a8.934 8.934 0 0 1-2.623 6.363L36.325 31.379c-3.51 3.508-9.219 3.508-12.729 0a2 2 0 1 0-2.828 2.828c2.534 2.534 5.863 3.801 9.192 3.801s6.658-1.267 9.192-3.801l12.021-12.021c2.447-2.446 3.795-5.711 3.795-9.192 0-3.482-1.348-6.746-3.795-9.193z"/>
+                            <path
+                                d="m27.132 40.57-7.778 7.778a8.935 8.935 0 0 1-6.364 2.623 8.937 8.937 0 0 1-6.364-2.623c-3.509-3.509-3.509-9.219 0-12.728L17.94 24.306a8.938 8.938 0 0 1 6.364-2.622c2.412 0 4.672.932 6.363 2.622a2 2 0 1 0 2.828-2.828c-5.067-5.067-13.314-5.068-18.384 0L3.797 32.793C1.351 35.239.003 38.504.003 41.985c0 3.48 1.348 6.745 3.795 9.191a12.905 12.905 0 0 0 9.191 3.795c3.481 0 6.746-1.348 9.192-3.795l7.778-7.778a2 2 0 0 0-2.827-2.828z"/>
+                        </svg>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -734,13 +665,24 @@ const AuthenticationBox = () => {
 }
 
 export default function AuthPage() {
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const toggleApiModal = () => {
+        setModalVisible(!modalVisible);
+    }
+
     return (
         <div className="h-full w-full relative">
-                <div className="blob"></div>
+            <NotificationManager/>
+            <div className="blob"></div>
             <div className="blob-left"></div>
             <div className="relative h-full w-full z-10">
-            <AuthenticationBox/>
+                <AuthenticationBox toggleApiModal={toggleApiModal}/>
             </div>
+            {modalVisible && (
+                <ModalEnv className="z-30" onClose={() => setModalVisible(false)}/>
+            )}
         </div>
     );
 }

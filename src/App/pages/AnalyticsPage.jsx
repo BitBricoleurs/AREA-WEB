@@ -1,7 +1,8 @@
-import { AppNavBar}  from '../../Static/components';
+import { AppNavBar}  from '../../App/components/index.js';
 import React ,{useState} from "react";
 import { AnalyticsWorkflowFilterSection, AnalyticsWorkflowStatus, AnalyticsAverageRunTime, AnalyticsTriggeredWorkflow, AnalyticsLifeTime  } from "/src/App/components";
 import { useEffect } from "react";
+import {useContextLogin} from "../context/loginContext.jsx";
 
 const AnalyticsContent = () => {
 
@@ -11,11 +12,12 @@ const AnalyticsContent = () => {
     const maxDate = "07/01/2024";
     const [selectedStartDate, setSelectedStartDate] = useState("19/12/2023");
     const [selectedEndDate, setSelectedEndDate] = useState("30/01/2024");
+    const {ip} = useContextLogin();
 
     useEffect(() => {
         const fetchWorkflows = async () => {
             try {
-                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/get-user-workflows-ids`, {
+                const response = await fetch(`${ip}/get-user-workflows-ids`, {
                     method: 'GET',
                     headers: {
                         "ngrok-skip-browser-warning": true,

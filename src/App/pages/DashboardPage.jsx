@@ -6,6 +6,7 @@ import averageTimeSvg from '/src/assets/icons/averagetime.svg';
 import successRateSvg from '/src/assets/icons/successrate.svg';
 import triggeredWorkflowSvg from '/src/assets/icons/triggeredworkflow.svg';
 import Spinner from "../components/Spinner.jsx";
+import {useContextLogin} from "../context/loginContext.jsx";
 
 export default function DashboardPage() {
 
@@ -18,13 +19,14 @@ export default function DashboardPage() {
     const [workflows, setWorkflows] = useState([]);
     const [isLoadingStats, setIsLoadingStats] = useState(true)
     const [isLoadingWorkflows, setIsLoadingWorkflows] = useState(true)
+    const {ip} = useContextLogin();
 
     useEffect(() => {
         const fetchWorkflowExecutions = async () => {
             try {
                 console.log('Fetching workflow executions');
                 const token = localStorage.getItem('userToken');
-                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}workflow-executions`, {
+                const response = await fetch(`${ip}workflow-executions`, {
                     method: 'GET',
                     headers: {
                         "ngrok-skip-browser-warning": true,
@@ -52,7 +54,7 @@ export default function DashboardPage() {
             try {
                 console.log('Fetching global workflow statistics');
                 const token = localStorage.getItem('userToken');
-                const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}global-workflows-statistics`, {
+                const response = await fetch(`${ip}global-workflows-statistics`, {
                     method: 'GET',
                     headers: {
                         "ngrok-skip-browser-warning": true,

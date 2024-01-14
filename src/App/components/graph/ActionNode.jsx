@@ -42,6 +42,7 @@ function actionNode({ data }) {
         setHasOptions(isActionHasOptions(selectAction));
         const node = getWorkflowNodeByDataId(data.id);
         if (node.params?.options) {
+            console.log("node.params: ", node.params.options)
             const option = selectAction?.options.find((option) => option.name == node.params.options);
             setSelectedOption(option);
             setCurrentSections(option?.sections);

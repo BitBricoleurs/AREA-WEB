@@ -1,6 +1,7 @@
 import React from 'react';
 import { useContext, useState, createContext } from "react";
 import {useGraphEditorContext} from "./graphEditorContext.jsx";
+import {useContextLogin} from "./loginContext.jsx";
 
 const WorkflowContext = createContext();
 
@@ -17,6 +18,7 @@ export const WorkflowContextProvider = ({children }) => {
     const [workflowName, setWorkflowName] = useState('');
     const [workflowDescription, setWorkflowDescription] = useState('');
     const [loadingState, setLoadingState] = useState("none");
+    const {ip} = useContextLogin();
 
 
     const toggleAddModal = () => {
@@ -55,7 +57,7 @@ export const WorkflowContextProvider = ({children }) => {
 
     const createWorkflow = async (selectedTrigger) => {
         const tmpWorkflow = addTriggerIntoWorkflow(selectedTrigger);
-        const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}create-workflow`, {
+        const response = await fetch(`${ip}create-workflow`, {
             method: 'POST',
             headers: {
                 "ngrok-skip-browser-warning": true,
@@ -81,7 +83,7 @@ export const WorkflowContextProvider = ({children }) => {
     }
 
     const fetchTriggers = async () => {
-        const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-triggers`, {
+        const response = await fetch(`${ip}get-triggers`, {
             method: 'GET',
             headers: {
                 "ngrok-skip-browser-warning": true,
@@ -101,7 +103,7 @@ export const WorkflowContextProvider = ({children }) => {
     }
 
     const fetchActions = async () => {
-        const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-actions`, {
+        const response = await fetch(`${ip}get-actions`, {
             method: 'GET',
             headers: {
                 "ngrok-skip-browser-warning": true,
@@ -147,7 +149,6 @@ export const WorkflowContextProvider = ({children }) => {
             return node;
         });
 
-        return {modifiedVariables, modifiedWorkflow};
         modifiedWorkflow = modifiedWorkflow.map(node => {
             if (node.type === 'trigger') {
                 const conditions = node.conditions.map(cond => {
@@ -156,7 +157,7 @@ export const WorkflowContextProvider = ({children }) => {
                     modifiedVariables.push(variable);
                     return {
                         ...cond,
-                        key: variable.name
+                        key: `\$\{${variable.id}\}`,
                     };
                 } );
                 return {
@@ -171,7 +172,7 @@ export const WorkflowContextProvider = ({children }) => {
 
     const editWorkflow = async () => {
         const { modifiedVariables: sendableVariable, modifiedWorkflow: sendableWorkflow } = createSendableWorkflow();
-        const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}edit-workflow/${workflowId}`, {
+        const response = await fetch(`${ip}edit-workflow/${workflowId}`, {
             method: 'PUT',
             headers: {
                 "ngrok-skip-browser-warning": true,
@@ -194,8 +195,42 @@ export const WorkflowContextProvider = ({children }) => {
         return data;
     }
 
+    const convertUsableWorkflow = (workflow, variables) => {
+
+        let modifiedVariables = variables.map(variable => {
+            return {
+                ...variable
+            };
+
+        });
+
+        let modifiedWorkflow = workflow.map(node => {
+            if (node.type === 'trigger' && node.type_trigger && node.conditions) {
+                const conditions = node.conditions.map(cond => {
+                    const variableId = cond.key.match(/\$\{(\d+)\}/)?.[1];
+                    if (variableId) {
+                        const resolveKey = resolveVariable(variableId, variables).name;
+                        modifiedVariables = deleteVariable(variableId, modifiedVariables);
+                        return {
+                            ...cond,
+                            key: resolveKey,
+                        };
+                    }
+                    return cond;
+                });
+                return {
+                    ...node,
+                    conditions: conditions
+                };
+            }
+            return node;
+        });
+        console.log("modifiedWorkflow: ", modifiedWorkflow)
+        return {modifiedWorkflow, modifiedVariables};
+    };
+
     const loadWorkflow = async (workflowId) => {
-        const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}get-workflow/${workflowId}`, {
+        const response = await fetch(`${ip}get-workflow/${workflowId}`, {
             method: 'GET',
             headers: {
                 "ngrok-skip-browser-warning": true,
@@ -209,11 +244,14 @@ export const WorkflowContextProvider = ({children }) => {
         }
         const data = await response.json();
 
+        const {modifiedWorkflow, modifiedVariables} = convertUsableWorkflow(data.workflow, data.variables);
+        console.log("modifiedWorkflowa: ", modifiedWorkflow)
+        console.log("modifiedVariablesa: ", modifiedVariables)
 
         setWorkflowName(data.name_workflow);
         setWorkflowDescription(data.description);
-        setWorkflow(data.workflow);
-        setVariables(data.variables);
+        setWorkflow(modifiedWorkflow);
+        setVariables(modifiedVariables);
         setWorkflowId(workflowId)
         console.log("When fetching: ", data)
         return data;
@@ -247,17 +285,26 @@ export const WorkflowContextProvider = ({children }) => {
             id: size,
             name: nameVariable,
             output: output,
-            refer_id: referId,
+            refer: referId.toString(),
         };
 
         return newVariable;
     }
 
-    const resolveVariable = (variableId) => {
-        const variable = variables.find(variable => variable.id == variableId);
+    const resolveVariable = (variableId, variables) => {
+        console.log("variables: ", variables);
+        console.log("variableId: ", variableId);
+
+        const variable = variables.find(variable => {
+            console.log("Checking variable with ID: ", variable.id);
+            return variable.id == variableId;
+        });
+
         if (variable) {
+            console.log("Found variable: ", variable);
             return variable;
         }
+        console.log("Variable not found");
         return null;
     }
 
@@ -267,6 +314,10 @@ export const WorkflowContextProvider = ({children }) => {
 
     const resolveVariableOutput = (variableId) => {
         return resolveVariable(variableId)?.output;
+    }
+
+    const deleteVariable = (variableId, variables) => {
+        return variables.filter(variable => variable.id != variableId && variable.user_defined != true);
     }
 
     return (

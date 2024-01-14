@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { useWorkflowContext } from '../../context/workflowContext.jsx';
 import Spinner from "../SucessSpinner.jsx";
 import Draggable from 'react-draggable';
+import {useGraphEditorContext} from "../../context/graphEditorContext.jsx";
 
 
 const InteractBurger = () => {
@@ -16,6 +17,12 @@ const InteractBurger = () => {
     };
 
     const {workflowName, workflowDescription, setWorkflowName, setWorkflowDescription, workflow, variables, editWorkflow, createSendableWorkflow} = useWorkflowContext();
+    const {setShowSecretFeature, showSecretFeature} = useGraphEditorContext();
+
+    const handleSecretFeatureChange = (e) => {
+        const isChecked = e.target.checked;
+        setShowSecretFeature(isChecked);
+    };
 
     const downloadJson = () => {
 
@@ -85,19 +92,29 @@ const InteractBurger = () => {
                 <div className="flex flex-row space-x-2 p-4">
                     <div className="flex flex-col w-[120px]">
                         <p className="text-custom-grey font-outfit text-[14px] pl-2 font-light pt-2">Workflow Name</p>
-                        <p className="text-custom-grey font-outfit text-[14px] pl-2 font-light pt-8">Workflow Description</p>
+                        <p className="text-custom-grey font-outfit text-[14px] pl-2 font-light pt-10">Workflow Description</p>
+                        <p className="text-custom-grey font-outfit text-[14px] pl-2 font-light pt-9">Secret Feature</p>
                     </div>
-                    <div className="flex flex-col items-center space-y-2">
+                    <div className="flex flex-col items-center space-y-4">
                         <input
-                            className="rounded-lg font-outfit text-[14px] font-medium  bg-custom-light-blue h-9 w-40 outline-none text-custom-grey pl-2"
+                            className="rounded-lg font-outfit text-[14px] font-medium  bg-custom-light-blue h-9 w-40 outline-none text-custom-grey pl-2 pr-2"
                             value={workflowName}
                             onChange={(e) => setWorkflowName(e.target.value)}
                             disabled={!showBox}
                         />
-                        <input
-                            className="rounded-lg font-outfit text-[14px] font-medium  bg-custom-light-blue h-20 w-40 outline-none text-custom-grey pl-2"
+                        <textarea
+                            className="rounded-lg font-outfit text-[14px] bg-custom-light-blue outline-none text-custom-grey pl-2 resize-none font-thin"
+                            rows="4"
                             value={workflowDescription}
                             onChange={(e) => setWorkflowDescription(e.target.value)}
+                            disabled={!showBox}
+                        />
+
+                        <input
+                            type="checkbox"
+                            className="form-checkbox h-3 w-3 -ml-36"
+                            checked={showSecretFeature}
+                            onChange={handleSecretFeatureChange}
                             disabled={!showBox}
                         />
                     </div>
