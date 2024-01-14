@@ -118,7 +118,7 @@ const GlobalTab = () => {
     const [jenkinsApiKey, setJenkinsApiKey] = useState('');
     const [openAiApiKey, setOpenAiApiKey] = useState('');
     const [servicesStatus, setServicesStatus] = useState({});
-    const {ip} = useContextLogin();
+    const [responseMessage, setResponseMessage] = useState('');
 
     const placeholderToken =
     {
@@ -191,19 +191,97 @@ const GlobalTab = () => {
         }
     };
 
-    const handleSubmitJira = (e) => {
+        const handleSubmitJira = async (e) => {
         e.preventDefault();
-        console.log('Jira Username:', jiraUsername, 'Jira Token:', jiraToken);
+
+        const jiraLoginEndpoint = `${import.meta.env.VITE_REACT_APP_API_URL}jira-login`;
+
+        try {
+            const response = await fetch(jiraLoginEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    jira_username: jiraUsername,
+                    jira_token: jiraToken
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setResponseMessage('Jira settings updated successfully.');
+            } else {
+                setResponseMessage(`Error: ${data.message || 'Failed to update Jira settings.'}`);
+            }
+        } catch (error) {
+            console.error('Error updating Jira settings:', error);
+            setResponseMessage('Error updating Jira settings.');
+        }
     };
 
-    const handleSubmitJenkins = (e) => {
+    const handleSubmitJenkins = async (e) => {
         e.preventDefault();
-        console.log('Jenkins API Key:', jenkinsApiKey);
-    };
 
-    const handleSubmitOpenAI = (e) => {
+        // API endpoint
+        const jenkinsLoginEndpoint = `${import.meta.env.VITE_REACT_APP_API_URL}jenkins-login`;
+
+        try {
+            const response = await fetch(jenkinsLoginEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    jenkins_username: jenkinsUsername, // Assuming your API also expects a username field
+                    jenkins_token: jenkinsApiKey
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setResponseMessage('Jenkins settings updated successfully.');
+            } else {
+                setResponseMessage(`Error: ${data.error || 'Failed to update Jenkins settings.'}`);
+            }
+        } catch (error) {
+            console.error('Error updating Jenkins settings:', error);
+            setResponseMessage('Error updating Jenkins settings.');
+        }
+    };
+    const handleSubmitOpenAI = async (e) => {
         e.preventDefault();
-        console.log('OpenAI API Key:', openAiApiKey);
+
+        // API endpoint
+        const openAiLoginEndpoint = `${import.meta.env.VITE_REACT_APP_API_URL}openai-login`;
+
+        try {
+            const response = await fetch(openAiLoginEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    openai_token: openAiApiKey
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setResponseMessage('OpenAI settings updated successfully.');
+            } else {
+                setResponseMessage(`Error: ${data.error || 'Failed to update OpenAI settings.'}`);
+            }
+        } catch (error) {
+            console.error('Error updating OpenAI settings:', error);
+            setResponseMessage('Error updating OpenAI settings.');
+        }
     };
 
     useEffect(() => {
@@ -374,7 +452,7 @@ const GlobalTab = () => {
                     <h3 className="mb-3 text-xl text-custom-grey font-outfit">Jira</h3>
                     {renderStatusIcon('jira')}
                     </div>
-                    <form onSubmit={handleSubmitOpenAI} className="flex flex-col space-y-4">
+                    <form onSubmit={handleSubmitJira} className="flex flex-col space-y-4">
                         <div className="flex flex-row space-x-4">
                         <input
                             type="text"
