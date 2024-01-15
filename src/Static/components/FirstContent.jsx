@@ -1,4 +1,5 @@
 import {Link} from "react-router-dom";
+import Video from "../assets/video/product.mp4";
 
 const FirstContent = () => {
     return (
@@ -30,7 +31,11 @@ const FirstContent = () => {
                     </button>
                 </div>
             </div>
-                <div className="bg-white rounded-xl w-full h-[500px] flex flex-col items-center justify-center"/>
+                <div className="rounded-xl w-full h-full flex flex-col">
+                    <video className="rounded-xl w-full h-full object-cover" autoPlay loop muted>
+                        <source src={Video} type="video/mp4"/>
+                    </video>
+                </div>
             </div>
         </div>
     )

@@ -259,7 +259,7 @@ export default function AutomatePage() {
 
     return (
         <>
-            <div className="bg-background h-full w-full">
+            <div className="bg-background h-full w-full min-h-screen">
                 <AppNavBar isSidebarExpanded={sidebarExpanded} onToggleSidebar={setSidebarExpanded}
                            currentPage={"automate"}/>
                 <div className={`flex flex-col transition-all transition-300 ${sidebarExpanded ? 'ml-40' : 'ml-16'}`}>

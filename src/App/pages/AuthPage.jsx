@@ -674,7 +674,7 @@ export default function AuthPage() {
     }
 
     return (
-        <div className="h-full w-full relative">
+        <div className="h-full w-full relative min-h-screen">
             <NotificationManager/>
             <div className="blob"></div>
             <div className="blob-left"></div>

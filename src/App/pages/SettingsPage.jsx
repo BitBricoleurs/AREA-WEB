@@ -535,7 +535,7 @@ export default function SettingsPage() {
 
     return (
         <>
-            <div className="bg-background h-full w-full">
+            <div className="bg-background h-full w-full min-h-screen">
                 <AppNavBar isSidebarExpanded={sidebarExpanded} onToggleSidebar={setSidebarExpanded} currentPage={"settings"}/>
                 <div className={`flex flex-col transition-all transition-700 h-full ease-in-out ${sidebarExpanded ? 'ml-40' : 'ml-16'}`}>
                     <div className="flex p-4 mt-14 w-full h-full">
