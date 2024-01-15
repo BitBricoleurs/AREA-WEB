@@ -109,7 +109,7 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
             const typeTrigger = currentWorkflow.type_trigger;
             const triggerService = triggers.find(t => t.name === serviceName);
             const trigger = triggerService?.triggers?.find(t => t.name === typeTrigger);
-            const outputVariableNames = trigger?.outputs?.map(output => output.variableName) || [];
+            const outputVariableNames =  [];
             return [...currentAvailable, ...outputVariableNames];
         }
         else if (type === 'action') {
@@ -117,9 +117,21 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
             const actionService = actions.find(a => a.name === serviceName);
             const action = actionService?.actions?.find(a => a.name === typeAction);
             let outputVariableNames = [];
+            console.log("ActionVariable: ", action)
             if (action?.options?.length > 0) {
                 console.log("Current Workflow: ", currentWorkflow)
-                const option = action.options.find(option => option.name === currentWorkflow.params.options);
+                let option;
+                if (action?.options?.length > 0) {
+                    option = action.options.find(opt => opt.name === currentWorkflow.params.options);
+                    if (option?.params) {
+                        option = option.params.find(opt => opt.name === currentWorkflow.params.params);
+                    }
+                }
+                if (!option && currentWorkflow.params.option) {
+                    option = currentWorkflow.params.option;
+                    console.log("OptionVar: ", option, "Current Workflow: ", currentWorkflow.params?.option)
+                    option = action.options.find(opt => opt.name === option);
+                }
                 outputVariableNames = option?.outputs?.map(output => output.variableName) || [];
             } else {
                 outputVariableNames = action?.outputs?.map(output => output.variableName) || [];
