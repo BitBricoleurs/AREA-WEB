@@ -17,7 +17,7 @@ const Calendar = ({ data, object, setObject }) => {
             ...object,
             params: {
                 ...object.params,
-                day: isoDate
+                date: isoDate
             }
         });
     };
