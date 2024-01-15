@@ -13,7 +13,6 @@ const App = () => {
             <NotificationProvider>
             <Routes>
                 <Route path="/auth" element={<AuthPage />} />
-                {/* Route Protected */}
                 <Route
                     path="/dashboard"
                     element={
