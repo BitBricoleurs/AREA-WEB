@@ -14,12 +14,20 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
 
     const convertWorkflowToNodes = (workflowData) => {
         console.log("workflowDataConvert: ", workflowData)
-        let nodes = [];
+        let newNodes = [];
         let yPosition = 50;
         const yIncrement = 550;
         const xIncrement = 250;
 
+        workflowData = workflowData.map((node) => {
+            return {
+                ...node,
+                visited: false,
+            }
+        });
+
         const layoutNodes = (node, xPosition = 0, yPosition) => {
+            console.log("nodeProcess: ", node)
             if (node.visited) return;
             node.visited = true;
 
@@ -29,7 +37,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
             } else if (node.type === 'action') {
                 nodeData = { serviceAction: node.type_action };
             }
-
+            console.log("nodeData: ", nodeData)
             const newNode = {
                 id: node.id.toString(),
                 type: node.type,
@@ -42,24 +50,28 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
                 },
                 position: { x: xPosition, y: yPosition },
             };
-            nodes.push(newNode);
+            newNodes.push(newNode);
+            console.log("newNode: ", newNodes)
 
             if (node.type === 'condition') {
-                const trueBranchNode = workflowData.find(n => n.id === node.next_id_src_success);
-                const falseBranchNode = workflowData.find(n => n.id === node.next_id_src_fail);
+                const trueBranchNode = workflowData.find(n => n.id == node.next_id_src_success);
+                const falseBranchNode = workflowData.find(n => n.id == node.next_id_src_fail);
 
                 if (trueBranchNode) layoutNodes(trueBranchNode, xPosition - xIncrement, yPosition + yIncrement);
                 if (falseBranchNode) layoutNodes(falseBranchNode, xPosition + xIncrement, yPosition + yIncrement);
             } else {
-                const nextNode = workflowData.find(n => n.id === node.next_id);
+                console.log("nodeLayout: ", node)
+                const nextNode = workflowData.find(n => n.id == node.next_id);
                 if (nextNode) layoutNodes(nextNode, xPosition, yPosition + yIncrement);
             }
         };
 
         const startNode = workflowData.find(n => n.type === 'trigger');
+        console.log("startNode: ", startNode)
         if (startNode) layoutNodes(startNode, 0, yPosition);
 
-        return nodes;
+        console.log("Bro c'est ca: ", newNodes)
+        return newNodes;
     };
 
     const convertWorkflowToEdges = (workflowData) => {
@@ -67,6 +79,7 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
 
         workflowData.forEach((node) => {
             if (node.type === 'condition') {
+                console.log("node Edges: ", node)
                 if (node.next_id_src_success !== null && node.next_id_src_success !== undefined && node.next_id_src_success !== -1) {
                     newEdges.push({
                         id: `e-${node.id}-true-${node.next_id_src_success}`,
@@ -113,29 +126,28 @@ export const GraphEditorContextProvider = React.memo(({ children, startingTrigge
 
     console.log("nodes: ", nodes)
     console.log("edges: ", edges)
-    const addAddNodeToWorkflow = (nodes) => {
+    const addAddNodeToWorkflow = (newnNdes) => {
+
+        let newNodes = [];
+
             let nbrAddedNodes = 1;
             workflow.forEach(node => {
                 if (node.type !== 'condition' && node.next_id == null) {
-                    const sourceNode = nodes.find(n => n.id == node.id);
-                    console.log("sourceNode: ", sourceNode)
-                    console.log("nodes: ", nodes)
-                    console.log("node id: ", node.id)
+                    const sourceNode = newnNdes.find(n => n.id == node.id);
                     if (sourceNode) {
-                        console.log("sourceNode: ", sourceNode)
                         addNodeAddAtHandle(sourceNode, null, nbrAddedNodes);
                         nbrAddedNodes++;
                     }
             }
                 if (node.type === 'condition' && node.next_id_src_success == null) {
-                    const sourceNode = nodes.find(n => n.id == node.id);
+                    const sourceNode = newnNdes.find(n => n.id == node.id);
                     if (sourceNode) {
                         addNodeAddAtHandle(sourceNode, "true", nbrAddedNodes);
                         nbrAddedNodes++;
                     }
                 }
                 if (node.type === 'condition' && node.next_id_src_fail == null) {
-                    const sourceNode = nodes.find(n => n.id == node.id);
+                    const sourceNode = newnNdes.find(n => n.id == node.id);
                     if (sourceNode) {
                         addNodeAddAtHandle(sourceNode, "false", nbrAddedNodes);
                         nbrAddedNodes++;

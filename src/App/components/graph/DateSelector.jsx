@@ -7,19 +7,19 @@ const DateSelector = ({ data, object, setObject }) => {
 
     console.log("DateSelector", data, object);
     useEffect(() => {
-        const startCondition = object.conditions?.find(cond => cond.key === `${data.variableName}Start`);
-        const endCondition = object.conditions?.find(cond => cond.key === `${data.variableName}End`);
+        const startCondition = object?.conditions?.find(cond => cond.key === `${data.variableName}Start`);
+        const endCondition = object?.conditions?.find(cond => cond.key === `${data.variableName}End`);
 
         if (startCondition) {
             setStartDate(startCondition.value);
         } else {
-            setStartDate(object.params?.[`${data.variableNameFirst}`] || "");
+            setStartDate(object?.params?.[`${data.variableNameFirst}`] || "");
         }
 
         if (endCondition) {
             setEndDate(endCondition.value);
         } else {
-            setEndDate(object.params?.[`${data.variableNameSecond}`] || "");
+            setEndDate(object?.params?.[`${data.variableNameSecond}`] || "");
         }
     }, [object]);
 
@@ -34,9 +34,9 @@ const DateSelector = ({ data, object, setObject }) => {
     };
 
     const updateObject = (key, value) => {
-        const conditionIndex = object.conditions?.findIndex(cond => cond.key === key);
+        const conditionIndex = object?.conditions?.findIndex(cond => cond.key === key);
         if (conditionIndex > -1) {
-            const updatedConditions = object.conditions.map((cond, index) =>
+            const updatedConditions = object?.conditions.map((cond, index) =>
                 index === conditionIndex ? { ...cond, value: value } : cond
             );
 

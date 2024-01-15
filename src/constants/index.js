@@ -39,7 +39,7 @@ export const cardServicesStyles = {
         strokeColor: 'stroke-blue-300',
         iconPath: '/src/assets/icons/outlookIcon.svg'
     },
-    'OpenAi' : {
+    'Openai' : {
         backgroundColor: 'bg-green-700',
         borderColor: 'border-green-700',
         textColor: 'text-green-700',

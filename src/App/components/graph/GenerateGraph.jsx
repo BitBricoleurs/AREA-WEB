@@ -43,56 +43,14 @@ const GenerateGraph = () => {
         if (!response.ok) {
             throw new Error('Something went wrong');
         }
-
-        const responseBody = await response.json()
-
-        console.log("Parsed data:", responseBody);
-        console.log("Direct access to workflow:", responseBody[0]);
-        console.log("Direct access to variables:", responseBody.variables);
-        console.log("Direct access to workflow name:", responseBody.name_workflow);
-        console.log("Direct access to workflow description:", responseBody.description);
-
-
-
+        const data = await response.json();
         return data;
     }
 
     const handleGenerate = async () => {
         setSaveStatus('loading');
-        try {
-            const newWorkflowData = await generateGraph();
-            /*const newWorkflowData = {
-                "name_workflow": "Notification de nouveau mail",
-                "description": "Envoyer une notification dans Teams lorsque je reçois un mail",
-                "workflow": [
-                    {
-                        "id": 1,
-                        "type": "trigger",
-                        "type_action": "Email",
-                        "service": "Outlook",
-                        "params": {},
-                        "next_id": 2
-                    },
-                    {
-                        "id": 2,
-                        "type": "action",
-                        "type_action": "Message",
-                        "service": "Teams",
-                        "params": {
-                            "option": "Channel",
-                            "team_id": "ID_DE_L_EQUIPE",
-                            "channel_id": "ID_DU_CANAL_GENERAL",
-                            "message": "Mail reçu"
-                        },
-                        "next_id": null
-                    }
-                ],
-                "variables": []
-            }
 
-             */
-            console.log("newWorkflowData:", newWorkflowData);
-            console.log("Accessing workflow:", newWorkflowData.workflow);
+            const newWorkflowData = await generateGraph();
             const newNodes = convertWorkflowToNodes(newWorkflowData.workflow);
             setNodes(newNodes);
             const newEdges = convertWorkflowToEdges(newWorkflowData.workflow);
@@ -104,9 +62,6 @@ const GenerateGraph = () => {
             setWorkflowName(newWorkflowData.name_workflow || '');
             setWorkflowDescription(newWorkflowData.description || '');
             setVariables(newWorkflowData.variables || []);
-        } catch (error) {
-            setSaveStatus('failed');
-        }
     };
 
     const renderButtonContent = () => {

@@ -119,6 +119,7 @@ const GlobalTab = () => {
     const [openAiApiKey, setOpenAiApiKey] = useState('');
     const [servicesStatus, setServicesStatus] = useState({});
     const [responseMessage, setResponseMessage] = useState('');
+    const {ip} = useContextLogin();
 
     const placeholderToken =
     {

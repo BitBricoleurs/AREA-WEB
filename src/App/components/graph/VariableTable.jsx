@@ -117,9 +117,7 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
             const actionService = actions.find(a => a.name === serviceName);
             const action = actionService?.actions?.find(a => a.name === typeAction);
             let outputVariableNames = [];
-            console.log("ActionVariable: ", action)
             if (action?.options?.length > 0) {
-                console.log("Current Workflow: ", currentWorkflow)
                 let option;
                 if (action?.options?.length > 0) {
                     option = action.options.find(opt => opt.name === currentWorkflow.params.options);
@@ -129,7 +127,6 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
                 }
                 if (!option && currentWorkflow.params.option) {
                     option = currentWorkflow.params.option;
-                    console.log("OptionVar: ", option, "Current Workflow: ", currentWorkflow.params?.option)
                     option = action.options.find(opt => opt.name === option);
                 }
                 outputVariableNames = option?.outputs?.map(output => output.variableName) || [];
@@ -138,16 +135,12 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
             }
             return [...currentAvailable, ...outputVariableNames];
         }
-        console.log("Current Workflow: ", currentWorkflow)
         return [...currentAvailable];
     }
 
-    console.log("Current Workflow: ", currentWorkflow)
 
     let availableVariables = getNodeKeys();
     availableVariables = getOutputKeys(availableVariables);
-
-    console.log("VariableTable.jsx availableVariables: ", availableVariables);
 
     useEffect(() => {
         setRows(variables.filter(v => v.refers === nodeId));

@@ -5,7 +5,7 @@ const TimePicker = ({ data, object, setObject }) => {
     const [minutes, setMinutes] = useState('');
 
     useEffect(() => {
-        const timeValue = object.params?.[data.variableName] || '';
+        const timeValue = object?.params?.[data.variableName] || '';
         if (timeValue) {
             const [hrs, mins] = timeValue.split(':');
             setHours(hrs);

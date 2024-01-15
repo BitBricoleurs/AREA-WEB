@@ -5,14 +5,19 @@ const TextEntry = ({ data, object, setObject }) => {
     const [inputValue, setInputValue] = useState("");
 
     useEffect(() => {
-        const condition = object.conditions?.find(cond => cond.key === data.variableName);
+        console.log("Object:", object)
+        console.log("Conditions:", object?.conditions)
+        let condition;
+        if (object?.conditions && object.conditions.length > 0) {
+            condition = object.conditions.find(cond => cond.key === data.variableName);
+        }
         if (condition) {
             setInputValue(condition.value);
         } else {
             console.log("Object:", object);
-            console.log("Variable Name:", data.variableName);
-            console.log("Value:", object.params?.[data.variableName]);
-            setInputValue(object.params?.[data.variableName] || "");
+            console.log("Variable Name:", data);
+            console.log("Value:", object?.params?.[data.variableName]);
+            setInputValue(object?.params?.[data.variableName] || "");
         }
     }, [object, data.variableName]);
 

@@ -9,6 +9,8 @@ const ActionCard = ({serviceName, description, onSelect}) => {
 
     const styles = cardServicesStyles[serviceName] || cardServicesStyles['default'];
 
+    console.log("Card Action Name: ", serviceName)
+
     return (
         <div className="h-full w-full flex">
             <div className="flex flex-row w-full h-full pl-4 pt-4">
