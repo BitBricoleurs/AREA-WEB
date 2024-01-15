@@ -55,6 +55,7 @@ const InteractBurger = () => {
             setSaveStatus('success');
         } catch (error) {
             setSaveStatus('failed');
+            console.log(error);
         }
     }
 
