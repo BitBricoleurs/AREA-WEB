@@ -9,7 +9,7 @@ import "../index.css";
 
 const App = () => {
     return (
-        <div className="App bg-background min-h-screen w-full">
+        <div className="App bg-background w-full">
             <NotificationProvider>
             <Routes>
                 <Route path="/auth" element={<AuthPage />} />

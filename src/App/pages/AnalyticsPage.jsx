@@ -47,7 +47,7 @@ const AnalyticsContent = () => {
     }, []);
 
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full min-h-screen">
             <span className="text-2xl font-bold font-outfit mt-2 text-custom-grey">{"ANALYTICS"}</span>
             <div className="flex flex-col flex-grow w-full pt-16">
                 <div className="flex flex-row w-full h-full space-x-6">
