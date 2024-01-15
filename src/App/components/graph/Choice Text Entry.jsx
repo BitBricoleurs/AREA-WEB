@@ -22,14 +22,6 @@ const ChoiceTextEntry = ({ data, object, setObject }) => {
     },[]);
 
     useEffect(() => {
-        if (selected && data.type === "parameter") {
-            handleChange("");
-        }
-    }, [selected, data.type]);
-
-
-
-    useEffect(() => {
         inputHeight.current = selected ? 48 : 0;
     }, [selected]);
 
