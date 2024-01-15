@@ -46,7 +46,7 @@ export const WorkflowContextProvider = ({children }) => {
             service: selectedTrigger.name,
             next_id: null,
             conditions: [],
-            params: [],
+            params: {},
         };
 
         setWorkflow(prevWorkflow => {
@@ -143,7 +143,6 @@ export const WorkflowContextProvider = ({children }) => {
                 return {
                     ...node,
                     type_action: node.type_trigger,
-                    type_trigger: undefined
                 };
             }
             return node;
@@ -152,7 +151,6 @@ export const WorkflowContextProvider = ({children }) => {
         modifiedWorkflow = modifiedWorkflow.map(node => {
             if (node.type === 'trigger') {
                 const conditions = node.conditions.map(cond => {
-                    console.log("Cond: ", cond)
                     const variable = createVariable(cond.key, cond.value, node.id);
                     modifiedVariables.push(variable);
                     return {
@@ -160,6 +158,7 @@ export const WorkflowContextProvider = ({children }) => {
                         key: `\$\{${variable.id}\}`,
                     };
                 } );
+                console.log("Params: ", node.params)
                 return {
                     ...node,
                     conditions: conditions
@@ -172,6 +171,7 @@ export const WorkflowContextProvider = ({children }) => {
 
     const editWorkflow = async () => {
         const { modifiedVariables: sendableVariable, modifiedWorkflow: sendableWorkflow } = createSendableWorkflow();
+        console.log("sendableWorkflow: ", sendableWorkflow)
         const response = await fetch(`${ip}edit-workflow/${workflowId}`, {
             method: 'PUT',
             headers: {
@@ -186,7 +186,7 @@ export const WorkflowContextProvider = ({children }) => {
                 'variables': sendableVariable
             }),
         });
-        console.warn("Sent workflow: ", workflow)
+        console.warn("Sent workflow: ", JSON.parse(JSON.stringify(sendableWorkflow)))
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

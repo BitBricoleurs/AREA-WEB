@@ -195,7 +195,7 @@ const GlobalTab = () => {
         const handleSubmitJira = async (e) => {
         e.preventDefault();
 
-        const jiraLoginEndpoint = `${import.meta.env.VITE_REACT_APP_API_URL}jira-login`;
+        const jiraLoginEndpoint = `${ip}jira-login`;
 
         try {
             const response = await fetch(jiraLoginEndpoint, {
@@ -227,7 +227,7 @@ const GlobalTab = () => {
         e.preventDefault();
 
         // API endpoint
-        const jenkinsLoginEndpoint = `${import.meta.env.VITE_REACT_APP_API_URL}jenkins-login`;
+        const jenkinsLoginEndpoint = `${ip}jenkins-login`;
 
         try {
             const response = await fetch(jenkinsLoginEndpoint, {
@@ -258,7 +258,7 @@ const GlobalTab = () => {
         e.preventDefault();
 
         // API endpoint
-        const openAiLoginEndpoint = `${import.meta.env.VITE_REACT_APP_API_URL}openai-login`;
+        const openAiLoginEndpoint = `${ip}openai-login`;
 
         try {
             const response = await fetch(openAiLoginEndpoint, {

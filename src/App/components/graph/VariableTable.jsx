@@ -109,7 +109,7 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
             const typeTrigger = currentWorkflow.type_trigger;
             const triggerService = triggers.find(t => t.name === serviceName);
             const trigger = triggerService?.triggers?.find(t => t.name === typeTrigger);
-            const outputVariableNames =  [];
+            const outputVariableNames = trigger?.outputs?.map(output => output.variableName) || [];
             return [...currentAvailable, ...outputVariableNames];
         }
         else if (type === 'action') {
