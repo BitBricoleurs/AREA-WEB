@@ -201,6 +201,7 @@ function AutomateContent() {
         }
     }, []);
 
+
     const handleTriggerSelect = (trigger) => {
         setSelectedTrigger(trigger);
         setIsModalOpen(true);
@@ -256,6 +257,7 @@ export default function AutomatePage() {
         return window.innerWidth > 640;
     }
     const [sidebarExpanded, setSidebarExpanded] = useState(isWindowLarge());
+
 
     return (
         <>
