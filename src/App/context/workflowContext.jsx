@@ -19,6 +19,7 @@ export const WorkflowContextProvider = ({children }) => {
     const [workflowDescription, setWorkflowDescription] = useState('');
     const [loadingState, setLoadingState] = useState("none");
     const {ip} = useContextLogin();
+    const [refresh, setRefresh] = useState(false);
 
 
     const toggleAddModal = () => {
@@ -356,6 +357,8 @@ export const WorkflowContextProvider = ({children }) => {
                 resolveVariableName,
                 resolveVariableOutput,
                 createSendableWorkflow,
+                refresh,
+                setRefresh,
             }}
         >
             {children}

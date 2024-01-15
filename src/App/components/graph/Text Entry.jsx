@@ -9,7 +9,7 @@ const TextEntry = ({ data, object, setObject }) => {
         console.log("Conditions:", object?.conditions)
         let condition;
         if (object?.conditions && object.conditions.length > 0) {
-            condition = object.conditions.find(cond => cond.key === data.variableName);
+            condition = object.conditions.find(cond => cond.key == data.variableName);
         }
         if (condition) {
             setInputValue(condition.value);

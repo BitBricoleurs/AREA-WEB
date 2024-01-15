@@ -6,6 +6,7 @@ import 'three-dots/dist/three-dots.css';
 import "/src/App/styles/custom-three-dots.scss";
 import {useGraphEditorContext} from "../../context/graphEditorContext.jsx";
 import {useContextLogin} from "../../context/loginContext.jsx";
+import { useNavigate } from 'react-router-dom';
 
 const GenerateGraph = () => {
 
@@ -14,9 +15,10 @@ const GenerateGraph = () => {
     const [prompt, setPrompt] = useState('');
     const {showSecretFeature} = useGraphEditorContext();
     const {ip} = useContextLogin();
-    const {setVariables, setWorkflow, setWorkflowDescription, setWorkflowName} = useWorkflowContext();
+    const {setVariables, setWorkflow, setWorkflowDescription, setWorkflowName, editWorkflow} = useWorkflowContext();
     const {convertWorkflowToNodes, convertWorkflowToEdges, addAddNodeToWorkflow, setNodes, setEdges} = useGraphEditorContext();
-    const {workflowName, workflowDescription, workflow, variables} = useWorkflowContext();
+    const {workflowName, workflowDescription, workflow, variables, workflowId, setRefresh} = useWorkflowContext();
+    const navigate = useNavigate();
 
     if (!showSecretFeature) {
         return null;
@@ -28,7 +30,7 @@ const GenerateGraph = () => {
 
     const generateGraph = async () => {
 
-        const response = await fetch(`${ip}ai/generate`, {
+        let response = await fetch(`${ip}ai/generate`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
@@ -43,25 +45,40 @@ const GenerateGraph = () => {
         if (!response.ok) {
             throw new Error('Something went wrong');
         }
+        let dataGenerated = await response.json();
+
+        response = await fetch(`${ip}edit-workflow/${workflowId}`, {
+            method: 'PUT',
+            headers: {
+                "ngrok-skip-browser-warning": true,
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+            },
+            body: JSON.stringify({
+                'name_workflow': dataGenerated.name_workflow,
+                'description': dataGenerated.description,
+                'workflow': dataGenerated.workflow,
+                'variables': dataGenerated.variables,
+            }),
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
-        return data;
+        return dataGenerated;
     }
 
     const handleGenerate = async () => {
         setSaveStatus('loading');
-
-            const newWorkflowData = await generateGraph();
-            const newNodes = convertWorkflowToNodes(newWorkflowData.workflow);
-            setNodes(newNodes);
-            const newEdges = convertWorkflowToEdges(newWorkflowData.workflow);
-            console.log("newEdges: ", newEdges)
-            setEdges(newEdges);
-            addAddNodeToWorkflow(newNodes);
-            setSaveStatus('success');
-            setWorkflow(newWorkflowData.workflow || []);
-            setWorkflowName(newWorkflowData.name_workflow || '');
-            setWorkflowDescription(newWorkflowData.description || '');
-            setVariables(newWorkflowData.variables || []);
+            try {
+                const newWorkflowData = await generateGraph();
+                window.location.reload();
+                setSaveStatus('success');
+            }
+            catch (error) {
+                console.log(error);
+                setSaveStatus('failed');
+            }
     };
 
     const renderButtonContent = () => {
