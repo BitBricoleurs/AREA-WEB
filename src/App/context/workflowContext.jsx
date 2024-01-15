@@ -46,7 +46,7 @@ export const WorkflowContextProvider = ({children }) => {
             service: selectedTrigger.name,
             next_id: null,
             conditions: [],
-            params: [],
+            params: {},
         };
 
         setWorkflow(prevWorkflow => {
