@@ -45,7 +45,7 @@ export const cardServicesStyles = {
         textColor: 'text-green-700',
         hoverBackColor: 'hover:bg-green-700',
         strokeColor: 'stroke-green-700',
-        iconPath: '/src/assets/icons/openAiIcon.svg'
+        iconPath: '/src/assets/icons/openaiIcon.svg'
     },
     'Azure' : {
         backgroundColor: 'bg-blue-700',

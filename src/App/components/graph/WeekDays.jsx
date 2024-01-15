@@ -30,7 +30,7 @@ const DayPicker = ({ object, setObject }) => {
             ...object,
             params: {
                 ...object.params,
-                days: newSelectedDays
+                weekdays: newSelectedDays
             }
         });
     };
