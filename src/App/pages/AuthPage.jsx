@@ -14,6 +14,7 @@ const validateEmail = (email) => {
 };
 
 const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
+    const {login, ip} = useContextLogin();
 
     const switchToRegisterSelect = () => {
         setCurrentAuthType('register');
@@ -35,7 +36,7 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
     );
 
     const handleMicrosoftLogin = () => {
-        fetch('https://butbutlerapi.azurewebsites.net/microsoft-login', {
+        fetch(`${ip}/microsoft-login-link`, {
             method: 'GET'
         })
         .then(response => response.json())
@@ -52,7 +53,7 @@ const SelectMethod = ({onSwitch, currentAuthType, setCurrentAuthType }) => {
     };
 
     const handleGithubLogin = () => {
-        fetch('https://butbutlerapi.azurewebsites.net/github-login', {
+        fetch(`${ip}/github-login-link`, {
             method: 'GET'
         })
         .then(response => response.json())
