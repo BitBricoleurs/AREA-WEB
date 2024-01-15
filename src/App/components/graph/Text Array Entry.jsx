@@ -16,6 +16,11 @@ const TextArrayEntry = ({ data, object, setObject }) => {
                     existingEntries.push(object.params[key]);
                 }
             }
+            if (object.params[data.variableName] !== undefined) {
+                if (Array.isArray(object.params[data.variableName])) {
+                    existingEntries.push(...object.params[data.variableName]);
+                }
+            }
         }
         if (object?.conditions) {
             object.conditions.forEach((cond) => {
@@ -23,6 +28,11 @@ const TextArrayEntry = ({ data, object, setObject }) => {
                     existingEntries.push(cond.value);
                 }
             });
+            if (object.conditions[data.variableName] !== undefined) {
+                if (Array.isArray(object.conditions[data.variableName])) {
+                    existingEntries.push(...object.conditions[data.variableName]);
+                }
+            }
         }
         if (existingEntries.length > 0) {
             setSelected(true);

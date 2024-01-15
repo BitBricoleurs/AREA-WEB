@@ -15,7 +15,7 @@ const DayPicker = ({ object, setObject }) => {
     const [selectedDays, setSelectedDays] = useState([]);
 
     useEffect(() => {
-        const daysValue = object.params?.days || [];
+        const daysValue = object.params?.weekdays || [];
         setSelectedDays(daysValue);
     }, [object]);
 
