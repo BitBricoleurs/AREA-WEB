@@ -138,9 +138,7 @@ const VariableTable = ({ nodeId, currentWorkflow }) => {
         return [...currentAvailable];
     }
 
-
-    let availableVariables = getNodeKeys();
-    availableVariables = getOutputKeys(availableVariables);
+    let availableVariables = getOutputKeys([]);
 
     useEffect(() => {
         setRows(variables.filter(v => v.refers === nodeId));
